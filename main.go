@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
-	"forum/database"
+	"forum/src/server"
+
 	"log"
 	"net/http"
 )
 
+
 func main() {
+	 http.NewServeMux()
 
-	database.DataBase()
-	fmt.Println("Tables created successfully")
+    http.Handle("/Static/", http.StripPrefix("/Static/", http.FileServer(http.Dir("Static"))))
+   http.HandleFunc("/", server.MainPage)
 
-	fmt.Print("Server running on http://localhost:8080 \nTo stop the server press Ctrl+C\n")
-
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
-
+	
+	fmt.Println("Server is listening on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
