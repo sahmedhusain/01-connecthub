@@ -4,18 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-    <link rel="stylesheet" href= "/Static/style.css">
+    <link rel="stylesheet" type="text/css" href="/Static/style.css">
 </head>
 
 
-<body> 
-<div class="container">
-
-    <h1>Qassim</h1>
-
-
-    <h3>wwwrrrwhhwxx</h3>
-
+<body>
+<header>
+    <div class="logo">MyReddit</div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
     </div>
+    <div class="user-profile">
+        <a href="/templates/login.html">
+            <button>Log in </button>
+          </a>
+          <a href="/templates/signup.html">
+            <button>Sign Up</button>
+          </a>
+    </div>
+</header>
+<main>
+    <aside class="sidebar">
+        <h2>Categories</h2>
+        <ul>
+            <li>Category 1</li>
+            <li>Category 2</li>
+            <li>Category 3</li>
+        </ul>
+    </aside>
+    <section class="feed">
+        <article class="post">
+            <div class="vote">
+                <button>▲</button>
+                <span>123</span>
+                <button>▼</button>
+            </div>
+            <div class="post-content">
+                <h3>Post Title</h3>
+                <p>Post content goes here...</p>
+                <div class="post-meta">
+                    <span>Posted by User</span> | <span>2 hours ago</span>
+                </div>
+            </div>
+        </article>
+        <article class="post">
+            <div class="vote">
+                <button>▲</button>
+                <span>56</span>
+                <button>▼</button>
+            </div>
+            <div class="post-content">
+                <h3>Another Post Title</h3>
+                <p>Post content goes here...</p>
+                <div class="post-meta">
+                    <span>Posted by User</span> | <span>4 hours ago</span>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 MyReddit. All rights reserved.</p>
+</footer>
 </body>
 </html>
