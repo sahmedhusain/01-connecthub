@@ -7,7 +7,6 @@ import (
 	"net/http"
 )
 
-
 func main() {
    http.NewServeMux()
    http.Handle("/templates/", http.StripPrefix("/templates/", http.FileServer(http.Dir("templates"))))
