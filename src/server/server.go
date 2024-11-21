@@ -1,51 +1,65 @@
 package server
 
 import (
-	"fmt"
+	"forum/database"
 	"html/template"
 	"net/http"
-	
 )
 
+type ErrorPageData struct {
+	Code     string
+	ErrorMsg string
+}
+
+func errHandler(w http.ResponseWriter, r *http.Request, err *ErrorPageData) {
+	errorTemp, erra := template.ParseFiles("templates/error.html")
+	if erra != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+	errorTemp.Execute(w, err)
+}
+
 func MainPage(w http.ResponseWriter, r *http.Request) {
+	database.DataBase()
 	if r.URL.Path != "/" {
-		// error 404
-		ErrorHandler(w, r, http.StatusNotFound, "")
-	
+		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+		w.WriteHeader(http.StatusNotFound)
+		errHandler(w, r, &err)
 		return
 	}
-	tmpl, err := template.ParseFiles("Templates/index.html")
+	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
-		// error 500
-		ErrorHandler(w, r, http.StatusInternalServerError, "")
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		w.WriteHeader(http.StatusInternalServerError)
+		errHandler(w, r, &err)
 		return
 	}
-	tmpl.Execute(w, r)
+	tmpl.Execute(w, nil)
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request, statusCode int, errM string) {
-	var errorMessage string
+	var errorData ErrorPageData
 	switch statusCode {
 	case http.StatusNotFound:
-		//404
-		errorMessage = " 404 - Page not found"
+
+		errorData = ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 	case http.StatusBadRequest:
-		//400
-		errorMessage = "400 - Bad request"
+
+		errorData = ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
 		if errM != "" {
-			//400 with extra message
-			errorMessage += ": " + errM
+
+			errorData.ErrorMsg += ": " + errM
 		}
 	case http.StatusInternalServerError:
-		//500
-		errorMessage = "500 - Internal server error"
+
+		errorData = ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 	case http.StatusMethodNotAllowed:
-		//405
-		errorMessage = "405 - Method not allowed"
+
+		errorData = ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
 	default:
-		errorMessage = "Unexpected error"
+		errorData = ErrorPageData{Code: "000", ErrorMsg: "UNEXPECTED ERROR"}
 	}
 	w.WriteHeader(statusCode)
-	fmt.Fprintf(w, errorMessage)
+	errHandler(w, r, &errorData)
 }
-
