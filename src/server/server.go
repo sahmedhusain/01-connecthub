@@ -23,14 +23,12 @@ func errHandler(w http.ResponseWriter, r *http.Request, err *ErrorPageData) {
 func MainPage(w http.ResponseWriter, r *http.Request) {
 	database.DataBase()
 	if r.URL.Path != "/" {
-		// error 404
 		ErrorHandler(w, r, http.StatusNotFound, "")
 		http.ServeFile(w, r, "templates/error.html")
 		return
 	}
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
-		// error 500
 		ErrorHandler(w, r, http.StatusInternalServerError, "")
 		http.ServeFile(w, r, "templates/error.html")
 		return
@@ -38,32 +36,22 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-
 func ErrorHandler(w http.ResponseWriter, r *http.Request, statusCode int, errM string) {
 	var errorData ErrorPageData
 	switch statusCode {
 	case http.StatusNotFound:
-		//404
-		errorData.ErrorMsg = "404 - Page not found"
-		http.ServeFile(w, r, "templates/error.html")
+		errorData = ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 	case http.StatusBadRequest:
-		//400
-		errorData.ErrorMsg = "400 - Bad request"
-		http.ServeFile(w, r, "templates/error.html")
+		errorData = ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
 		if errM != "" {
 			errorData.ErrorMsg += ": " + errM
 		}
 	case http.StatusInternalServerError:
-		//500
-		errorData.ErrorMsg = "500 - Internal server error"
-		http.ServeFile(w, r, "templates/error.html")
+		errorData = ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 	case http.StatusMethodNotAllowed:
-		//405
-		errorData.ErrorMsg = "405 - Method not allowed"
-		http.ServeFile(w, r, "templates/error.html")
+		errorData = ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
 	default:
-		errorData.ErrorMsg = "Unexpected error"
-		http.ServeFile(w, r, "templates/error.html")
+		errorData = ErrorPageData{Code: "000", ErrorMsg: "UNEXPECTED ERROR"}
 	}
 	w.WriteHeader(statusCode)
 	errHandler(w, r, &errorData)
