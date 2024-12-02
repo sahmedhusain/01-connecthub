@@ -5,8 +5,14 @@ import (
 	"forum/src/server"
 	"log"
 	"net/http"
+	db "forum/database"
 )
 
+
+func init() {
+	db.DataBase()
+	fmt.Println("Database connected seccessfully...")
+}
 func main() {
 	http.NewServeMux()
 	http.Handle("/templates/", http.StripPrefix("/templates/", http.FileServer(http.Dir("templates"))))
