@@ -8,13 +8,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type Category struct {
-	ID          int
-	Name        string
-	Description string
-}
 
-var categories []Category
+
+
+
 
 func DataBase() {
 
@@ -155,8 +152,8 @@ func DataBase() {
 		`INSERT INTO categories (name, description) VALUES ('Technology', 'All about tech');`,
 		`INSERT INTO categories (name, description) VALUES ('Science', 'Scientific discoveries and research');`,
 		`INSERT INTO categories (name, description) VALUES ('Art', 'Artistic expressions and creations');`,
-	}
-
+	    
+    }
 	for _, stmt := range insertStatements {
 		_, err := db.Exec(stmt)
 		if err != nil {
@@ -164,31 +161,36 @@ func DataBase() {
 		}
 	}
 
-	rows, err := db.Query("SELECT * FROM categories")
-	if err != nil {
-		log.Fatal(err)
+	insertUsers := []string{
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		 VALUES ('John', 'Doe', 'johndoe', 'johndoe@example.com', 'password123', 1, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		 VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@example.com', 'securepass', 2, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		 VALUES ('Alice', 'Brown', 'alicebrown', 'alicebrown@example.com', 'alice12345', 3, 3);`,
 	}
-	defer rows.Close()
 
-	// Store categories in an array
-
-	for rows.Next() {
-		var id int
-		var name, description string
-		if err := rows.Scan(&id, &name, &description); err != nil {
+	for _, stmt := range insertUsers {
+		_, err := db.Exec(stmt)
+		if err != nil {
 			log.Fatal(err)
 		}
-		categories = append(categories, Category{ID: id, Name: name, Description: description})
 	}
 
-	// Check for errors from iterating over rows
-	if err := rows.Err(); err != nil {
-		log.Fatal(err)
-	}
+		// Retrieve all categories
+		categories, err := GetAllCategories(db)
+		if err != nil {
+			log.Fatal(err)
+		}
+	
+		// Print categories
+		for _, category := range categories {
+			fmt.Printf("ID: %d, Name: %s, Description: %s\n", category.ID, category.Name, category.Description)
+		}
+}
+	
+
+	
 
 	// Print categories
-	for _, category := range categories {
-		fmt.Println(category)
-	}
 
-}

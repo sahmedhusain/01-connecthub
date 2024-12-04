@@ -2,8 +2,11 @@ package server
 
 import (
 	"forum/database"
+	"database/sql"
 	"html/template"
 	"net/http"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type ErrorPageData struct {
@@ -21,19 +24,44 @@ func errHandler(w http.ResponseWriter, r *http.Request, err *ErrorPageData) {
 }
 
 func MainPage(w http.ResponseWriter, r *http.Request) {
-	database.DataBase()
-	if r.URL.Path != "/" {
-		ErrorHandler(w, r, http.StatusNotFound, "")
-		http.ServeFile(w, r, "templates/error.html")
+	// Open DB connection
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		ErrorHandler(w, r, http.StatusInternalServerError, "Database connection failed")
 		return
 	}
+	defer db.Close()
+
+	// Fetch categories and users
+	categories, err := database.GetAllCategories(db)
+	if err != nil {
+		ErrorHandler(w, r, http.StatusInternalServerError, "Failed to fetch categories")
+		return
+	}
+
+	users, err := database.GetAllUsers(db)
+	if err != nil {
+		ErrorHandler(w, r, http.StatusInternalServerError, "Failed to fetch users")
+		return
+	}
+
+	// Combine data for template
+	data := struct {
+		Categories []database.Category
+		Users      []database.User
+	}{
+		Categories: categories,
+		Users:      users,
+	}
+
+	// Render template
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		ErrorHandler(w, r, http.StatusInternalServerError, "")
-		http.ServeFile(w, r, "templates/error.html")
 		return
 	}
-	tmpl.Execute(w, nil)
+	tmpl.Execute(w, data)
+
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request, statusCode int, errM string) {

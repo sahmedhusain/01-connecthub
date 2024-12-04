@@ -27,9 +27,10 @@
     <aside class="sidebar">
         <h2>Categories</h2>
         <ul>
-            {{range .}}
-            <li>{{.Name}}</li>
+            {{range .Users}}
+            <li>{{.FirstName}} {{.LastName}} ({{.Username}})</li>
             {{end}}
+        </ul>
     </aside>
     <section class="feed">
         <article class="post">
