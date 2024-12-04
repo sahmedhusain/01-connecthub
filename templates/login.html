@@ -1,36 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <title>Login - Connect Hub</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo__1_-removebg-preview 1.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #FAFAFA;
+            transition: background-color 0.3s ease;
+        }
+
+        header {
+            background: white;
+            border: 1px solid #EAEAEA;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 8px;
+        }
+
+        header img {
+            width: 69px;
+            height: 69px;
+        }
+
+        header div span {
+            font-size: 16px;
+        }
+
+        header div span:first-child {
+            font-weight: 400;
+        }
+
+        header div span:last-child {
+            font-weight: 800;
+        }
+
+        button {
+            border-radius: 5px;
+            padding: 10px 20px;
+            border: none;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        button.register {
+            background: #1682FD;
+            color: white;
+        }
+
+        button.login {
+            background: #EAEAEA;
+            color: #1682FD;
+        }
+
+        main {
+            padding: 100px;
+            text-align: left;
+        }
+
+        main h1 {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+        }
+
+        main p {
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.5;
+            letter-spacing: 0.9px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+        }
+
+        form div {
+            border: 1px solid #EAEAEA;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        form div label {
+            font-size: 8px;
+            color: #808080;
+        }
+
+        form div input {
+            border: none;
+            width: 100%;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .social-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-buttons button {
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .google-btn {
+            background: white;
+            border: 1px solid #747775;
+        }
+
+        .github-btn {
+            background: #1B1817;
+            color: white;
+            border: 1px solid #747775;
+        }
+
+        footer {
+            background: #EAEAEA;
+            padding: 1px;
+            text-align: center;
+            margin-top: 250px;
+        }
+
+        footer p {
+            font-size: 12px;
+            color: #808080;
+        }
+
+        .center-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
+
 <body>
-    <header>
-        <div class="logo">Connect</div>
-    </header>
-    <main class="login-page">
-        <div class="login-container">
-            <h2>Sign In</h2>
+    <div id="main-content">
+        <img style="width: 1080px; height: 836px; right:0; top: 80px; position: absolute; z-index: -1;"
+            src="/static/assets/Imagelogin.png" />
+        <header>
+            <div>
+                <div class="center-container">
+                    <a href="/templates/index.html"> <img src="/static/assets/logo__1_-removebg-preview 1.png"
+                            alt="Logo"></a>
+                    <span>Connect</span><span>Hub</span>
+                </div>
+            </div>
+            <div>
+                <a href="/templates/signup.html"><button class="register">New here? Register</button></a>
+            </div>
+        </header>
+
+        <main>
+            <h1>Welcome Back</h1>
+            <p>We’ve missed you! Please log in to continue.</p>
             <form action="/login" method="post">
-                <div class="form-group">
+                <div>
                     <label for="username">Username or Email</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+                    <input type="text" id="username" name="username" placeholder="Enter your username or email">
                 </div>
-                <div class="form-group">
+                <div>
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" placeholder="Password">
                 </div>
-                <button type="submit" class="btn-submit">Sign In</button>
-                <div class="form-footer">
-                    <p>New to MyReddit? <a href="/templates/signup.html">Sign Up</a></p>
-                </div>
+                <button type="submit" class="register">Login</button>
             </form>
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Zero One Connect. All rights reserved.</p>
-    </footer>
+            <div class="social-buttons">
+                <button class="google-btn">
+                    <img src="/static/assets/branding_guideline_sample_lt_sq_sl.svg" alt="Google Icon"> Sign in with
+                    Google
+                </button>
+                <button class="github-btn">
+                    <img src="/static/assets/Frame.svg" alt="GitHub Icon"> Sign in with GitHub
+                </button>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2024 ZERO ONE Connect Hub. All rights reserved.</p>
+        </footer>
+    </div>
 </body>
+
 </html>
