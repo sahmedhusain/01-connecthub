@@ -173,11 +173,12 @@ func DataBase() {
 	// Store categories in an array
 
 	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
+		var id int
+		var name, description string
+		if err := rows.Scan(&id, &name, &description); err != nil {
 			log.Fatal(err)
 		}
-		categories = append(categories, Category{Name: name})
+		categories = append(categories, Category{ID: id, Name: name, Description: description})
 	}
 
 	// Check for errors from iterating over rows
