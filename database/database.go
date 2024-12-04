@@ -2,9 +2,19 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+
 	_ "github.com/mattn/go-sqlite3"
 )
+
+type Category struct {
+	ID          int
+	Name        string
+	Description string
+}
+
+var categories []Category
 
 func DataBase() {
 
@@ -138,9 +148,46 @@ func DataBase() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+
+	// Insert data into categories table
+	insertStatements := []string{
+		`INSERT INTO categories (name, description) VALUES ('Technology', 'All about tech');`,
+		`INSERT INTO categories (name, description) VALUES ('Science', 'Scientific discoveries and research');`,
+		`INSERT INTO categories (name, description) VALUES ('Art', 'Artistic expressions and creations');`,
+	}
+
+	for _, stmt := range insertStatements {
+		_, err := db.Exec(stmt)
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
-	
-	
-	
 
+	rows, err := db.Query("SELECT * FROM categories")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	// Store categories in an array
+
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			log.Fatal(err)
+		}
+		categories = append(categories, Category{Name: name})
+	}
+
+	// Check for errors from iterating over rows
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Print categories
+	for _, category := range categories {
+		fmt.Println(category)
+	}
+
+}
