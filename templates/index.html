@@ -25,12 +25,42 @@
 </header>
 <main>
     <aside class="sidebar">
-        <h2>Categories</h2>
+        <h1>Categories</h1>
         <ul>
-            {{range .Users}}
-            <li>{{.FirstName}} {{.LastName}} ({{.Username}})</li>
+            {{range .Categories}}
+            <li>{{.Name}}: {{.Description}}</li>
             {{end}}
         </ul>
+    
+        <h1>Users</h1>
+        <ul>
+            {{range .Users}}
+            <li>{{.FirstName}} {{.LastName}} ({{.Username}}, {{.Email}})</li>
+            {{end}}
+        </ul>
+    
+        <h1>Comments</h1>
+        <ul>
+            {{range .Comments}}
+            <li>
+                Comment ID: {{.ID}}<br>
+                Content: {{.Content}}<br>
+                Commented At: {{.CommentAt}}<br>
+                Post ID: {{.PostPostID}}<br>
+                User ID: {{.UserUserID}}
+            </li>
+            {{end}}
+
+            <h2>Posts</h2>
+{{range .Posts}}
+	<div>
+		<h3>{{.Content}}</h3>
+		<p>Posted by User ID: {{.UserUserID}} on {{.PostAt}}</p>
+		<img src="{{.Image}}" alt="Post Image">
+	</div>
+{{else}}
+	<p>No posts found.</p>
+{{end}}
     </aside>
     <section class="feed">
         <article class="post">

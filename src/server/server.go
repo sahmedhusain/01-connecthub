@@ -1,8 +1,8 @@
 package server
 
 import (
-	"forum/database"
 	"database/sql"
+	"forum/database"
 	"html/template"
 	"net/http"
 
@@ -23,6 +23,7 @@ func errHandler(w http.ResponseWriter, r *http.Request, err *ErrorPageData) {
 	errorTemp.Execute(w, err)
 }
 
+
 func MainPage(w http.ResponseWriter, r *http.Request) {
 	// Open DB connection
 	db, err := sql.Open("sqlite3", "./database/main.db")
@@ -32,7 +33,7 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Fetch categories and users
+	// Fetch categories, users, comments, and posts
 	categories, err := database.GetAllCategories(db)
 	if err != nil {
 		ErrorHandler(w, r, http.StatusInternalServerError, "Failed to fetch categories")
@@ -45,13 +46,29 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	comments, err := database.GetComments(db)
+	if err != nil {
+		ErrorHandler(w, r, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	posts, err := database.GetAllPosts(db)
+	if err != nil {
+		ErrorHandler(w, r, http.StatusInternalServerError, "Failed to fetch posts")
+		return
+	}
+
 	// Combine data for template
 	data := struct {
 		Categories []database.Category
 		Users      []database.User
+		Comments   []database.Comment
+		Posts      []database.Post
 	}{
 		Categories: categories,
 		Users:      users,
+		Comments:   comments,
+		Posts:      posts,
 	}
 
 	// Render template
@@ -61,7 +78,6 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tmpl.Execute(w, data)
-
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request, statusCode int, errM string) {
