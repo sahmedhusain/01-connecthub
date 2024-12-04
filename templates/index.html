@@ -3,98 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <title>ConnectHub - Posts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f9;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            width: 200px;
+        }
+
+        .user-profile button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #ff9900;
+            color: white;
+        }
+
+        .user-profile button:hover {
+            background-color: #ff7700;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .sidebar {
+            width: 20%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar nav h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+        }
+
+        .sidebar nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            padding: 5px 0;
+            display: block;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: #f4f4f4;
+        }
+
+        .sidebar footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .sidebar footer img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .feed {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filters {
+            margin-bottom: 20px;
+        }
+
+        .filters button {
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #ff9900;
+            color: white;
+            cursor: pointer;
+        }
+
+        .filters button:hover {
+            background-color: #ff7700;
+        }
+
+        .post {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .post-header img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .post-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .post-info time {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .post-body h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .post-body p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .tags {
+            margin-top: 10px;
+        }
+
+        .tags span {
+            background-color: #ff9900;
+            color: white;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sidebar-right {
+            width: 20%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-right h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-right ul {
+            list-style-type: none;
+        }
+
+        .sidebar-right ul li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            padding: 5px 0;
+            display: block;
+        }
+
+        .sidebar-right ul li a:hover {
+            background-color: #f4f4f4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+    </style>
 </head>
-
-
 <body>
 <header>
-    <div class="logo">Connect</div>
+    <div class="logo">Connect<span>Hub</span></div>
     <div class="search-bar">
         <input type="text" placeholder="Search...">
     </div>
     <div class="user-profile">
+        <a href="/templates/signup.html">
+            <button>Register</button>
+        </a>
         <a href="/templates/login.html">
-            <button>Log in </button>
-          </a>
-          <a href="/templates/signup.html">
-            <button>Sign Up</button>
-          </a>
+            <button>Login</button>
+        </a>
     </div>
 </header>
 <main>
     <aside class="sidebar">
-        <h1>Categories</h1>
-        <ul>
-            {{range .Categories}}
-            <li>{{.Name}}: {{.Description}}</li>
-            {{end}}
-        </ul>
-    
-        <h1>Users</h1>
-        <ul>
-            {{range .Users}}
-            <li>{{.FirstName}} {{.LastName}} ({{.Username}}, {{.Email}})</li>
-            {{end}}
-        </ul>
-    
-        <h1>Comments</h1>
-        <ul>
-            {{range .Comments}}
-            <li>
-                Comment ID: {{.ID}}<br>
-                Content: {{.Content}}<br>
-                Commented At: {{.CommentAt}}<br>
-                Post ID: {{.PostPostID}}<br>
-                User ID: {{.UserUserID}}
-            </li>
-            {{end}}
-
-            <h2>Posts</h2>
-{{range .Posts}}
-	<div>
-		<h3>{{.Content}}</h3>
-		<p>Posted by User ID: {{.UserUserID}} on {{.PostAt}}</p>
-		<img src="{{.Image}}" alt="Post Image">
-	</div>
-{{else}}
-	<p>No posts found.</p>
-{{end}}
+        <nav>
+            <h2>MENU</h2>
+            <ul>
+                <li><a href="#posts">Posts</a></li>
+                <li><a href="#tags">Tags</a></li>
+            </ul>
+        </nav>
+        <footer>
+            <a href="https://github.com"><img src="/static/images/github.png" alt="GitHub"></a>
+            <a href="https://discord.com"><img src="/static/images/discord.png" alt="Discord"></a>
+        </footer>
     </aside>
     <section class="feed">
+        <div class="filters">
+            <button class="new">New</button>
+            <button class="top-liked">Top Liked</button>
+            <button class="low-rated">Low Rated</button>
+        </div>
+        {{range .Posts}}
         <article class="post">
-            <div class="vote">
-                <button>▲</button>
-                <span>123</span>
-                <button>▼</button>
-            </div>
-            <div class="post-content">
-                <h3>Post Title</h3>
-                <p>Post content goes here...</p>
-                <div class="post-meta">
-                    <span>Posted by User</span> | <span>2 hours ago</span>
+            <div class="post-header">
+                <img src="{{.UserAvatar}}" alt="Avatar">
+                <div class="post-info">
+                    <h3>{{.UserName}}</h3>
+                    <time>{{.PostAt}}</time>
                 </div>
             </div>
-        </article>
-        <article class="post">
-            <div class="vote">
-                <button>▲</button>
-                <span>56</span>
-                <button>▼</button>
-            </div>
-            <div class="post-content">
-                <h3>Another Post Title</h3>
-                <p>Post content goes here...</p>
-                <div class="post-meta">
-                    <span>Posted by User</span> | <span>4 hours ago</span>
+            <div class="post-body">
+                <h4>{{.Title}}</h4>
+                <p>{{.Content}}</p>
+                <div class="tags">
+                    {{range .Tags}}
+                    <span>{{.}}</span>
+                    {{end}}
                 </div>
             </div>
+            <div class="post-footer">
+                <span>{{.CommentsCount}} comments</span>
+                <span>{{.Likes}} likes</span>
+                <span>{{.Dislikes}} dislikes</span>
+            </div>
         </article>
+        {{else}}
+        <p>No posts available</p>
+        {{end}}
     </section>
+    <aside class="sidebar-right">
+        <div class="useful-links">
+            <h3>Useful links</h3>
+            <ul>
+                <li><a href="https://reboot01.io">Reboot01 website</a></li>
+                <li><a href="https://instagram.com/reboot01">Reboot01 Instagram</a></li>
+                <li><a href="https://linkedin.com/company/reboot01">Reboot01 LinkedIn</a></li>
+            </ul>
+        </div>
+        <div class="good-to-know">
+            <h3>Good to know</h3>
+            <ul>
+                <li><a href="#about-us">About us</a></li>
+                <li><a href="#content-policy">Content policy</a></li>
+                <li><a href="#contact-us">Contact us</a></li>
+            </ul>
+        </div>
+    </aside>
 </main>
 <footer>
-    <p>&copy; 2024 Zero One Connect. All rights reserved.</p>
+    <p>&copy; 2024 ConnectHub. All rights reserved.</p>
 </footer>
 </body>
 </html>
