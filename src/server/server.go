@@ -12,7 +12,7 @@ type ErrorPageData struct {
 }
 
 func errHandler(w http.ResponseWriter, r *http.Request, err *ErrorPageData) {
-	errorTemp, erra := template.ParseFiles("templates/error.html")
+	errorTemp, erra := template.ParseFiles("templates/index.html")
 	if erra != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
