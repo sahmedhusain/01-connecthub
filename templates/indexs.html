@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+
+
+<body>
+<header>
+    <div class="logo">Connect</div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+    </div>
+    <div class="user-profile">
+        <a href="/templates/login.html">
+            <button>Log in </button>
+          </a>
+          <a href="/templates/signup.html">
+            <button>Sign Up</button>
+          </a>
+    </div>
+</header>
+<main>
+    <aside class="sidebar">
+        <h2>Categories</h2>
+        <ul>
+            {{range .Users}}
+            <li>{{.FirstName}} {{.LastName}} ({{.Username}})</li>
+            {{end}}
+        </ul>
+    </aside>
+    <section class="feed">
+        <article class="post">
+            <div class="vote">
+                <button>▲</button>
+                <span>123</span>
+                <button>▼</button>
+            </div>
+            <div class="post-content">
+                <h3>Post Title</h3>
+                <p>Post content goes here...</p>
+                <div class="post-meta">
+                    <span>Posted by User</span> | <span>2 hours ago</span>
+                </div>
+            </div>
+        </article>
+        <article class="post">
+            <div class="vote">
+                <button>▲</button>
+                <span>56</span>
+                <button>▼</button>
+            </div>
+            <div class="post-content">
+                <h3>Another Post Title</h3>
+                <p>Post content goes here...</p>
+                <div class="post-meta">
+                    <span>Posted by User</span> | <span>4 hours ago</span>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 Zero One Connect. All rights reserved.</p>
+</footer>
+</body>
+</html>
