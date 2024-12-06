@@ -2,22 +2,32 @@ package main
 
 import (
 	"fmt"
+	db "forum/database"
 	"forum/src/server"
 	"log"
 	"net/http"
-	db "forum/database"
 )
-
 
 func init() {
 	db.DataBase()
-	fmt.Println("Database connected seccessfully...")
 }
+
 func main() {
-	http.NewServeMux()
-	http.Handle("/templates/", http.StripPrefix("/templates/", http.FileServer(http.Dir("templates"))))
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/", server.MainPage)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+
+    http.HandleFunc("/", server.MainPage)
+    http.HandleFunc("/about", server.AboutPage)
+    http.HandleFunc("/help", server.HelpPage)
+    http.HandleFunc("/privacy_policy", server.PrivacyPolicyPage)
+    http.HandleFunc("/activity_centre", server.ActivityCentrePage)
+    http.HandleFunc("/connections", server.ConnectionsPage)
+    http.HandleFunc("/content_policy", server.ContentPolicyPage)
+    http.HandleFunc("/login", server.LoginPage)
+    http.HandleFunc("/notifications", server.NotificationsPage)
+    http.HandleFunc("/profile", server.ProfilePage)
+    http.HandleFunc("/signup", server.SignupPage)
+    http.HandleFunc("/user_agreement", server.UserAgreementPage)
+    http.HandleFunc("/indexs", server.IndexsPage)
 
 	fmt.Println("Server running on http://localhost:8080 \nTo stop the server press Ctrl+C")
 

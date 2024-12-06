@@ -128,9 +128,6 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 
 		// Parse comment_at into a time.Time object
 		comment.CommentAt = commentAt
-		if err != nil {
-			log.Printf("Error parsing comment_at for comment ID %d: %v", comment.ID, err)
-		}
 
 		comments = append(comments, comment)
 	}
