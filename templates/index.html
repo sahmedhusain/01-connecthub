@@ -31,7 +31,8 @@
         header .logo-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 1px;
         }
 
         header .logo-container img {
@@ -40,9 +41,16 @@
         }
 
         header .logo-container span {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 18px;
             color: #1F2937;
+        }
+
+        header .logo-container span:first-child {
+            font-weight: 400;
+        }
+
+        header .logo-container span:last-child {
+            font-weight: 800;
         }
 
         header .user-actions a {
@@ -67,6 +75,11 @@
         header .user-actions .login {
             background-color: #E5E7EB;
             color: #1F2937;
+        }
+
+        header .user-actions img {
+            width: 30px;
+            height: 30px;
         }
 
         main {
@@ -195,17 +208,26 @@
 
 <body>
     <header>
-        <div class="logo-container">
-            <img src="/static/assets/logo__1_-removebg-preview 1.png" alt="Connect Hub Logo">
-            <span>Connect Hub</span>
+        <div>
+            <div class="logo-container">
+                <a href="/templates/index.html"> <img src="/static/assets/logo__1_-removebg-preview 1.png"
+                        alt="Logo"></a>
+                <span>Connect</span><span>Hub</span>
+            </div>
         </div>
         <div class="user-actions">
-            <a href="/templates/signup.html">
-                <button class="register">Register</button>
-            </a>
-            <a href="/templates/login.html">
-                <button class="login">Login</button>
-            </a>
+            <div class="register">
+                <a href="/templates/signup.html">
+                    <img src="/static/assets/user.png" alt="User">
+                    <button class="register">Register</button>
+                </a>
+            </div>
+            <div class="login">
+                <a href="/templates/login.html">
+                    <img src="/static/assets/login.png" alt="Login">
+                    <button class="login">Login</button>
+                </a>
+            </div>
         </div>
     </header>
     <main>
