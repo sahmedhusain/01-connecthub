@@ -16,6 +16,7 @@
             flex-direction: column;
             min-height: 100vh;
             color: #333;
+
         }
 
         header {
@@ -26,6 +27,7 @@
             align-items: center;
             padding: 15px 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
         }
 
         header .logo-container {
@@ -33,28 +35,35 @@
             align-items: center;
             justify-content: center;
             gap: 1px;
+            text-decoration: none;
+
         }
 
         header .logo-container img {
             width: 60px;
             height: 60px;
+
         }
 
         header .logo-container span {
             font-size: 18px;
             color: #1F2937;
+
         }
 
         header .logo-container span:first-child {
             font-weight: 400;
+
         }
 
         header .logo-container span:last-child {
             font-weight: 800;
+
         }
 
         header .user-actions a {
             text-decoration: none;
+            color: #1F2937;
         }
 
         header .user-actions button {
@@ -65,26 +74,32 @@
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s ease;
+
         }
 
         header .user-actions .register {
             background-color: #3B82F6;
             color: white;
+
         }
 
         header .user-actions .login {
             background-color: #E5E7EB;
             color: #1F2937;
+
         }
 
         header .user-actions img {
             width: 30px;
             height: 30px;
+
         }
 
         main {
             display: flex;
             flex: 1;
+
+            gap: 20px;
         }
 
         .sidebar {
@@ -92,6 +107,7 @@
             background-color: #FFFFFF;
             border-right: 2px solid #E5E7EB;
             padding: 20px;
+
         }
 
         .sidebar nav ul {
@@ -101,6 +117,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+
         }
 
         .sidebar nav ul li a {
@@ -111,11 +128,13 @@
             padding: 8px 12px;
             border-radius: 6px;
             transition: background-color 0.3s ease, color 0.3s ease;
+
         }
 
         .sidebar nav ul li a:hover {
             background-color: #3B82F6;
             color: #FFFFFF;
+
         }
 
         .feed {
@@ -124,57 +143,86 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+
         }
 
         .feed .filters {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+
         }
 
         .feed .filters button {
             padding: 8px 16px;
+
             border-radius: 30px;
+
             border: none;
+
             cursor: pointer;
+
             font-size: 14px;
+
             font-weight: 500;
+
             transition: background-color 0.3s ease, color 0.3s ease;
+
         }
 
         .feed .filters .new {
             background-color: #3B82F6;
+
             color: #FFFFFF;
+
         }
 
         .feed .filters button:hover {
             background-color: #2563EB;
+
         }
 
         .post {
             background-color: #FFFFFF;
+
             border: 1px solid #E5E7EB;
+
             border-radius: 8px;
+
             padding: 20px;
+
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
         }
 
         .post-header {
             display: flex;
+
             align-items: center;
+
             gap: 10px;
+
         }
 
         .post-header img {
             width: 50px;
+
             height: 50px;
+
             border-radius: 50%;
+
+
         }
 
         .post-info h3 {
             margin: 0;
+
             font-size: 18px;
+
             font-weight: 600;
+
+            color: #1F2937;
+
         }
 
         .post-info time {
@@ -202,6 +250,34 @@
             font-size: 14px;
             color: #6B7280;
             margin-top: auto;
+        }
+
+        .sidebarr {
+            width: 260px;
+            border-right: 2px solid #E5E7EB;
+            padding: 20px;
+        }
+
+        .good-to-know,
+        .useful-links {
+
+            padding: 15px;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .good-to-know a,
+        .useful-links a {
+            color: #1682FD;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .good-to-know a:hover,
+        .useful-links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -263,6 +339,26 @@
             <p>No posts available</p>
             {{end}}
         </section>
+        <div class="sidebarr">
+            <div class="good-to-know">
+
+                <h3>Good to Know</h3>
+                <ul>
+                    <li>Tip 1</li>
+                    <li>Tip 2</li>
+                    <li>Tip 3</li>
+                </ul>
+            </div>
+            <div class="useful-links">
+
+                <h3>Useful Links</h3>
+                <ul>
+                    <li><a href="#">Link 1</a></li>
+                    <li><a href="#">Link 2</a></li>
+                    <li><a href="#">Link 3</a></li>
+                </ul>
+            </div>
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 Connect Hub. All rights reserved.</p>
