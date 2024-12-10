@@ -97,6 +97,9 @@
             padding: 20px;
             width: 260px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100vh; 
         }
 
         .sidebar nav ul {
@@ -300,6 +303,25 @@
             border-bottom: 1px solid #E5E7EB;
             padding-bottom: 5px;
         }
+
+        .social-icons {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding-bottom: 10px;
+        }
+
+        .social-link {
+            color: #1F2937;
+            font-size: 24px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #3B82F6;
+        }
     </style>
 </head>
 
@@ -310,7 +332,8 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/templates/signup.html"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
+            <a href="/templates/signup.html"><button class="register"><i class="fas fa-user-plus"></i>
+                    Register</button></a>
             <a href="/templates/login.html"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
         </div>
     </header>
@@ -328,6 +351,16 @@
                     <li><a href="#tags"><i class="fas fa-tags"></i> Tags</a></li>
                 </ul>
             </nav>
+            <div class="social-icons">
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://reboot01.com" target="_blank" class="social-link">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
         </aside>
         <section class="feed">
             <div class="filters">
