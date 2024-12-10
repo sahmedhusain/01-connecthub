@@ -4,214 +4,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join 01 Community</title>
-    <link rel="icon" type="image/x-icon" href="/static/assets/logo__1_-removebg-preview 1.png">
+    <title>Sign Up | Connect Hub</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #FAFAFA;
-            transition: background-color 0.3s ease;
-        }
-
-        #main-content {
-            width: 100%;
-            height: 100%;
-        }
-
-        header {
-            background: white;
-            border: 1px solid #EAEAEA;
+            margin: 0;
+            background-color: #f4f4f4;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 5px 8px;
+            height: 100vh;
         }
 
-        header img {
-            width: 69px;
-            height: 69px;
+        .container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
         }
 
-        header div span {
-            font-size: 16px;
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        header div span:first-child {
-            font-weight: 400;
+        .header img {
+            width: 50px;
         }
 
-        header div span:last-child {
-            font-weight: 800;
-        }
-
-        button {
-            border-radius: 5px;
-            padding: 10px 20px;
-            border: none;
-            font-size: 12px;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
-        button.register {
-            background: #1682FD;
-            color: white;
-        }
-
-        button.login {
-            background: #EAEAEA;
-            color: #1682FD;
-        }
-
-        main {
-            padding: 100px;
-            text-align: left;
-        }
-
-        main h1 {
+        .header h1 {
+            margin: 10px 0 0;
             font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 1.2px;
-        }
-
-        main p {
-            font-size: 18px;
-            font-weight: 300;
-            line-height: 1.5;
-            letter-spacing: 0.9px;
+            color: #333;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            max-width: 400px;
         }
 
-        form div {
-            border: 1px solid #EAEAEA;
-            border-radius: 5px;
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"]
+        {
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
             padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
         }
 
-        form div label {
-            font-size: 8px;
-            color: #808080;
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #3B82F6;
         }
 
-        form div input {
+        button {
+            padding: 10px;
+            background-color: #007BFF;
             border: none;
-            width: 100%;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        .error-text {
-            color: #FF0000;
-            font-size: 10px;
-        }
-
-        .social-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-buttons button {
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-        .google-btn {
-            background: white;
-            border: 1px solid #747775;
-        }
-
-        .github-btn {
-            background: #1B1817;
             color: white;
-            border: 1px solid #747775;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
         }
 
-        footer {
-            background: #EAEAEA;
-            padding: 1px;
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .divider {
             text-align: center;
-            margin-top: 50px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #888;
         }
 
-        footer p {
-            font-size: 12px;
-            color: #808080;
+        .oauth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .center-container {
+        .oauth-buttons button {
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s ease;
+        }
+
+        .oauth-buttons button img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .google-btn {
+            background: #ffffff;
+            color: #555;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .google-btn:hover {
+            background: #f4f4f4;
+        }
+
+        .github-btn {
+            background-color: #24292E;
+            color: white;
+        }
+
+        .github-btn:hover {
+            background-color: #1b1f23;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .login-link a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
-    <div id="main-content">
-        <img style="width: 1080px; height: 836px; right:0; top: 80px; position: absolute; z-index: -1;"
-            src="/static/assets/Image.png" />
-        <header>
-            <div>
-                <div class="center-container">
-                    <a href="/templates/index.html"> <img src="/static/assets/logo__1_-removebg-preview 1.png"
-                            alt="Logo"></a>
-                    <span>Connect</span><span>Hub</span>
-                </div>
-            </div>
-            <div>
-                <a href="/templates/login.html"><button class="login">Already have account?</button></a>
-            </div>
-        </header>
+    <div class="container">
+        <div class="header">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <h1>Create Your Account</h1>
+        </div>
+        <form action="/signup" method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
-        <main>
-            <h1>Join 01 Community</h1>
-            <p>Get more features and privileges by joining the most helpful 01 community.</p>
-            <form action="/signup" method="post">
-                <div>
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Your username">
-                </div>
-                <div>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="yourmail@domain.com">
-                </div>
-                <div>
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Password">
-                </div>
-                <div>
-                    <label for="confirm-password">Repeat Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password">
-                </div>
-                <p class="error-text">Sorry! The entered email is already in use.</p>
-                <button type="submit" class="register">REGISTER</button>
-            </form>
-            <div class="social-buttons">
-                <button class="google-btn">
-                    <img src="/static/assets/branding_guideline_sample_lt_sq_sl.svg" alt="Google Icon"> Sign up with
-                    Google
-                </button>
-                <button class="github-btn">
-                    <img src="/static/assets/Frame.svg" alt="GitHub Icon"> Sign up with GitHub
-                </button>
-            </div>
-        </main>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
 
-        <footer>
-            <p>© 2024 ConnectHub. All rights reserved.</p>
-        </footer>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required>
+
+            <label for="confirm-password">Repeat Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password"
+                required>
+
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <div class="oauth-buttons">
+            <button class="google-btn" onclick="location.href='/auth/google'">
+                <img src="/static/assets/google-icon.png" alt="Google Logo">
+                Sign up with Google
+            </button>
+            <button class="github-btn" onclick="location.href='/auth/github'">
+                <img src="/static/assets/github-icon.png" alt="GitHub Logo">
+                Sign up with GitHub
+            </button>
+        </div>
+
+        <div class="login-link">
+            <p>Already have an account? <a href="/templates/login.html">Login.</a></p>
+        </div>
     </div>
 </body>
 

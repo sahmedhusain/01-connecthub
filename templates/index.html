@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connect Hub</title>
-    <link rel="icon" type="image/x-icon" href="/static/assets/logo__1_-removebg-preview 1.png">
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -28,38 +28,41 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
-        header .logo-container {
+        .logo-container {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 1px;
             text-decoration: none;
         }
 
-        header .logo-container img {
+        .logo-container img {
             width: 60px;
             height: 60px;
         }
 
-        header .logo-container span {
+        .logo-container span {
             font-size: 18px;
             color: #1F2937;
         }
 
-        header .logo-container span:first-child {
+        .logo-container span:first-child {
             font-weight: 400;
         }
 
-        header .logo-container span:last-child {
+        .logo-container span:last-child {
             font-weight: 800;
         }
 
-        header .user-actions a {
-            text-decoration: none;
-            color: #1F2937;
+        .user-actions {
+            display: flex;
+            gap: 10px;
         }
 
-        header .user-actions button {
+        .user-actions a {
+            text-decoration: none;
+        }
+
+        .user-actions button {
             border-radius: 8px;
             padding: 8px 16px;
             border: none;
@@ -69,12 +72,12 @@
             transition: background-color 0.3s ease;
         }
 
-        header .user-actions .register {
+        .register {
             background-color: #3B82F6;
             color: white;
         }
 
-        header .user-actions .login {
+        .login {
             background-color: #E5E7EB;
             color: #1F2937;
         }
@@ -83,6 +86,7 @@
             display: flex;
             flex: 1;
             gap: 20px;
+            padding: 20px;
         }
 
         .sidebar {
@@ -90,7 +94,7 @@
             background-color: #FFFFFF;
             border-right: 2px solid #E5E7EB;
             padding: 20px;
-
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .sidebar nav ul {
@@ -100,7 +104,6 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-
         }
 
         .sidebar nav ul li a {
@@ -108,35 +111,30 @@
             font-size: 16px;
             color: #1F2937;
             font-weight: 500;
-            padding: 8px 12px;
+            padding: 10px 20px;
             border-radius: 6px;
             transition: background-color 0.3s ease, color 0.3s ease;
-
         }
 
         .sidebar nav ul li a:hover {
             background-color: #3B82F6;
             color: #FFFFFF;
-
         }
 
         .feed {
             flex: 1;
-            padding: 30px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-
         }
 
-        .feed .filters {
+        .filters {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
-
+            flex-wrap: wrap;
         }
 
-        .feed .filters button {
+        .filters button {
             padding: 8px 16px;
             border-radius: 30px;
             border: none;
@@ -146,15 +144,14 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .feed .filters .new {
+        .filters .new {
             background-color: #3B82F6;
             color: #FFFFFF;
-
         }
 
-        .feed .filters button:hover {
+        .filters button:hover {
             background-color: #2563EB;
-
+            color: #FFFFFF;
         }
 
         .post {
@@ -203,64 +200,25 @@
         }
 
         footer {
-            background-color: #F3F4F6;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-            color: #6B7280;
-            margin-top: auto;
-        }
-
-        .sidebarr {
-            width: 260px;
-            border-right: 2px solid #E5E7EB;
-            padding: 20px;
-        }
-
-        .good-to-know,
-        .useful-links {
-            padding: 15px;
             background-color: #FFFFFF;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .good-to-know a,
-        .useful-links a {
-            color: #1682FD;
-            font-size: 14px;
-            text-decoration: none;
-        }
-
-        .good-to-know a:hover,
-        .useful-links a:hover {
-            text-decoration: underline;
+            border-top: 2px solid #E5E7EB;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            color: #808080;
         }
     </style>
 </head>
 
 <body>
     <header>
-        <div>
-            <div class="logo-container">
-                <a href="/templates/index.html"> <img src="/static/assets/logo__1_-removebg-preview 1.png"
-                        alt="Logo"></a>
-                <span>Connect</span><span>Hub</span>
-            </div>
-        </div>
+        <a href="/" class="logo-container">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <span>Connect</span><span>Hub</span>
+        </a>
         <div class="user-actions">
-            <div class="register">
-                <a href="/templates/signup.html">
-                    <img src="/static/assets/user.png" alt="User">
-                    <button class="register">Register</button>
-                </a>
-            </div>
-            <div class="login">
-                <a href="/templates/login.html">
-                    <button class="login">Login</button>
-                </a>
-            </div>
+            <a href="/signup.html"><button class="register">Register</button></a>
+            <a href="/login.html"><button class="login">Login</button></a>
         </div>
     </header>
     <main>
@@ -275,8 +233,11 @@
         <section class="feed">
             <div class="filters">
                 <button class="new">All</button>
-                <button class="top-liked">Top Rated</button>
-                <button class="low-rated">Low Rated</button>
+                <button>Following</button>
+                <button>Friends</button>
+                <button>Top Rated</button>
+                <button>Oldest to Newest</button>
+                <button>Top Rated</button>
             </div>
             {{range .Posts}}
             <article class="post">
@@ -296,27 +257,9 @@
             <p>No posts available</p>
             {{end}}
         </section>
-        <div class="sidebarr">
-            <div class="good-to-know">
-                <h3>Good to Know</h3>
-                <ul>
-                    <li>Tip 1</li>
-                    <li>Tip 2</li>
-                    <li>Tip 3</li>
-                </ul>
-            </div>
-            <div class="useful-links">
-                <h3>Useful Links</h3>
-                <ul>
-                    <li><a href="#">Link 1</a></li>
-                    <li><a href="#">Link 2</a></li>
-                    <li><a href="#">Link 3</a></li>
-                </ul>
-            </div>
-        </div>
     </main>
     <footer>
-        <p>&copy; 2024 Connect Hub. All rights reserved.</p>
+        <p>© 2024 ConnectHub | All rights reserved.</p>
     </footer>
 </body>
 

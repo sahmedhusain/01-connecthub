@@ -4,195 +4,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Connect Hub</title>
-    <link rel="icon" type="image/x-icon" href="/static/assets/logo__1_-removebg-preview 1.png">
+    <title>Login | Connect Hub</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #FAFAFA;
-            transition: background-color 0.3s ease;
-        }
-
-        header {
-            background: white;
-            border: 1px solid #EAEAEA;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 5px 8px;
+            height: 100vh;
+            background-color: #F9FAFB;
         }
 
-        header img {
-            width: 69px;
-            height: 69px;
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
         }
 
-        header div span {
-            font-size: 16px;
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        header div span:first-child {
-            font-weight: 400;
+        .logo img {
+            width: 80px;
         }
 
-        header div span:last-child {
-            font-weight: 800;
+        .logotext {
+            display: center;
+            align-items: center;
+            gap: 1px;
         }
 
-        button {
-            border-radius: 5px;
-            padding: 10px 20px;
-            border: none;
-            font-size: 12px;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
-        button.register {
-            background: #1682FD;
-            color: white;
-        }
-
-        button.login {
-            background: #EAEAEA;
-            color: #1682FD;
-        }
-
-        main {
-            padding: 100px;
-            text-align: left;
-        }
-
-        main h1 {
+        .logotext span:first-child {
             font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 1.2px;
+            font-weight: 400;
+            color: #1F2937;
         }
 
-        main p {
-            font-size: 18px;
-            font-weight: 300;
-            line-height: 1.5;
-            letter-spacing: 0.9px;
+        .logotext span:last-child {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1F2937;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            max-width: 400px;
         }
 
-        form div {
-            border: 1px solid #EAEAEA;
-            border-radius: 5px;
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #374151;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
             padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
         }
 
-        form div label {
-            font-size: 8px;
-            color: #808080;
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #3B82F6;
         }
 
-        form div input {
+        .form-actions {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .login-btn {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px;
             border: none;
-            width: 100%;
-            font-size: 13px;
-            margin-top: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .social-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
+        .login-btn:hover {
+            background-color: #2563EB;
         }
 
-        .social-buttons button {
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 17.5px;
-        }
-
-        .google-btn {
-            background: white;
-            border: 1px solid #747775;
-        }
-
-        .github-btn {
-            background: #1B1817;
-            color: white;
-            border: 1px solid #747775;
-        }
-
-        footer {
-            background: #EAEAEA;
-            padding: 1px;
+        .divider {
             text-align: center;
-            margin-top: 250px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #888;
         }
 
-        footer p {
-            font-size: 12px;
-            color: #808080;
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .center-container {
+        .social-login button {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .github-btn {
+            background-color: #24292E;
+            color: #FFFFFF;
+        }
+
+        .github-btn:hover {
+            background-color: #1B1F23;
+        }
+
+        .google-btn {
+            background: #ffffff;
+            color: #555;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .google-btn:hover {
+            background: #f4f4f4;
+        }
+
+        .signup-link {
+            text-align: center;
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .signup-link a {
+            color: #3B82F6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
-    <div id="main-content">
-        <img style="width: 1080px; height: 836px; right:0; top: 80px; position: absolute; z-index: -1;"
-            src="/static/assets/Imagelogin.png" />
-        <header>
-            <div>
-                <div class="center-container">
-                    <a href="/templates/index.html"> <img src="/static/assets/logo__1_-removebg-preview 1.png"
-                            alt="Logo"></a>
-                    <span>Connect</span><span>Hub</span>
-                </div>
+    <div class="login-container">
+        <div class="logo">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <div class="logotext">
+                <span>Connect</span>
+                <span>Hub</span>
             </div>
-            <div>
-                <a href="/templates/signup.html"><button class="register">New here? Register</button></a>
-            </div>
-        </header>
+        </div>
+        <form action="/templates/indexs.html" method="POST">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
-        <main>
-            <h1>Welcome Back</h1>
-            <p>We’ve missed you! Please log in to continue.</p>
-            <form action="/login" method="post">
-                <div>
-                    <label for="username">Username or Email</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username or email">
-                </div>
-                <div>
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Password">
-                </div>
-                <button type="submit" class="register">Login</button>
-            </form>
-            <div class="social-buttons">
-                <button class="google-btn">
-                    <img src="/static/assets/branding_guideline_sample_lt_sq_sl.svg" alt="Google Icon"> Sign in with
-                    Google
-                </button>
-                <button class="github-btn">
-                    <img src="/static/assets/Frame.svg" alt="GitHub Icon"> Sign in with GitHub
-                </button>
-            </div>
-        </main>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-        <footer>
-            <p>© 2024 ConnectHub. All rights reserved.</p>
-        </footer>
+            <div class="form-actions">
+                <button type="submit" class="login-btn">Login</button>
+            </div>
+        </form>
+
+        <div class="divider">or</div>
+        <div class="social-login">
+            <button class="github-btn" onclick="window.location.href='/auth/github'">
+                <img src="/static/assets/github-icon.png" alt="GitHub Icon" width="20">
+                Log in with GitHub
+            </button>
+            <button class="google-btn" onclick="window.location.href='/auth/google'">
+                <img src="/static/assets/google-icon.png" alt="Google Icon" width="20">
+                Log in with Google
+            </button>
+        </div>
+        <p class="signup-link">
+            Don't have an account? <a href="/templates/signup.html">Register.</a>
+        </p>
     </div>
 </body>
 

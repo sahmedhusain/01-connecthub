@@ -4,98 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error - Connect Hub</title>
-    <link rel="icon" type="image/x-icon" href="/static/assets/logo__1_-removebg-preview 1.png">
+    <title>{{.Code}} | {{.ErrorMsg}}</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #FAFAFA;
+            background-color: #F9FAFB;
+            color: #333;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            margin: 0;
         }
 
         header {
-            background: white;
-            border: 1px solid #EAEAEA;
+            background-color: #FFFFFF;
+            border-bottom: 2px solid #E5E7EB;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 8px;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
-        header img {
-            width: 69px;
-            height: 69px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            text-decoration: none;
         }
 
-        header div span {
-            font-size: 16px;
+        .logo-container img {
+            width: 60px;
+            height: 60px;
         }
 
-        header div span:first-child {
+        .logo-container span {
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .logo-container span:first-child {
             font-weight: 400;
         }
 
-        header div span:last-child {
+        .logo-container span:last-child {
             font-weight: 800;
         }
 
         main {
-            flex-grow: 1;
-            text-align: center;
-            padding: 50px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            flex: 1;
         }
 
         main img {
-            width: 500px;
+            max-width: 50%;
             height: auto;
-            margin-bottom: 20px;
         }
 
-        main h1 {
-            font-size: 68px;
-            font-weight: 900;
-            color: #FF4C4C;
+        .error-content {
+            max-width: 100%;
         }
 
-        main h2 {
-            font-size: 36px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        main p {
-            font-size: 18px;
-            font-weight: 300;
-            color: #555;
-            margin-top: 10px;
-        }
-
-        main .message {
-            font-size: 16px;
-            font-weight: 400;
-            margin-top: 20px;
-            color: #1682FD;
-        }
-
-        footer {
-            background: #EAEAEA;
-            padding: 10px;
+        .error-content h1 {
+            font-size: 48px;
+            margin: 30px 0;
             text-align: center;
         }
 
-        footer p {
-            font-size: 12px;
-            color: #808080;
+        .error-content h2 {
+            font-size: 24px;
+            margin: 30px 0;
+            text-align: center;
         }
 
-        .center-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .error-content p {
+            font-size: 16px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #FFFFFF;
+            border-top: 2px solid #E5E7EB;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            color: #808080;
         }
     </style>
 </head>
@@ -103,26 +102,26 @@
 <body>
     <header>
         <div>
-            <div class="center-container">
-                <a href="/templates/index.html">
-                    <img src="/static/assets/logo__1_-removebg-preview 1.png" alt="Logo">
-                </a>
+            <a href="/" class="logo-container">
+                <img src="/static/assets/logo.png" alt="Connect Hub Logo">
                 <span>Connect</span><span>Hub</span>
-            </div>
+            </a>
         </div>
     </header>
 
     <main>
-        <img src="/static/assets/Screenshot_2024-12-04_at_21.03.06-removebg-preview.png" alt="Error Icon">
-        <h1>{{.Code}}</h1>
-        <h2>{{.ErrorMsg}}</h2>
-        <p>Oops! Something went wrong.</p>
-        <p class="message">Please try again or <a href="/templates/index.html"
-                style="color: #1682FD; text-decoration: none;">go back to the homepage</a>.</p>
+        <div class="error-content">
+            <p>Oops! Something went wrong.</p>
+            <h1>{{.Code}}</h1>
+            <h2>{{.ErrorMsg}}</h2>
+            <p class="message">Please try again or go back to the <a href="/"
+                    style="color: #1682FD; text-decoration: none;">homepage</a>.</p>
+        </div>
+        <img src="/static/assets/error.png" alt="Error Icon">
     </main>
 
     <footer>
-        <p>© 2024 ConnectHub. All rights reserved.</p>
+        <p>© 2024 ConnectHub | All rights reserved.</p>
     </footer>
 </body>
 
