@@ -7,18 +7,88 @@
     <title>Login | Connect Hub</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             background-color: #F9FAFB;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        header {
+            background-color: #FFFFFF;
+            border-bottom: 2px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            text-decoration: none;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .logo-container span {
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .logo-container span:first-child {
+            font-weight: 400;
+        }
+
+        .logo-container span:last-child {
+            font-weight: 800;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-actions a {
+            text-decoration: none;
+        }
+
+        .user-actions button {
+            border-radius: 8px;
+            padding: 8px 16px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .home {
+            background-color: #E5E7EB;
+            color: #1F2937;
         }
 
         .login-container {
+            justify-content: center;
+            align-items: center;
+            margin: auto;
             width: 100%;
             max-width: 400px;
             background-color: #FFFFFF;
@@ -168,16 +238,33 @@
         .signup-link a:hover {
             text-decoration: underline;
         }
+        footer {
+            background-color: #FFFFFF;
+            border-top: 2px solid #E5E7EB;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            color: #808080;
+        }
     </style>
 </head>
 
 <body>
+    <header>
+        <a href="/" class="logo-container">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <span>Connect</span><span>Hub</span>
+        </a>
+        <div class="user-actions">
+            <a href="/templates/index.html"><button class="home"><i class="fas fa-home"></i> Home</button></a>
+        </div>
+    </header>
+    <main>
     <div class="login-container">
         <div class="logo">
-            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
             <div class="logotext">
-                <span>Connect</span>
-                <span>Hub</span>
+                <span>Welcome Back !</span>
+                
             </div>
         </div>
         <form action="/templates/indexs.html" method="POST">
@@ -207,6 +294,10 @@
             Don't have an account? <a href="/templates/signup.html">Register.</a>
         </p>
     </div>
+</main>
+    <footer>
+        <p>© 2024 ConnectHub | All rights reserved.</p>
+    </footer>
 </body>
 
 </html>
