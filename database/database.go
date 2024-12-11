@@ -2,8 +2,8 @@ package database
 
 import (
 	"database/sql"
-	"log"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 )
 
 func DataBase() {
@@ -160,14 +160,14 @@ func DataBase() {
 		`INSERT INTO categories (name, description) VALUES ('Art', 'Artistic expressions and creations');`,
 
 		`INSERT INTO user_roles (role_name) VALUES ('administrator'), ('moderator'), ('user'), ('guest');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id ) 
 		 VALUES ('John', 'Doe', 'johndoe', 'johndoe@example.com', 'password123', 1, 3);`,
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
 		 VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@example.com', 'securepass', 2, 3);`,
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
 		 VALUES ('Alice', 'Brown', 'alicebrown', 'alicebrown@example.com', 'alice12345', 3, 3);`,
 
-		 `INSERT INTO comment (content, comment_at, post_postid, user_userid) 
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
 		 VALUES ('This is an interesting post about tech!', '2024-12-05 10:00:00', 1, 1);`,
 		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
 		 VALUES ('I love the insights in this article, very helpful!', '2024-12-05 11:00:00', 2, 2);`,
@@ -177,7 +177,14 @@ func DataBase() {
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/tech.jpg', 'Tech news', '2024-12-05 10:00:00', 1);`,
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/science.jpg', 'Science news', '2024-12-05 11:00:00', 2);`,
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/art.jpg', 'Art news', '2024-12-05 12:00:00', 3);`,
-		
+
+		// New random users
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		 VALUES ('Michael', 'Johnson', 'mjohnson', 'mjohnson@example.com', 'michaelpass', 4, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		 VALUES ('Emily', 'Davis', 'edavis', 'edavis@example.com', 'emilypass', 5, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
+		 VALUES ('David', 'Wilson', 'dwilson', 'dwilson@example.com', 'davidpass', 6, 3);`,
 	}
 
 	for _, stmt := range insertStatements {

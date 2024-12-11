@@ -6,14 +6,16 @@ import (
 	"time"
 )
 
-
 type User struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	Avatar    string `json:"avatar"`
+	ID               int            `json:"id"`
+	FirstName        string         `json:"first_name"`
+	LastName         string         `json:"last_name"`
+	Username         string         `json:"username"`
+	Email            string         `json:"email"`
+	Password         string         `json:"password"`
+	SessionSessionID int            `json:"session_sessionid"`
+	RoleID           int            `json:"role_id"`
+	Avatar           sql.NullString `json:"avatar"` // Use sql.NullString to handle NULL values
 }
 
 type Category struct {
@@ -21,6 +23,7 @@ type Category struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
+
 type Comment struct {
 	ID         int       // Comment ID
 	Content    string    // Comment text
@@ -29,15 +32,17 @@ type Comment struct {
 	UserUserID int       // User ID who made the comment
 }
 
-
 type Post struct {
-	PostID      int
-	Image       string
-	Content     string
-	PostAt      string
-	UserUserID  int
+	PostID     int
+	Image      string
+	Content    string
+	PostAt     string
+	UserUserID int
+	Username   string
+	Avatar     sql.NullString // Use sql.NullString to handle NULL values
 }
-	// GetAllCategories retrieves all categories from the database
+
+// GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT * FROM categories")
 	if err != nil {
@@ -60,30 +65,6 @@ func GetAllCategories(db *sql.DB) ([]Category, error) {
 	}
 
 	return categories, nil
-}
-
-func GetAllUsers(db *sql.DB) ([]User, error) {
-	rows, err := db.Query("SELECT * FROM user")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var users []User
-	for rows.Next() {
-		var user User
-		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar); err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-
-	// Check for errors from iterating over rows
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return users, nil
 }
 
 func GetComment(db *sql.DB) ([]User, error) {
@@ -109,6 +90,7 @@ func GetComment(db *sql.DB) ([]User, error) {
 
 	return users, nil
 }
+
 func GetComments(db *sql.DB) ([]Comment, error) {
 	// Query to retrieve all comments
 	rows, err := db.Query("SELECT commentid, content, comment_at, post_postid, user_userid FROM comment")
@@ -142,7 +124,11 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 }
 
 func GetAllPosts(db *sql.DB) ([]Post, error) {
-	rows, err := db.Query("SELECT postid, image, content, post_at, user_userid FROM post")
+	rows, err := db.Query(`
+        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.Avatar
+        FROM post
+        JOIN user ON post.user_userid = user.userid
+    `)
 	if err != nil {
 		log.Println("Error executing query:", err)
 		return nil, err
@@ -152,10 +138,12 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID); err != nil {
+		var avatar sql.NullString
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &avatar); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
+		post.Avatar = avatar
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -164,4 +152,32 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 	}
 
 	return posts, nil
+}
+
+func GetAllUsers(db *sql.DB) ([]User, error) {
+	rows, err := db.Query("SELECT userid, F_name, L_name, Username, Email, Avatar FROM user")
+	if err != nil {
+		log.Println("Error executing query:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var user User
+		var avatar sql.NullString
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &avatar); err != nil {
+			log.Println("Error scanning row:", err)
+			return nil, err
+		}
+		user.Avatar = avatar
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Println("Error in rows:", err)
+		return nil, err
+	}
+
+	return users, nil
 }

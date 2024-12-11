@@ -386,9 +386,10 @@
             {{range .Posts}}
             <article class="post">
                 <div class="post-header">
-                    <img src="{{.Avatar}}" alt="Avatar">
+                    <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
+                        alt="Avatar">
                     <div class="post-info">
-                        <h3>{{.UserName}}</h3>
+                        <h3>{{.Username}}</h3>
                         <time>{{.PostAt}}</time>
                     </div>
                 </div>
@@ -396,9 +397,12 @@
                     <p>{{.Content}}</p>
                 </div>
                 <div class="post-actions">
-                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.LikeCount}}</span></a>
-                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-down"></i> {{.DislikeCount}}</span></a>
-                    <a href="/login" class="action-link"><span><i class="fas fa-comments"></i> {{.CommentCount}}</span></a>
+                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-up"></i>
+                            {{.LikeCount}}</span></a>
+                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-down"></i>
+                            {{.DislikeCount}}</span></a>
+                    <a href="/login" class="action-link"><span><i class="fas fa-comments"></i>
+                            {{.CommentCount}}</span></a>
                 </div>
             </article>
             {{else}}
