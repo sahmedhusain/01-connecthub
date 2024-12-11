@@ -1,346 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectHub - Posts</title>
+    <title>Connect Hub</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
+            margin: 0;
             font-family: 'Roboto', sans-serif;
+            background-color: #F9FAFB;
             display: flex;
             flex-direction: column;
-            background-color: #FAFAFA;
             min-height: 100vh;
+            color: #333;
         }
 
         header {
-            background: white;
-            border: 1px solid #EAEAEA;
+            background-color: #FFFFFF;
+            border-bottom: 2px solid #E5E7EB;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 8px;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
-        header img {
-            width: 69px;
-            height: 69px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            text-decoration: none;
         }
 
-        header div span {
-            font-size: 16px;
+        .logo-container img {
+            width: 60px;
+            height: 60px;
         }
 
-        header div span:first-child {
+        .logo-container span {
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .logo-container span:first-child {
             font-weight: 400;
         }
 
-        header div span:last-child {
+        .logo-container span:last-child {
             font-weight: 800;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
+        .user-actions {
+            display: flex;
+            gap: 10px;
         }
 
-        .logo span {
-            color: #1682FD;
+        .user-actions a {
+            text-decoration: none;
         }
 
-        .search-bar input {
-            padding: 10px;
-            border-radius: 4px;
+        .user-actions button {
+            border-radius: 8px;
+            padding: 8px 16px;
             border: none;
-            width: 200px;
-        }
-
-        .user-profile button {
-            margin-left: 10px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            background-color: #1682FD;
+            transition: background-color 0.3s ease;
+        }
+
+        .register {
+            background-color: #3B82F6;
             color: white;
-            font-weight: 900;
         }
 
-        .user-profile button.login {
-            background-color: #EAEAEA;
-            color: #1682FD;
-        }
-
-        .user-profile button:hover {
-            background-color: #0c6bc5;
-        }
-
-        .user-profile button.login:hover {
-            background-color: #cfe6fb;
+        .login {
+            background-color: #E5E7EB;
+            color: #1F2937;
         }
 
         main {
             display: flex;
-            justify-content: space-between;
+            flex: 1;
+            gap: 20px;
             padding: 20px;
-            flex-grow: 1;
         }
 
         .sidebar {
-            width: 20%;
-            background-color: #fff;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
             padding: 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar nav h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
+            width: 260px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100vh; 
         }
 
         .sidebar nav ul {
-            list-style-type: none;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .sidebar nav ul li a {
             text-decoration: none;
-            color: #333;
             font-size: 16px;
-            padding: 5px 0;
-            display: block;
+            color: #1F2937;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .sidebar nav ul li a:hover {
-            background-color: #f4f4f4;
-        }
-
-        .sidebar footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .sidebar footer img {
-            width: 30px;
-            height: 30px;
+            background-color: #3B82F6;
+            color: #FFFFFF;
         }
 
         .feed {
-            flex-grow: 1;
-            padding: 20px;
+            flex: 1;
             display: flex;
             flex-direction: column;
+            gap: 20px;
         }
 
         .filters {
-            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .filters button {
-            margin-right: 10px;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 30px;
             border: none;
-            background-color: #1682FD;
-            color: white;
             cursor: pointer;
-            font-weight: 900;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .filters .new {
+            background-color: #3B82F6;
+            color: #FFFFFF;
         }
 
         .filters button:hover {
-            background-color: #0c6bc5;
+            background-color: #2563EB;
+            color: #FFFFFF;
         }
 
         .post {
-            background-color: white;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
             padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .post-header {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            gap: 10px;
         }
 
         .post-header img {
-            border-radius: 50%;
             width: 50px;
             height: 50px;
-            margin-right: 10px;
+            border-radius: 50%;
         }
 
         .post-info h3 {
+            margin: 0;
             font-size: 18px;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: #1F2937;
         }
 
         .post-info time {
             font-size: 14px;
-            color: #666;
+            color: #6B7280;
         }
 
         .post-body h4 {
+            margin: 10px 0;
             font-size: 20px;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1F2937;
         }
 
         .post-body p {
             font-size: 16px;
-            color: #333;
-        }
-
-        .tags {
-            margin-top: 10px;
-        }
-
-        .tags span {
-            background-color: #1682FD;
-            color: white;
-            padding: 5px 10px;
-            margin-right: 5px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .post-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .sidebar-right {
-            width: 20%;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar-right h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .sidebar-right ul {
-            list-style-type: none;
-        }
-
-        .sidebar-right ul li a {
-            text-decoration: none;
-            color: #333;
-            font-size: 14px;
-            padding: 5px 0;
-            display: block;
-        }
-
-        .sidebar-right ul li a:hover {
-            background-color: #f4f4f4;
+            line-height: 1.6;
+            color: #374151;
         }
 
         footer {
+            background-color: #FFFFFF;
+            border-top: 2px solid #E5E7EB;
             text-align: center;
-            padding: 20px;
-            background-color: #EAEAEA;
+            padding: 10px 0;
+            font-size: 12px;
             color: #808080;
         }
 
-        footer p {
-            font-size: 12px;
+        .user-actions button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filters button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .post-header .post-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            background-color: #F3F4F6;
+            color: #374151;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .search-container:hover {
+            background-color: #E5E7EB;
+        }
+
+        .search-container i {
+            font-size: 18px;
+        }
+
+        .search-container span {
+            font-size: 16px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .search-bar {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 0;
+            opacity: 0;
+            padding: 10px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            background-color: #FFFFFF;
+            color: #374151;
+            font-size: 16px;
+            transition: width 0.3s ease, opacity 0.3s ease;
+        }
+
+        .search-container:hover .search-bar,
+        .search-bar:focus {
+            width: calc(100% - 20px);
+            opacity: 1;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+
+        .menu-heading {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1F2937;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 5px;
+        }
+
+        .social-icons {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding-bottom: 10px;
+        }
+
+        .social-link {
+            color: #1F2937;
+            font-size: 24px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #3B82F6;
         }
     </style>
 </head>
+
 <body>
-<header>
-    <div class="logo">
-        <a href="/templates/index.html">
-            <img src="/static/assets/logo__1_-removebg-preview 1.png" alt="Logo">
+    <header>
+        <a href="/" class="logo-container">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <span>Connect</span><span>Hub</span>
         </a>
-        <span>Connect</span><span>Hub</span>
-    </div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search...">
-    </div>
-    <div class="user-profile">
-        <a href="/templates/signup.html">
-            <button class="register">Register</button>
-        </a>
-        <a href="/templates/login.html">
-            <button class="login">Login</button>
-        </a>
-    </div>
-</header>
-<main>
-    <aside class="sidebar">
-        <nav>
-            <h2>MENU</h2>
-            <ul>
-                <li><a href="#posts">Posts</a></li>
-                <li><a href="#tags">Tags</a></li>
-            </ul>
-        </nav>
-        <footer>
-            <a href="https://github.com"><img src="/static/images/github.png" alt="GitHub"></a>
-            <a href="https://discord.com"><img src="/static/images/discord.png" alt="Discord"></a>
-        </footer>
-    </aside>
-    <section class="feed">
-        <div class="filters">
-            <button class="new">New</button>
-            <button class="top-liked">Top Liked</button>
-            <button class="low-rated">Low Rated</button>
+        <div class="user-actions">
+            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i>
+                    Register</button></a>
+            <a href="/login"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
         </div>
-        {{range .Posts}}
-        <article class="post">
-            <div class="post-header">
-                <img src="{{.UserAvatar}}" alt="Avatar">
-                <div class="post-info">
-                    <h3>{{.UserName}}</h3>
-                    <time>{{.PostAt}}</time>
+    </header>
+    <main>
+        <aside class="sidebar">
+            <nav>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                    <input type="text" placeholder="Type to search..." class="search-bar">
                 </div>
+                <h3 class="menu-heading">Menu</h3>
+                <ul>
+                    <li><a href="#posts"><i class="fas fa-newspaper"></i> Posts</a></li>
+                    <li><a href="#tags"><i class="fas fa-tags"></i> Tags</a></li>
+                </ul>
+            </nav>
+            <div class="social-icons">
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://reboot01.com" target="_blank" class="social-link">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+        </aside>
+        <section class="feed">
+            <div class="filters">
+                <button class="new"><i class="fas fa-th-list"></i> All</button>
+                <button><i class="fas fa-user-friends"></i> Following</button>
+                <button><i class="fas fa-users"></i> Friends</button>
+                <button><i class="fas fa-star"></i> Top Rated</button>
+                <button><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button>
             </div>
-            <div class="post-body">
-                <h4>{{.Title}}</h4>
-                <p>{{.Content}}</p>
-                <div class="tags">
-                    {{range .Tags}}
-                    <span>{{.}}</span>
-                    {{end}}
+            {{range .Posts}}
+            <article class="post">
+                <div class="post-header">
+                    <img src="{{.UserAvatar}}" alt="Avatar">
+                    <div class="post-info">
+                        <h3>{{.UserName}}</h3>
+                        <time>{{.PostAt}}</time>
+                    </div>
                 </div>
-            </div>
-            <div class="post-footer">
-                <span>{{.CommentsCount}} comments</span>
-                <span>{{.Likes}} likes</span>
-                <span>{{.Dislikes}} dislikes</span>
-            </div>
-        </article>
-        {{else}}
-        <p>No posts available</p>
-        {{end}}
-    </section>
-    <aside class="sidebar-right">
-        <div class="useful-links">
-            <h3>Useful links</h3>
-            <ul>
-                <li><a href="https://reboot01.com">Reboot01</a></li>
-                <li><a href="https://github.com/your-repo">GitHub</a></li>
-            </ul>
-        </div>
-    </aside>
-</main>
-<footer>
-    <p>&copy; 2024 ConnectHub. All rights reserved.</p>
-</footer>
+                <div class="post-body">
+                    <h4>{{.Title}}</h4>
+                    <p>{{.Content}}</p>
+                </div>
+            </article>
+            {{else}}
+            <p>No posts available</p>
+            {{end}}
+        </section>
+    </main>
+    <footer>
+        <p>© 2024 ConnectHub | All rights reserved.</p>
+    </footer>
 </body>
+
 </html>

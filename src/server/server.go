@@ -5,36 +5,38 @@ import (
 	"forum/database"
 	"html/template"
 	"net/http"
-	"sync"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+var templates *template.Template
+
+func init() {
+	// Parse all templates
+	templates = template.Must(template.ParseGlob(filepath.Join("templates", "*.html")))
+}
 
 type ErrorPageData struct {
 	Code     string
 	ErrorMsg string
 }
 
-var once sync.Once
-
-func errHandler(w http.ResponseWriter, _ *http.Request, err *ErrorPageData) {
-	errorTemp, erra := template.ParseFiles("templates/error.html")
-	if erra != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+func errHandler(w http.ResponseWriter, _ *http.Request, errData *ErrorPageData) {
+	err := templates.ExecuteTemplate(w, "error.html", errData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	errorTemp.Execute(w, err)
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
-	t, err := template.ParseFiles("templates/" + tmpl)
+	err := templates.ExecuteTemplate(w, tmpl, data)
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to parse template"}
 		w.WriteHeader(http.StatusInternalServerError)
 		errHandler(w, nil, &err)
 		return
 	}
-	t.Execute(w, data)
 }
 
 func MainPage(w http.ResponseWriter, r *http.Request) {
@@ -96,8 +98,6 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		errHandler(w, r, &err)
 		return
 	}
-
-	// Combine data for template
 	data := struct {
 		Categories []database.Category
 		Users      []database.User
@@ -109,78 +109,13 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		Comments:   comments,
 		Posts:      posts,
 	}
-
-	// Render template
 	renderTemplate(w, "index.html", data)
-}
-
-func AboutPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "about.html", nil)
-}
-
-func HelpPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "help.html", nil)
-}
-
-func PrivacyPolicyPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "privacy_policy.html", nil)
-}
-
-func ActivityCentrePage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "activity_centre.html", nil)
-}
-
-func ConnectionsPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "connections.html", nil)
-}
-
-func ContentPolicyPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "content_policy.html", nil)
 }
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		renderTemplate(w, "login.html", nil)
 	} else if r.Method == "POST" {
-		// Handle login form submission
-		// Add your login logic here
-		// For now, just redirect to the main page
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	} else {
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
@@ -189,33 +124,10 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NotificationsPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "notifications.html", nil)
-}
-
-func ProfilePage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "profile.html", nil)
-}
-
 func SignupPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		renderTemplate(w, "signup.html", nil)
 	} else if r.Method == "POST" {
-		// Handle signup form submission
-		// Add your signup logic here
-		// For now, just redirect to the login page
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	} else {
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
@@ -224,22 +136,35 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func UserAgreementPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		errHandler(w, r, &err)
-		return
-	}
-	renderTemplate(w, "user_agreement.html", nil)
-}
-
 func IndexsPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		w.WriteHeader(http.StatusMethodNotAllowed)
+	// Open DB connection
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+		w.WriteHeader(http.StatusInternalServerError)
 		errHandler(w, r, &err)
 		return
 	}
-	renderTemplate(w, "indexs.html", nil)
+	defer db.Close()
+
+	// Fetch posts from the database
+	posts, err := database.GetAllPosts(db)
+	if err != nil {
+		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
+		w.WriteHeader(http.StatusInternalServerError)
+		errHandler(w, r, &err)
+		return
+	}
+
+	// Render the template
+	data := struct {
+		Posts []database.Post 
+	}{
+		Posts: posts,
+	}
+
+	err = templates.ExecuteTemplate(w, "indexs.html", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
