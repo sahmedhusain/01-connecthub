@@ -91,6 +91,7 @@ func DataBase() {
 			password TEXT NOT NULL,
 			session_sessionid INTEGER NOT NULL,
 			role_id INTEGER NOT NULL,
+			Avatar TEXT ,
 			FOREIGN KEY (session_sessionid) REFERENCES session(sessionid),
 			FOREIGN KEY (role_id) REFERENCES user_roles(roleid)
 		);`

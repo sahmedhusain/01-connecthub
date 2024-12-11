@@ -13,6 +13,7 @@ type User struct {
 	LastName  string `json:"last_name"`
 	Username  string `json:"username"`
 	Email     string `json:"email"`
+	Avatar    string `json:"avatar"`
 }
 
 type Category struct {
@@ -62,7 +63,7 @@ func GetAllCategories(db *sql.DB) ([]Category, error) {
 }
 
 func GetAllUsers(db *sql.DB) ([]User, error) {
-	rows, err := db.Query("SELECT userid, F_name, L_name, Username, Email FROM user")
+	rows, err := db.Query("SELECT * FROM user")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +72,7 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var user User
-		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email); err != nil {
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar); err != nil {
 			return nil, err
 		}
 		users = append(users, user)
