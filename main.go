@@ -2,20 +2,15 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
-	"path/filepath"
 	db "forum/database"
 	"forum/src/server"
 )
 
-var templates *template.Template
 
 func init() {
 	db.DataBase()
-	// Parse all templates
-	templates = template.Must(template.ParseGlob(filepath.Join("templates", "*.html")))
 }
 
 func main() {

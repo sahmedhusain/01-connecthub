@@ -15,7 +15,6 @@
             background-color: #F9FAFB;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
             color: #333;
         }
 
@@ -189,13 +188,6 @@
         .post-info time {
             font-size: 14px;
             color: #6B7280;
-        }
-
-        .post-body h4 {
-            margin: 10px 0;
-            font-size: 20px;
-            font-weight: 700;
-            color: #1F2937;
         }
 
         .post-body p {
@@ -373,14 +365,13 @@
             {{range .Posts}}
             <article class="post">
                 <div class="post-header">
-                    <img src="{{.UserAvatar}}" alt="Avatar">
+                    <img src="{{.Avatar}}" alt="Avatar">
                     <div class="post-info">
                         <h3>{{.UserName}}</h3>
                         <time>{{.PostAt}}</time>
                     </div>
                 </div>
                 <div class="post-body">
-                    <h4>{{.Title}}</h4>
                     <p>{{.Content}}</p>
                 </div>
             </article>
