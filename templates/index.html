@@ -98,7 +98,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            height: 100vh; 
+            height: 100vh;
         }
 
         .sidebar nav ul {
@@ -314,6 +314,27 @@
         .social-link:hover {
             color: #3B82F6;
         }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6B7280;
+            align-items: center;
+        }
+
+        .post-actions span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .post-actions span:hover {
+            color: #3B82F6;
+        }
     </style>
 </head>
 
@@ -373,6 +394,11 @@
                 </div>
                 <div class="post-body">
                     <p>{{.Content}}</p>
+                </div>
+                <div class="post-actions">
+                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.LikeCount}}</span></a>
+                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-down"></i> {{.DislikeCount}}</span></a>
+                    <a href="/login" class="action-link"><span><i class="fas fa-comments"></i> {{.CommentCount}}</span></a>
                 </div>
             </article>
             {{else}}
