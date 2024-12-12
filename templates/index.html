@@ -179,11 +179,18 @@
             border-radius: 50%;
         }
 
+
         .post-info h3 {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
             color: #1F2937;
+        }
+
+        .post-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #6B7280;
         }
 
         .post-info time {
@@ -324,6 +331,7 @@
             font-size: 14px;
             color: #6B7280;
             align-items: center;
+            position: relative;
         }
 
         .post-actions span {
@@ -336,6 +344,29 @@
 
         .post-actions span:hover {
             color: #3B82F6;
+        }
+
+        .post-actions time {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .post-categories {
+            margin-top: 10px;
+        }
+
+        .category-box {
+            display: inline-block;
+            background-color: #E5E7EB;
+            color: #374151;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -398,21 +429,25 @@
                 {{range .Posts}}
                 <article class="post">
                     <div class="post-header">
-                        <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
-                            alt="Avatar">
+                        <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}" alt="Avatar">
                         <div class="post-info">
-                            <h3>@{{.Username}}</h3>
-                            <time>{{.PostAt}}</time>
+                            <h3>{{.FirstName}} {{.LastName}}</h3>
+                            <p>@{{.Username}}</p>
                         </div>
                     </div>
                     <div class="post-body">
                         <p>{{.Content}}</p>
+                        <div class="post-categories">
+                            {{range .Categories}}
+                                <span class="category-box">{{.Name}}</span>
+                            {{end}}
+                        </div>
                     </div>
                     <div class="post-actions">
-                        <a  class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.Likes}}</span></a>
-                        <a  class="action-link"><span><i class="fas fa-thumbs-down"></i>
-                                {{.Dislikes}}</span></a>
-                        <a  class="action-link"><span><i class="fas fa-comments"></i> {{.Comments}}</span></a>
+                        <a class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.Likes}}</span></a>
+                        <a class="action-link"><span><i class="fas fa-thumbs-down"></i> {{.Dislikes}}</span></a>
+                        <a class="action-link"><span><i class="fas fa-comments"></i> {{.Comments}}</span></a>
+                        <time>{{.PostAt}}</time>
                     </div>
                 </article>
                 <br>
