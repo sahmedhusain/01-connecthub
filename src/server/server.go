@@ -37,70 +37,73 @@ func errHandler(w http.ResponseWriter, _ *http.Request, errData *ErrorPageData) 
 }
 
 func MainPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.URL.Path != "/" {
+        err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	if r.Method != "GET" {
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.Method != "GET" {
+        err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	db, err := sql.Open("sqlite3", "./database/main.db")
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-		errHandler(w, r, &err)
-		return
-	}
-	defer db.Close()
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+        errHandler(w, r, &err)
+        return
+    }
+    defer db.Close()
 
-	categories, err := database.GetAllCategories(db)
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch categories"}
-		errHandler(w, r, &err)
-		return
-	}
+    categories, err := database.GetAllCategories(db)
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch categories"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	var posts []database.Post
-	filter := r.URL.Query().Get("filter")
-	if filter == "" || filter == "all" {
-		posts, err = database.GetAllPosts(db)
-	} else {
-		posts, err = database.GetFilteredPosts(db, filter)
-	}
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
-		errHandler(w, r, &err)
-		return
-	}
+    var posts []database.Post
+    filter := r.URL.Query().Get("filter")
+    if filter == "" {
+        filter = "all"
+    }
+    if filter == "all" {
+        posts, err = database.GetAllPosts(db)
+    } else {
+        posts, err = database.GetFilteredPosts(db, filter)
+    }
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	users, err := database.GetAllUsers(db)
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
-		errHandler(w, r, &err)
-		return
-	}
+    users, err := database.GetAllUsers(db)
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	selectedTab := r.URL.Query().Get("tab")
-	if selectedTab == "" {
-		selectedTab = "posts"
-	}
+    selectedTab := r.URL.Query().Get("tab")
+    if selectedTab == "" {
+        selectedTab = "posts"
+    }
 
-	data := PageData{
-		Categories:    categories,
-		Users:         users,
-		Posts:         posts,
-		SelectedTab:   selectedTab,
-		SelectedFilter: filter,
-	}
+    data := PageData{
+        Categories:    categories,
+        Users:         users,
+        Posts:         posts,
+        SelectedTab:   selectedTab,
+        SelectedFilter: filter,
+    }
 
-	err = templates.ExecuteTemplate(w, "index.html", data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+    err = templates.ExecuteTemplate(w, "index.html", data)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {

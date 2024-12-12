@@ -132,8 +132,8 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 func GetAllPosts(db *sql.DB) ([]Post, error) {
     rows, err := db.Query(`
         SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
-               (SELECT COUNT(*) FROM like WHERE like.post_postid = post.postid) AS Likes,
-               (SELECT COUNT(*) FROM dislike WHERE dislike.post_postid = post.postid) AS Dislikes,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+               (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
         FROM post
         JOIN user ON post.user_userid = user.userid
@@ -231,15 +231,55 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 
     switch filter {
     case "following":
-        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = 'following'")
+        rows, err = db.Query(`
+            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+                   (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+                   (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+                   (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+            FROM post
+            JOIN user ON post.user_userid = user.userid
+            WHERE category = 'following'
+        `)
     case "friends":
-        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = 'friends'")
+        rows, err = db.Query(`
+            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+                   (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+                   (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+                   (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+            FROM post
+            JOIN user ON post.user_userid = user.userid
+            WHERE category = 'friends'
+        `)
     case "top-rated":
-        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = 'top-rated'")
+        rows, err = db.Query(`
+            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+                   (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+                   (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+                   (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+            FROM post
+            JOIN user ON post.user_userid = user.userid
+            WHERE category = 'top-rated'
+        `)
     case "oldest":
-        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts ORDER BY postat ASC")
+        rows, err = db.Query(`
+            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+                   (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+                   (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+                   (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+            FROM post
+            JOIN user ON post.user_userid = user.userid
+            ORDER BY post.post_at ASC
+        `)
     default:
-        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = ?", filter)
+        rows, err = db.Query(`
+            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+                   (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+                   (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+                   (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+            FROM post
+            JOIN user ON post.user_userid = user.userid
+            WHERE category = ?
+        `, filter)
     }
 
     if err != nil {
@@ -251,7 +291,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
     var posts []Post
     for rows.Next() {
         var post Post
-        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
             log.Println("Error scanning row:", err)
             return nil, err
         }
