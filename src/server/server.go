@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"forum/database"
 	"html/template"
-
 	"net/http"
 	"path/filepath"
 
@@ -20,6 +19,14 @@ func init() {
 type ErrorPageData struct {
 	Code     string
 	ErrorMsg string
+}
+
+type PageData struct {
+	Categories    []database.Category
+	Users         []database.User
+	Posts         []database.Post
+	SelectedTab   string
+	SelectedFilter string
 }
 
 func errHandler(w http.ResponseWriter, _ *http.Request, errData *ErrorPageData) {
@@ -57,7 +64,13 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := database.GetAllPosts(db)
+	var posts []database.Post
+	filter := r.URL.Query().Get("filter")
+	if filter == "" || filter == "all" {
+		posts, err = database.GetAllPosts(db)
+	} else {
+		posts, err = database.GetFilteredPosts(db, filter)
+	}
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
 		errHandler(w, r, &err)
@@ -71,14 +84,17 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := struct {
-		Categories []database.Category
-		Users      []database.User
-		Posts      []database.Post
-	}{
-		Categories: categories,
-		Users:      users,
-		Posts:      posts,
+	selectedTab := r.URL.Query().Get("tab")
+	if selectedTab == "" {
+		selectedTab = "posts"
+	}
+
+	data := PageData{
+		Categories:    categories,
+		Users:         users,
+		Posts:         posts,
+		SelectedTab:   selectedTab,
+		SelectedFilter: filter,
 	}
 
 	err = templates.ExecuteTemplate(w, "index.html", data)

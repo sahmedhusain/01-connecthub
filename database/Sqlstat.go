@@ -33,16 +33,16 @@ type Comment struct {
 }
 
 type Post struct {
-	PostID     int
-	Image      string
-	Content    string
-	PostAt     time.Time
-	UserUserID int
-	Username   string
-	Avatar     sql.NullString // Use sql.NullString to handle NULL values
-	Likes      int
-	Dislikes   int
-	Comments   int
+    PostID     int
+    Image      sql.NullString
+    Content    string
+    PostAt     string
+    UserUserID int
+    Username   string
+    Avatar     sql.NullString
+    Likes      int
+    Dislikes   int
+    Comments   int
 }
 
 // GetAllCategories retrieves all categories from the database
@@ -144,12 +144,10 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		var avatar sql.NullString
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
-		post.Avatar = avatar
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -187,3 +185,45 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 
 	return users, nil
 }
+
+func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
+    var rows *sql.Rows
+    var err error
+
+    switch filter {
+    case "following":
+        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = 'following'")
+    case "friends":
+        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = 'friends'")
+    case "top-rated":
+        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = 'top-rated'")
+    case "oldest":
+        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts ORDER BY postat ASC")
+    default:
+        rows, err = db.Query("SELECT postid, image, content, postat, user_userid, username, avatar, likes, dislikes, comments FROM posts WHERE category = ?", filter)
+    }
+
+    if err != nil {
+        log.Println("Error executing query:", err)
+        return nil, err
+    }
+    defer rows.Close()
+
+    var posts []Post
+    for rows.Next() {
+        var post Post
+        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+            log.Println("Error scanning row:", err)
+            return nil, err
+        }
+        posts = append(posts, post)
+    }
+
+    if err := rows.Err(); err != nil {
+        log.Println("Error in rows:", err)
+        return nil, err
+    }
+
+    return posts, nil
+}
+

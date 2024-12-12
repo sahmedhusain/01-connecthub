@@ -362,8 +362,8 @@
                 </div>
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
-                    <li><a href="#posts"><i class="fas fa-newspaper"></i> Posts</a></li>
-                    <li><a href="#tags"><i class="fas fa-tags"></i> Tags</a></li>
+                    <li><a href="/?tab=posts" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
+                    <li><a href="/?tab=tags" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
                 </ul>
             </nav>
             <div class="social-icons">
@@ -376,38 +376,50 @@
                 <a href="https://reboot01.com" target="_blank" class="social-link">
                     <i class="fa-solid fa-globe"></i>
                 </a>
+            </div>
         </aside>
         <section class="feed">
-            <div class="filters">
-                <button class="new"><i class="fas fa-th-list"></i> All</button>
-                <button><i class="fas fa-user-friends"></i> Following</button>
-                <button><i class="fas fa-users"></i> Friends</button>
-                <button><i class="fas fa-star"></i> Top Rated</button>
-                <button><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button>
-            </div>
-            {{range .Posts}}
-            <article class="post">
-                <div class="post-header">
-                    <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
-                        alt="Avatar">
-                    <div class="post-info">
-                        <h3>@{{.Username}}</h3>
-                        <time>{{.PostAt}}</time>
+            <form method="GET" action="/">
+                <div class="filters">
+                    {{if eq .SelectedTab "posts"}}
+                        <button type="submit" name="filter" value="all" class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button>
+                        <button type="submit" name="filter" value="following" class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</button>
+                        <button type="submit" name="filter" value="friends" class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button>
+                        <button type="submit" name="filter" value="top-rated" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button>
+                        <button type="submit" name="filter" value="oldest" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button>
+                    {{else if eq .SelectedTab "tags"}}
+                        {{range .Categories}}
+                            <button type="submit" name="filter" value="{{.Name}}" class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</button>
+                        {{end}}
+                    {{end}}
+                </div>
+            </form>
+            <div id="feed-content">
+                {{range .Posts}}
+                <article class="post">
+                    <div class="post-header">
+                        <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
+                            alt="Avatar">
+                        <div class="post-info">
+                            <h3>@{{.Username}}</h3>
+                            <time>{{.PostAt}}</time>
+                        </div>
                     </div>
-                </div>
-                <div class="post-body">
-                    <p>{{.Content}}</p>
-                </div>
-                <div class="post-actions">
-                    <a  class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.Likes}}</span></a>
-                    <a  class="action-link"><span><i class="fas fa-thumbs-down"></i>
-                            {{.Dislikes}}</span></a>
-                    <a  class="action-link"><span><i class="fas fa-comments"></i> {{.Comments}}</span></a>
-                </div>
-            </article>
-            {{else}}
-            <p>No posts available</p>
-            {{end}}
+                    <div class="post-body">
+                        <p>{{.Content}}</p>
+                    </div>
+                    <div class="post-actions">
+                        <a  class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.Likes}}</span></a>
+                        <a  class="action-link"><span><i class="fas fa-thumbs-down"></i>
+                                {{.Dislikes}}</span></a>
+                        <a  class="action-link"><span><i class="fas fa-comments"></i> {{.Comments}}</span></a>
+                    </div>
+                </article>
+                <br>
+                {{else}}
+                <p>No posts available</p>
+                {{end}}
+            </div>
         </section>
     </main>
 
