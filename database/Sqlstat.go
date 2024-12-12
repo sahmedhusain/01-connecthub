@@ -36,10 +36,13 @@ type Post struct {
 	PostID     int
 	Image      string
 	Content    string
-	PostAt     string
+	PostAt     time.Time
 	UserUserID int
 	Username   string
 	Avatar     sql.NullString // Use sql.NullString to handle NULL values
+	Likes      int
+	Dislikes   int
+	Comments   int
 }
 
 // GetAllCategories retrieves all categories from the database
@@ -125,7 +128,10 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 
 func GetAllPosts(db *sql.DB) ([]Post, error) {
 	rows, err := db.Query(`
-        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.Avatar
+        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.Avatar,
+               (SELECT COUNT(*) FROM like WHERE like.post_postid = post.postid) AS Likes,
+               (SELECT COUNT(*) FROM dislike WHERE dislike.post_postid = post.postid) AS Dislikes,
+               (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
         FROM post
         JOIN user ON post.user_userid = user.userid
     `)
@@ -139,7 +145,7 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 	for rows.Next() {
 		var post Post
 		var avatar sql.NullString
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &avatar); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}

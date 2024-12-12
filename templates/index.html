@@ -15,6 +15,7 @@
             background-color: #F9FAFB;
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
             color: #333;
         }
 
@@ -83,8 +84,8 @@
         }
 
         main {
-            display: flex;
             flex: 1;
+            display: flex;
             gap: 20px;
             padding: 20px;
         }
@@ -197,6 +198,7 @@
         }
 
         footer {
+            margin-top: auto;
             background-color: #FFFFFF;
             border-top: 2px solid #E5E7EB;
             text-align: center;
@@ -389,7 +391,7 @@
                     <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
                         alt="Avatar">
                     <div class="post-info">
-                        <h3>{{.Username}}</h3>
+                        <h3>@{{.Username}}</h3>
                         <time>{{.PostAt}}</time>
                     </div>
                 </div>
@@ -397,12 +399,10 @@
                     <p>{{.Content}}</p>
                 </div>
                 <div class="post-actions">
-                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-up"></i>
-                            {{.LikeCount}}</span></a>
-                    <a href="/login" class="action-link"><span><i class="fas fa-thumbs-down"></i>
-                            {{.DislikeCount}}</span></a>
-                    <a href="/login" class="action-link"><span><i class="fas fa-comments"></i>
-                            {{.CommentCount}}</span></a>
+                    <a  class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.Likes}}</span></a>
+                    <a  class="action-link"><span><i class="fas fa-thumbs-down"></i>
+                            {{.Dislikes}}</span></a>
+                    <a  class="action-link"><span><i class="fas fa-comments"></i> {{.Comments}}</span></a>
                 </div>
             </article>
             {{else}}
@@ -410,6 +410,7 @@
             {{end}}
         </section>
     </main>
+
     <footer>
         <p>© 2024 ConnectHub | All rights reserved.</p>
     </footer>

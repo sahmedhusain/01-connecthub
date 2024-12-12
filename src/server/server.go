@@ -132,7 +132,6 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-		w.WriteHeader(http.StatusInternalServerError)
 		errHandler(w, r, &err)
 		return
 	}
@@ -141,7 +140,13 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 	categories, err := database.GetAllCategories(db)
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch categories"}
-		w.WriteHeader(http.StatusInternalServerError)
+		errHandler(w, r, &err)
+		return
+	}
+
+	posts, err := database.GetAllPosts(db)
+	if err != nil {
+		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
 		errHandler(w, r, &err)
 		return
 	}
@@ -149,7 +154,6 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 	users, err := database.GetAllUsers(db)
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
-		w.WriteHeader(http.StatusInternalServerError)
 		errHandler(w, r, &err)
 		return
 	}
@@ -157,9 +161,11 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Categories []database.Category
 		Users      []database.User
+		Posts      []database.Post
 	}{
 		Categories: categories,
 		Users:      users,
+		Posts:      posts,
 	}
 
 	err = templates.ExecuteTemplate(w, "indexs.html", data)
