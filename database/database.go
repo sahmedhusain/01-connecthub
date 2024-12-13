@@ -155,6 +155,7 @@ func DataBase() {
 
 	// Insert sampledata
 	insertStatements := []string{
+		// Categories
 		`INSERT INTO categories (name, description) VALUES ('Web Development', 'All about web development');`,
 		`INSERT INTO categories (name, description) VALUES ('Mobile Development', 'All about mobile development');`,
 		`INSERT INTO categories (name, description) VALUES ('Data Science', 'All about data science');`,
@@ -166,48 +167,31 @@ func DataBase() {
 		`INSERT INTO categories (name, description) VALUES ('Game Development', 'All about game development');`,
 		`INSERT INTO categories (name, description) VALUES ('UI/UX Design', 'All about UI/UX design');`,
 
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('John', 'Doe', 'johndoe', 'johndoe@example.com', 'password123', 1, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@example.com', 'securepass', 2, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Alice', 'Brown', 'alicebrown', 'alicebrown@example.com', 'alice12345', 3, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Michael', 'Johnson', 'mjohnson', 'mjohnson@example.com', 'michaelpass', 4, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Emily', 'Davis', 'edavis', 'edavis@example.com', 'emilypass', 5, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('David', 'Wilson', 'dwilson', 'dwilson@example.com', 'davidpass', 6, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Chris', 'Evans', 'cevans', 'cevans@example.com', 'chrispass', 7, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Natalie', 'Portman', 'nportman', 'nportman@example.com', 'nataliepass', 8, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Robert', 'Downey', 'rdowney', 'rdowney@example.com', 'robertpass', 9, 3);`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) 
-     VALUES ('Scarlett', 'Johansson', 'sjohansson', 'sjohansson@example.com', 'scarlettpass', 10, 3);`,
+		// Users
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('John', 'Doe', 'johndoe', 'johndoe@example.com', 'password123', 1, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@example.com', 'securepass', 2, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Alice', 'Brown', 'alicebrown', 'alicebrown@example.com', 'alice12345', 3, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Michael', 'Johnson', 'mjohnson', 'mjohnson@example.com', 'michaelpass', 4, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Emily', 'Davis', 'edavis', 'edavis@example.com', 'emilypass', 5, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('David', 'Wilson', 'dwilson', 'dwilson@example.com', 'davidpass', 6, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Chris', 'Evans', 'cevans', 'cevans@example.com', 'chrispass', 7, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Natalie', 'Portman', 'nportman', 'nportman@example.com', 'nataliepass', 8, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Robert', 'Downey', 'rdowney', 'rdowney@example.com', 'robertpass', 9, 3);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id) VALUES ('Scarlett', 'Johansson', 'sjohansson', 'sjohansson@example.com', 'scarlettpass', 10, 3);`,
 
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('This is an interesting post about web development!', '2024-12-05 10:00:00', 1, 1);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('I love the insights in this article, very helpful!', '2024-12-05 11:00:00', 2, 2);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Great perspective on data science!', '2024-12-05 12:00:00', 3, 3);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Amazing tips on mobile development!', '2024-12-06 09:00:00', 4, 4);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Very informative machine learning article.', '2024-12-06 10:00:00', 5, 5);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Loved the cybersecurity recommendations!', '2024-12-06 11:00:00', 6, 6);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Great cloud computing analysis!', '2024-12-06 12:00:00', 7, 7);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('DevOps practices are very useful.', '2024-12-06 13:00:00', 8, 8);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Educational content on blockchain is top-notch.', '2024-12-06 14:00:00', 9, 9);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) 
-     VALUES ('Game development tips are very helpful.', '2024-12-06 15:00:00', 10, 10);`,
+		// Comments
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('This is an interesting post about web development!', '2024-12-05 10:00:00', 1, 1);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('I love the insights in this article, very helpful!', '2024-12-05 11:00:00', 2, 2);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Great perspective on data science!', '2024-12-05 12:00:00', 3, 3);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Amazing tips on mobile development!', '2024-12-06 09:00:00', 4, 4);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Very informative machine learning article.', '2024-12-06 10:00:00', 5, 5);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Loved the cybersecurity recommendations!', '2024-12-06 11:00:00', 6, 6);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Great cloud computing analysis!', '2024-12-06 12:00:00', 7, 7);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('DevOps practices are very useful.', '2024-12-06 13:00:00', 8, 8);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Educational content on blockchain is top-notch.', '2024-12-06 14:00:00', 9, 9);`,
+		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Game development tips are very helpful.', '2024-12-06 15:00:00', 10, 10);`,
 
+		// Posts
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/webdev.jpg', 'Exploring the latest trends in web development.', '2024-12-05 10:00:00', 1);`,
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/mobiledev.jpg', 'Mobile development: Best practices and tools.', '2024-12-05 11:00:00', 2);`,
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/datascience.jpg', 'Data science techniques for beginners.', '2024-12-05 12:00:00', 3);`,
@@ -219,6 +203,7 @@ func DataBase() {
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/gamedev.jpg', 'Game development: Tips for beginners.', '2024-12-06 14:00:00', 9);`,
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/uiux.jpg', 'UI/UX design principles for better user experience.', '2024-12-06 15:00:00', 10);`,
 
+		// Likes
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-05 10:00:00', 1, 1);`,
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-05 11:00:00', 2, 2);`,
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-05 12:00:00', 3, 3);`,
@@ -236,6 +221,7 @@ func DataBase() {
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-08 14:00:00', 9, 10);`,
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-08 15:00:00', 10, 1);`,
 
+		// Dislikes
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-05 10:00:00', 1, 2);`,
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-05 11:00:00', 2, 3);`,
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-05 12:00:00', 3, 4);`,
@@ -254,6 +240,28 @@ func DataBase() {
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-08 13:00:00', 8, 10);`,
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-08 14:00:00', 9, 1);`,
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-08 15:00:00', 10, 2);`,
+
+		// Posts has categories
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (1, 1);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (1, 2);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (2, 3);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (2, 4);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (3, 5);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (3, 6);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (4, 7);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (4, 8);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (5, 9);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (5, 10);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (6, 1);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (6, 2);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (7, 3);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (7, 4);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (8, 5);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (8, 6);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (9, 7);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (9, 8);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (10, 9);`,
+		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (10, 10);`,
 	}
 
 	for _, stmt := range insertStatements {
