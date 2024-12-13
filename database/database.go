@@ -9,7 +9,7 @@ import (
 func DataBase() {
 	// Open a connection to the SQLite3 database
 	db, err := sql.Open("sqlite3", "./database/main.db")
-	if err != nil {
+	if (err != nil) {
 		log.Fatal(err)
 	}
 	defer db.Close()
@@ -67,10 +67,8 @@ func DataBase() {
 		CREATE TABLE IF NOT EXISTS post_has_categories (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			post_postid INTEGER NOT NULL,
-			post_user_userid INTEGER NOT NULL,
 			categories_idcategories INTEGER NOT NULL,
 			FOREIGN KEY (post_postid) REFERENCES post(postid),
-			FOREIGN KEY (post_user_userid) REFERENCES user(userid),
 			FOREIGN KEY (categories_idcategories) REFERENCES categories(idcategories)
 		);`
 
