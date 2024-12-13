@@ -36,7 +36,7 @@ type Post struct {
     PostID     int
     Image      sql.NullString
     Content    string
-    PostAt     string
+    PostAt     time.Time
     UserUserID int
     Username   string
     FirstName  string
@@ -51,7 +51,7 @@ type Post struct {
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT * FROM categories")
-	if err != nil {
+	if (err != nil) {
 		return nil, err
 	}
 	defer rows.Close()
@@ -137,6 +137,7 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
                (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
         FROM post
         JOIN user ON post.user_userid = user.userid
+        ORDER BY post.post_at DESC
     `)
     if err != nil {
         log.Println("Error executing query:", err)
@@ -147,8 +148,16 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
     var posts []Post
     for rows.Next() {
         var post Post
-        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+        var postAt string
+        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
             log.Println("Error scanning row:", err)
+            return nil, err
+        }
+
+        // Parse the postAt string into a time.Time object
+        post.PostAt, err = time.Parse(time.RFC3339, postAt)
+        if err != nil {
+            log.Println("Error parsing post_at:", err)
             return nil, err
         }
 
@@ -258,7 +267,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
             FROM post
             JOIN user ON post.user_userid = user.userid
-            WHERE category = 'top-rated'
+            ORDER BY Likes DESC, post.post_at DESC
         `)
     case "oldest":
         rows, err = db.Query(`
@@ -291,10 +300,19 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
     var posts []Post
     for rows.Next() {
         var post Post
-        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+        var postAt string
+        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
             log.Println("Error scanning row:", err)
             return nil, err
         }
+
+        // Parse the postAt string into a time.Time object
+        post.PostAt, err = time.Parse(time.RFC3339, postAt)
+        if err != nil {
+            log.Println("Error parsing post_at:", err)
+            return nil, err
+        }
+
         posts = append(posts, post)
     }
 

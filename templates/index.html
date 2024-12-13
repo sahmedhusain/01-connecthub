@@ -7,7 +7,7 @@
     <title>ConnectHub | Guest</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -514,7 +514,7 @@
                             <a class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i>
                                     {{.Dislikes}}</span></a>
                             <a class="action-link"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
-                            <time>{{.PostAt}}</time>
+                            <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
                     </article>
                     <br>
