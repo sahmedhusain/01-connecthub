@@ -49,6 +49,12 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Redirect to /?tab=posts&filter=all if no tab is specified
+	if r.URL.Query().Get("tab") == "" {
+		http.Redirect(w, r, "/?tab=posts&filter=all", http.StatusFound)
+		return
+	}
+
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}

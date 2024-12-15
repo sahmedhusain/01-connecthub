@@ -238,7 +238,7 @@
             gap: 8px;
         }
 
-        .filters button {
+        .filters a {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -423,6 +423,21 @@
             width: 40px;
             height: 40px;
         }
+
+        .selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
+
+        .filters a.selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
+
+        .sidebar nav ul li a.selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
     </style>
 </head>
 
@@ -445,58 +460,54 @@
                 <p>© 2024 | All rights reserved.</p>
             </div>
         </div>
-            <aside class="sidebar">
-                <nav>
-                    <div class="search-container">
-                        <i class="fas fa-search"></i>
-                        <span>Search</span>
-                        <input type="text" placeholder="Type to search..." class="search-bar">
-                    </div>
-                    <h3 class="menu-heading">Menu</h3>
-                    <ul>
-                        <li><a href="/?tab=posts" class="{{if eq .SelectedTab " posts"}}selected{{end}}"><i
-                                    class="fas fa-newspaper"></i> Posts</a></li>
-                        <li><a href="/?tab=tags" class="{{if eq .SelectedTab " tags"}}selected{{end}}"><i
-                                    class="fas fa-tags"></i> Tags</a></li>
-                    </ul>
-                </nav>
-                <div class="social-icons">
-                    <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="https://reboot01.com" target="_blank" class="social-link">
-                        <i class="fa-solid fa-globe"></i>
-                    </a>
+        <aside class="sidebar">
+            <nav>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                    <input type="text" placeholder="Type to search..." class="search-bar">
                 </div>
-            </aside>
+                <h3 class="menu-heading">Menu</h3>
+                <ul>
+                    <li><a href="/?tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i
+                                class="fas fa-newspaper"></i> Posts</a></li>
+                    <li><a href="/?tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i
+                                class="fas fa-tags"></i> Tags</a></li>
+                </ul>
+            </nav>
+            <div class="social-icons">
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://reboot01.com" target="_blank" class="social-link">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+            </div>
+        </aside>
         <main>
             <section class="feed">
-                <form method="GET" action="/">
-                    <div class="filters">
-                        {{if eq .SelectedTab "posts"}}
-                        <button type="submit" name="filter" value="all" class="{{if eq .SelectedFilter "all"}}selected{{end}}"> <i class="fas fa-th-list"></i> All</button>
-                        <button type="submit" name="filter" value="following" class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</button>
-                        <button type="submit" name="filter" value="friends" class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button>
-                        <button type="submit" name="filter" value="top-rated" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button>
-                        <button type="submit" name="filter" value="oldest" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button>
-                        {{else if eq .SelectedTab "tags"}}
-                        {{range .Categories}}
-                        <button type="submit" name="filter" value="{{.Name}}"
-                            class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i>
-                            {{.Name}}</button>
-                        {{end}}
-                        {{end}}
-                    </div>
-                </form>
+                <div class="filters">
+                    {{if eq .SelectedTab "posts"}}
+                    <a href="/?tab=posts&filter=all" class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</a>
+                    <a href="/?tab=posts&filter=following" class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</a>
+                    <a href="/?tab=posts&filter=friends" class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</a>
+                    <a href="/?tab=posts&filter=top-rated" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</a>
+                    <a href="/?tab=posts&filter=oldest" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</a>
+                    {{else if eq .SelectedTab "tags"}}
+                    <a href="/?tab=tags&filter=all" class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</a>
+                    {{range .Categories}}
+                    <a href="/?tab=tags&filter={{.Name}}" class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</a>
+                    {{end}}
+                    {{end}}
+                </div>
                 <div id="feed-content">
                     {{range .Posts}}
                     <article class="post">
                         <div class="post-header">
-                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
-                                alt="Avatar">
+                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}" alt="Avatar">
                             <div class="post-info">
                                 <h3>{{.FirstName}} {{.LastName}}</h3>
                                 <p>@{{.Username}}</p>
@@ -512,8 +523,7 @@
                         </div>
                         <div class="post-actions">
                             <a class="action-link"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></a>
-                            <a class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i>
-                                    {{.Dislikes}}</span></a>
+                            <a class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> {{.Dislikes}}</span></a>
                             <a class="action-link"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
