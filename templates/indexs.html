@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connect Hub</title>
+    <title>ConnectHub | Guest</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -27,6 +27,11 @@
             align-items: center;
             padding: 15px 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feed-container {
+            display: flex;
+            flex: 1;
         }
 
         .logo-container {
@@ -85,12 +90,14 @@
 
         main {
             flex: 1;
-            display: flex;
-            gap: 20px;
+            overflow-y: auto;
             padding: 20px;
         }
 
         .sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
             background-color: #FFFFFF;
             border: 1px solid #E5E7EB;
             border-radius: 8px;
@@ -99,7 +106,27 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            position: sticky;
+            margin-left: 20px;
+            top: 20px;
+            bottom: 60px;
+            margin-top: 20px;
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav {
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1F2937;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 5px;
         }
 
         .sidebar nav ul {
@@ -131,12 +158,17 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            overflow-y: auto;
         }
 
         .filters {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+        }
+
+        .filters a {
+            text-decoration: none;
         }
 
         .filters button {
@@ -179,11 +211,18 @@
             border-radius: 50%;
         }
 
+
         .post-info h3 {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
             color: #1F2937;
+        }
+
+        .post-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #6B7280;
         }
 
         .post-info time {
@@ -195,16 +234,6 @@
             font-size: 16px;
             line-height: 1.6;
             color: #374151;
-        }
-
-        footer {
-            margin-top: auto;
-            background-color: #FFFFFF;
-            border-top: 2px solid #E5E7EB;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 12px;
-            color: #808080;
         }
 
         .user-actions button {
@@ -299,11 +328,11 @@
         }
 
         .social-icons {
-            margin-top: auto;
             display: flex;
             justify-content: center;
-            gap: 15px;
-            padding-bottom: 10px;
+            gap: 10px;
+            padding-bottom: 1px;
+            margin-top: auto;
         }
 
         .social-link {
@@ -324,6 +353,7 @@
             font-size: 14px;
             color: #6B7280;
             align-items: center;
+            position: relative;
         }
 
         .post-actions span {
@@ -337,6 +367,81 @@
         .post-actions span:hover {
             color: #3B82F6;
         }
+
+        .post-actions time {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .post-categories {
+            margin-top: 10px;
+        }
+
+        .category-box {
+            display: inline-block;
+            background-color: #E5E7EB;
+            color: #374151;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .selected {
+            font-weight: bold;
+            color: #3B82F6;
+        }
+
+        .rights {
+            text-align: center;
+            padding: 0px 0;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .sidebar-rights {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            width: 260px;
+            height: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-height: 200px;
+            overflow: hidden;
+
+        }
+
+        .sidebar-rights img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
+
+        .filters a.selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
+
+        .sidebar nav ul li a.selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
     </style>
 </head>
 
@@ -347,12 +452,17 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i>
-                    Register</button></a>
+            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
             <a href="/login"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
         </div>
     </header>
-    <main>
+    <div class="feed-container">
+        <div class="sidebar-rights">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <div class="rights">
+                <p>© 2024 | All rights reserved.</p>
+            </div>
+        </div>
         <aside class="sidebar">
             <nav>
                 <div class="search-container">
@@ -362,58 +472,68 @@
                 </div>
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
-                    <li><a href="#posts"><i class="fas fa-newspaper"></i> Posts</a></li>
-                    <li><a href="#tags"><i class="fas fa-tags"></i> Tags</a></li>
+                    <li><a href="/indexs/?tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
+                    <li><a href="/indexs/?tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
                 </ul>
             </nav>
             <div class="social-icons">
-                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link">
-                    <i class="fab fa-instagram"></i>
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link">
-                    <i class="fab fa-linkedin"></i>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i class="fab fa-linkedin"></i>
                 </a>
-                <a href="https://reboot01.com" target="_blank" class="social-link">
-                    <i class="fa-solid fa-globe"></i>
+                <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i>
                 </a>
-        </aside>
-        <section class="feed">
-            <div class="filters">
-                <button class="new"><i class="fas fa-th-list"></i> All</button>
-                <button><i class="fas fa-user-friends"></i> Following</button>
-                <button><i class="fas fa-users"></i> Friends</button>
-                <button><i class="fas fa-star"></i> Top Rated</button>
-                <button><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button>
             </div>
-            {{range .Posts}}
-            <article class="post">
-                <div class="post-header">
-                    <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}"
-                        alt="Avatar">
-                    <div class="post-info">
-                        <h3>@{{.Username}}</h3>
-                        <time>{{.PostAt}}</time>
-                    </div>
+        </aside>
+        <main>
+            <section class="feed">
+                <div class="filters">
+                    {{if eq .SelectedTab "posts"}}
+                    <a href="/indexs/?tab=posts&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
+                    <a href="/indexs/?tab=posts&filter=following"><button class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</button></a>
+                    <a href="/indexs/?tab=posts&filter=friends"><button class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button></a>
+                    <a href="/indexs/?tab=posts&filter=top-rated"><button class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button></a>
+                    <a href="/indexs/?tab=posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button></a>
+                    {{else if eq .SelectedTab "tags"}}
+                    <a href="/indexs/?tab=tags&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
+                    {{range .Categories}}
+                    <a href="/indexs/?tab=tags&filter={{.Name}}"><button class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</button></a>
+                    {{end}}
+                    {{end}}
                 </div>
-                <div class="post-body">
-                    <p>{{.Content}}</p>
+                <div id="feed-content">
+                    {{range .Posts}}
+                    <article class="post">
+                        <div class="post-header">
+                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar">
+                            <div class="post-info">
+                                <h3>{{.FirstName}} {{.LastName}}</h3>
+                                <p>@{{.Username}}</p>
+                            </div>
+                        </div>
+                        <div class="post-body">
+                            <p>{{.Content}}</p>
+                            <div class="post-categories">
+                                {{range .Categories}}
+                                <span class="category-box">{{.Name}}</span>
+                                {{end}}
+                            </div>
+                        </div>
+                        <div class="post-actions">
+                            <a class="action-link"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></a>
+                            <a class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> {{.Dislikes}}</span></a>
+                            <a class="action-link"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
+                            <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
+                        </div>
+                    </article>
+                    <br>
+                    {{else}}
+                    <p>No posts available</p>
+                    {{end}}
                 </div>
-                <div class="post-actions">
-                    <a  class="action-link"><span><i class="fas fa-thumbs-up"></i> {{.Likes}}</span></a>
-                    <a  class="action-link"><span><i class="fas fa-thumbs-down"></i>
-                            {{.Dislikes}}</span></a>
-                    <a  class="action-link"><span><i class="fas fa-comments"></i> {{.Comments}}</span></a>
-                </div>
-            </article>
-            {{else}}
-            <p>No posts available</p>
-            {{end}}
-        </section>
-    </main>
-
-    <footer>
-        <p>© 2024 ConnectHub | All rights reserved.</p>
-    </footer>
+            </section>
+        </main>
+    </div>
 </body>
 
 </html>

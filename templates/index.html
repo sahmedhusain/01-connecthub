@@ -167,6 +167,10 @@
             flex-wrap: wrap;
         }
 
+        .filters a {
+            text-decoration: none;
+        }
+
         .filters button {
             padding: 8px 16px;
             border-radius: 30px;
@@ -238,7 +242,7 @@
             gap: 8px;
         }
 
-        .filters a {
+        .filters button {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -448,8 +452,7 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i>
-                    Register</button></a>
+            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
             <a href="/login"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
         </div>
     </header>
@@ -469,21 +472,16 @@
                 </div>
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
-                    <li><a href="/?tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i
-                                class="fas fa-newspaper"></i> Posts</a></li>
-                    <li><a href="/?tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i
-                                class="fas fa-tags"></i> Tags</a></li>
+                    <li><a href="/?tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
+                    <li><a href="/?tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
                 </ul>
             </nav>
             <div class="social-icons">
-                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link">
-                    <i class="fab fa-instagram"></i>
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link">
-                    <i class="fab fa-linkedin"></i>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i class="fab fa-linkedin"></i>
                 </a>
-                <a href="https://reboot01.com" target="_blank" class="social-link">
-                    <i class="fa-solid fa-globe"></i>
+                <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i>
                 </a>
             </div>
         </aside>
@@ -491,15 +489,15 @@
             <section class="feed">
                 <div class="filters">
                     {{if eq .SelectedTab "posts"}}
-                    <a href="/?tab=posts&filter=all" class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</a>
-                    <a href="/?tab=posts&filter=following" class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</a>
-                    <a href="/?tab=posts&filter=friends" class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</a>
-                    <a href="/?tab=posts&filter=top-rated" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</a>
-                    <a href="/?tab=posts&filter=oldest" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</a>
+                    <a href="/?tab=posts&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
+                    <a href="/?tab=posts&filter=following"><button class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</button></a>
+                    <a href="/?tab=posts&filter=friends"><button class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button></a>
+                    <a href="/?tab=posts&filter=top-rated"><button class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button></a>
+                    <a href="/?tab=posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button></a>
                     {{else if eq .SelectedTab "tags"}}
-                    <a href="/?tab=tags&filter=all" class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</a>
+                    <a href="/?tab=tags&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
                     {{range .Categories}}
-                    <a href="/?tab=tags&filter={{.Name}}" class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</a>
+                    <a href="/?tab=tags&filter={{.Name}}"><button class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</button></a>
                     {{end}}
                     {{end}}
                 </div>
@@ -507,7 +505,7 @@
                     {{range .Posts}}
                     <article class="post">
                         <div class="post-header">
-                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.jpg{{end}}" alt="Avatar">
+                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar">
                             <div class="post-info">
                                 <h3>{{.FirstName}} {{.LastName}}</h3>
                                 <p>@{{.Username}}</p>

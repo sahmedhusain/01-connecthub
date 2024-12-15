@@ -147,10 +147,21 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 
 func IndexsPage(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/indexs" {
+	if r.URL.Path != "/indexs/?tab=posts&filter=all" {
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		w.WriteHeader(http.StatusNotFound)
 		errHandler(w, r, &err)
+		return
+	}
+
+	if r.Method != "POST" {
+		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	// Redirect to /?tab=posts&filter=all if no tab is specified
+	if r.URL.Query().Get("tab") == "" {
+		http.Redirect(w, r, "/indexs/?tab=posts&filter=all", http.StatusFound)
 		return
 	}
 
@@ -169,7 +180,16 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := database.GetAllPosts(db)
+	var posts []database.Post
+	filter := r.URL.Query().Get("filter")
+	if filter == "" {
+		filter = "all"
+	}
+	if filter == "all" {
+		posts, err = database.GetAllPosts(db)
+	} else {
+		posts, err = database.GetFilteredPosts(db, filter)
+	}
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
 		errHandler(w, r, &err)
@@ -183,14 +203,17 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := struct {
-		Categories []database.Category
-		Users      []database.User
-		Posts      []database.Post
-	}{
-		Categories: categories,
-		Users:      users,
-		Posts:      posts,
+	selectedTab := r.URL.Query().Get("tab")
+	if selectedTab == "" {
+		selectedTab = "posts"
+	}
+
+	data := PageData{
+		Categories:     categories,
+		Users:          users,
+		Posts:          posts,
+		SelectedTab:    selectedTab,
+		SelectedFilter: filter,
 	}
 
 	err = templates.ExecuteTemplate(w, "indexs.html", data)

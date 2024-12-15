@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	db "forum/database"
 	"forum/src/server"
+	"log"
+	"net/http"
 )
-
 
 func init() {
 	db.DataBase()
