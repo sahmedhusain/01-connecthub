@@ -146,14 +146,13 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexsPage(w http.ResponseWriter, r *http.Request) {
-
-	if r.URL.Path != "/indexs/?tab=posts&filter=all" {
+	if r.URL.Path != "/indexs" {
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return
 	}
 
-	if r.Method != "POST" {
+	if r.Method != "GET" {
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
 		errHandler(w, r, &err)
 		return
@@ -161,7 +160,7 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 
 	// Redirect to /?tab=posts&filter=all if no tab is specified
 	if r.URL.Query().Get("tab") == "" {
-		http.Redirect(w, r, "/indexs/?tab=posts&filter=all", http.StatusFound)
+		http.Redirect(w, r, "/?tab=posts&filter=all", http.StatusFound)
 		return
 	}
 
