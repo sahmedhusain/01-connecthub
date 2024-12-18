@@ -170,6 +170,7 @@ func DataBase() {
 		`INSERT INTO user_roles (role_name) VALUES ('Admin');`,
 		`INSERT INTO user_roles (role_name) VALUES ('Moderator');`,
 		`INSERT INTO user_roles (role_name) VALUES ('User');`,
+		`INSERT INTO user_roles (role_name) VALUES ('Guest');`,
 	}
 
 	// Insert sessions for each user (just as placeholders)
@@ -190,31 +191,31 @@ func DataBase() {
 	// Insert users
 	// Assign all users to role_id=3 (User) for simplicity, except first user as Admin (role_id=1) and second as Moderator (role_id=2)
 	insertUsers := []string{
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, '/avatars/alicia.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, '/avatars/brian.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Caroline', 'Smith', 'caroS', 'carolineS@example.com', 'carolinePass', 3, 3, '/avatars/caroline.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Daniel', 'Foster', 'danF', 'danF@example.com', 'danielPass', 4, 3, '/avatars/daniel.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Elena', 'Garcia', 'elenaG', 'elenaG@example.com', 'elenaPass', 5, 3, '/avatars/elena.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Farhan', 'Khan', 'farhanK', 'farhanK@example.com', 'farhanPass', 6, 3, '/avatars/farhan.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Grace', 'Li', 'graceL', 'graceL@example.com', 'gracePass', 7, 3, '/avatars/grace.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Hiroshi', 'Tanaka', 'hiroshiT', 'hiroshiT@example.com', 'hiroshiPass', 8, 3, '/avatars/hiroshi.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Irene', 'Santos', 'ireneS', 'ireneS@example.com', 'irenePass', 9, 3, '/avatars/irene.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Jamal', 'Roberts', 'jamalR', 'jamalR@example.com', 'jamalPass', 10, 3, '/avatars/jamal.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, '/database/avatars/alicia.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, '/database/avatars/brian.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Caroline', 'Smith', 'caroS', 'carolineS@example.com', 'carolinePass', 3, 3, '/database/avatars/caroline.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Daniel', 'Foster', 'danF', 'danF@example.com', 'danielPass', 4, 3, '/database/avatars/daniel.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Elena', 'Garcia', 'elenaG', 'elenaG@example.com', 'elenaPass', 5, 3, '/database/avatars/elena.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Farhan', 'Khan', 'farhanK', 'farhanK@example.com', 'farhanPass', 6, 3, '/database/avatars/farhan.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Grace', 'Li', 'graceL', 'graceL@example.com', 'gracePass', 7, 3, '/database/avatars/grace.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Hiroshi', 'Tanaka', 'hiroshiT', 'hiroshiT@example.com', 'hiroshiPass', 8, 3, '/database/avatars/hiroshi.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Irene', 'Santos', 'ireneS', 'ireneS@example.com', 'irenePass', 9, 3, '/database/avatars/irene.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Jamal', 'Roberts', 'jamalR', 'jamalR@example.com', 'jamalPass', 10, 3, '/database/avatars/jamal.png');`,
 	}
 
 	// Insert posts (each linked to a user and posted at a unique time)
 	// Each post content reflects the categories it will be associated with
 	insertPosts := []string{
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/ai_ml.jpg', 'Exploring cutting-edge transformer models for NLP tasks.', '2024-12-19 08:30:00', 1);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/cloud_devops.jpg', 'Implementing CI/CD pipelines on AWS for seamless deployments.', '2024-12-19 09:45:00', 2);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/cybersec.jpg', 'Top strategies for ransomware protection in modern enterprises.', '2024-12-19 10:15:00', 3);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/blockchain_web3.jpg', 'Understanding Ethereum Layer-2 scaling solutions.', '2024-12-19 11:00:00', 4);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/ar_vr_gaming.jpg', 'Building immersive AR experiences with Unity.', '2024-12-19 11:45:00', 5);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/ui_ux.jpg', 'Enhancing user engagement through micro-interactions.', '2024-12-19 12:30:00', 6);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/iot_edge.jpg', 'Optimizing sensor networks with edge computing analytics.', '2024-12-19 13:15:00', 7);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/data_analytics.jpg', 'Leveraging big data frameworks for predictive analytics.', '2024-12-19 14:00:00', 8);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/quantum.jpg', 'Quantum error correction: The next frontier.', '2024-12-19 14:45:00', 9);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/images/sre_observability.jpg', 'Implementing distributed tracing for improved observability.', '2024-12-19 15:30:00', 10);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ai_ml.jpg', 'Exploring cutting-edge transformer models for NLP tasks.', '2024-12-19 08:30:00', 1);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/cloud_devops.jpg', 'Implementing CI/CD pipelines on AWS for seamless deployments.', '2024-12-19 09:45:00', 2);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/cybersec.jpg', 'Top strategies for ransomware protection in modern enterprises.', '2024-12-19 10:15:00', 3);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/blockchain_web3.jpg', 'Understanding Ethereum Layer-2 scaling solutions.', '2024-12-19 11:00:00', 4);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ar_vr_gaming.jpg', 'Building immersive AR experiences with Unity.', '2024-12-19 11:45:00', 5);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ui_ux.jpg', 'Enhancing user engagement through micro-interactions.', '2024-12-19 12:30:00', 6);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/iot_edge.jpg', 'Optimizing sensor networks with edge computing analytics.', '2024-12-19 13:15:00', 7);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/data_analytics.jpg', 'Leveraging big data frameworks for predictive analytics.', '2024-12-19 14:00:00', 8);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/quantum.jpg', 'Quantum error correction: The next frontier.', '2024-12-19 14:45:00', 9);`,
+		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/sre_observability.jpg', 'Implementing distributed tracing for improved observability.', '2024-12-19 15:30:00', 10);`,
 	}
 
 	// Insert comments (related to posts and users)
