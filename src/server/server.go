@@ -75,7 +75,14 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if filter == "" {
 		filter = "all"
 	}
-	if filter == "all" {
+	selectedTab := r.URL.Query().Get("tab")
+	if selectedTab == "" {
+		selectedTab = "posts"
+	}
+
+	if selectedTab == "tags" && filter != "all" {
+		posts, err = database.GetPostsByCategory(db, filter)
+	} else if filter == "all" {
 		posts, err = database.GetAllPosts(db)
 	} else {
 		posts, err = database.GetFilteredPosts(db, filter)
@@ -91,11 +98,6 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
 		errHandler(w, r, &err)
 		return
-	}
-
-	selectedTab := r.URL.Query().Get("tab")
-	if selectedTab == "" {
-		selectedTab = "posts"
 	}
 
 	data := PageData{
@@ -184,7 +186,14 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 	if filter == "" {
 		filter = "all"
 	}
-	if filter == "all" {
+	selectedTab := r.URL.Query().Get("tab")
+	if selectedTab == "" {
+		selectedTab = "posts"
+	}
+
+	if selectedTab == "tags" && filter != "all" {
+		posts, err = database.GetPostsByCategory(db, filter)
+	} else if filter == "all" {
 		posts, err = database.GetAllPosts(db)
 	} else {
 		posts, err = database.GetFilteredPosts(db, filter)
@@ -200,11 +209,6 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
 		errHandler(w, r, &err)
 		return
-	}
-
-	selectedTab := r.URL.Query().Get("tab")
-	if selectedTab == "" {
-		selectedTab = "posts"
 	}
 
 	data := PageData{

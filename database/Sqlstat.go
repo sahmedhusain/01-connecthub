@@ -330,3 +330,56 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 
 	return posts, nil
 }
+
+func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
+    rows, err := db.Query(`
+        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+               (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+               (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+        FROM post
+        JOIN user ON post.user_userid = user.userid
+        JOIN post_has_categories phc ON post.postid = phc.post_postid
+        JOIN categories c ON phc.categories_idcategories = c.idcategories
+        WHERE c.name = ?
+        ORDER BY post.post_at DESC
+    `, categoryName)
+    if err != nil {
+        log.Println("Error executing query:", err)
+        return nil, err
+    }
+    defer rows.Close()
+
+    var posts []Post
+    for rows.Next() {
+        var post Post
+        var postAt string
+        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+            log.Println("Error scanning row:", err)
+            return nil, err
+        }
+
+        // Parse the postAt string into a time.Time object
+        post.PostAt, err = time.Parse(time.RFC3339, postAt)
+        if err != nil {
+            log.Println("Error parsing post_at:", err)
+            return nil, err
+        }
+
+        // Fetch categories for the post
+        categories, err := getCategoriesForPost(db, post.PostID)
+        if err != nil {
+            log.Println("Error fetching categories for post:", err)
+            return nil, err
+        }
+        post.Categories = categories
+
+        posts = append(posts, post)
+    }
+    if err := rows.Err(); err != nil {
+        log.Println("Error in rows:", err)
+        return nil, err
+    }
+
+    return posts, nil
+}
