@@ -287,6 +287,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
             FROM post
             JOIN user ON post.user_userid = user.userid
+			ORDER BY post.post_at DESC
         `, filter)
 	}
 
