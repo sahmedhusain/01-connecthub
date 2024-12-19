@@ -513,14 +513,14 @@
                             <p>{{.Content}}</p>
                             <div class="post-categories">
                                 {{range .Categories}}
-                                <span class="category-box">{{.Name}}</span>
+                                <a href="/?tab=tags&filter={{.Name}}"><span class="category-box">{{.Name}}</span></a>
                                 {{end}}
                             </div>
                         </div>
-                        <div class="post-actions">
-                            <a class="action-link"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></a>
-                            <a class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> {{.Dislikes}}</span></a>
-                            <a class="action-link"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
+                        <div href="/login" class="post-actions">
+                            <a href="/login" class="action-link"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></a>
+                            <a href="/login" class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> {{.Dislikes}}</span></a>
+                            <a href="/login" class="action-link"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
                     </article>

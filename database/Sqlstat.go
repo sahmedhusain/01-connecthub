@@ -543,3 +543,33 @@ func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
 
 	return comments, nil
 }
+
+func ToggleLike(db *sql.DB, postID int, userID string) error {
+    var exists bool
+    err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM likes WHERE post_postid = ? AND user_userid = ?)", postID, userID).Scan(&exists)
+    if err != nil {
+        return fmt.Errorf("ToggleLike: %v", err)
+    }
+
+    if exists {
+        _, err = db.Exec("DELETE FROM likes WHERE post_postid = ? AND user_userid = ?", postID, userID)
+    } else {
+        _, err = db.Exec("INSERT INTO likes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
+    }
+    return err
+}
+
+func ToggleDislike(db *sql.DB, postID int, userID string) error {
+    var exists bool
+    err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM dislikes WHERE post_postid = ? AND user_userid = ?)", postID, userID).Scan(&exists)
+    if err != nil {
+        return fmt.Errorf("ToggleDislike: %v", err)
+    }
+
+    if exists {
+        _, err = db.Exec("DELETE FROM dislikes WHERE post_postid = ? AND user_userid = ?", postID, userID)
+    } else {
+        _, err = db.Exec("INSERT INTO dislikes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
+    }
+    return err
+}

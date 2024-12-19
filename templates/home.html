@@ -584,6 +584,17 @@
         height: 30px;
         border-radius: 50%;
     }
+    .action-link {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #6B7280;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .action-link:hover {
+        color: #3B82F6;
+    }
     </style>
 </head>
 
@@ -696,17 +707,25 @@
                             </div>
                         </div>
                         <div class="post-body">
-                            <p>{{.Content}}</p>
+                            <a class="action-link" href="/post?id={{.PostID}}"><p>{{.Content}}</p></a>
                             <div class="post-categories">
                                 {{range .Categories}}
-                                <span class="category-box">{{.Name}}</span>
+                                <a href="/home?user={{$.UserID}}&tab=tags&filter={{.Name}}"><span class="category-box">{{.Name}}</span></a>
                                 {{end}}
                             </div>
                         </div>
                         <div class="post-actions">
-                            <a class="action-link"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></a>
-                            <a class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> {{.Dislikes}}</span></a>
-                            <a class="action-link"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
+                            <form action="/like" method="POST" style="display:inline;">
+                                <input type="hidden" name="post_id" value="{{.PostID}}">
+                                <input type="hidden" name="user_id" value="{{$.UserID}}">
+                                <button type="submit" class="action-link"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></button>
+                            </form>
+                            <form action="/dislike" method="POST" style="display:inline;">
+                                <input type="hidden" name="post_id" value="{{.PostID}}">
+                                <input type="hidden" name="user_id" value="{{$.UserID}}">
+                                <button type="submit" class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i> {{.Dislikes}}</span></button>
+                            </form>
+                            <a class="action-link" href="/post?id={{.PostID}}"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
                     </article>

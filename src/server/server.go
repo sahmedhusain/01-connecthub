@@ -326,69 +326,69 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewPostPage(w http.ResponseWriter, r *http.Request) {
-    switch r.Method {
-    case "GET":
-        // Render the new post page template
-        err := templates.ExecuteTemplate(w, "newpost.html", nil)
-        if err != nil {
-            http.Error(w, "Failed to render template", http.StatusInternalServerError)
-            return
-        }
+	switch r.Method {
+	case "GET":
+		// Render the new post page template
+		err := templates.ExecuteTemplate(w, "newpost.html", nil)
+		if err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+			return
+		}
 
-    case "POST":
-        // Parse the form data
-        err := r.ParseForm()
-        if err != nil {
-            http.Error(w, "Failed to parse form", http.StatusBadRequest)
-            return
-        }
+	case "POST":
+		// Parse the form data
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, "Failed to parse form", http.StatusBadRequest)
+			return
+		}
 
-        // Get the post content and user ID
-        content := r.FormValue("content")
-        userID := r.FormValue("user")
+		// Get the post content and user ID
+		content := r.FormValue("content")
+		userID := r.FormValue("user")
 
-        if content == "" || userID == "" {
-            http.Error(w, "Content and user ID are required", http.StatusBadRequest)
-            return
-        }
+		if content == "" || userID == "" {
+			http.Error(w, "Content and user ID are required", http.StatusBadRequest)
+			return
+		}
 
-        // Insert the new post into the database
-        db, err := sql.Open("sqlite3", "./database/main.db")
-        if err != nil {
-            http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
-            return
-        }
-        defer db.Close()
+		// Insert the new post into the database
+		db, err := sql.Open("sqlite3", "./database/main.db")
+		if err != nil {
+			http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+			return
+		}
+		defer db.Close()
 
-        image := sql.NullString{String: r.FormValue("image"), Valid: r.FormValue("image") != ""}
-        postID, err := database.InsertPost(db, content, image, userID)
-        if err != nil {
-            http.Error(w, "Failed to insert post", http.StatusInternalServerError)
-            return
-        }
+		image := sql.NullString{String: r.FormValue("image"), Valid: r.FormValue("image") != ""}
+		postID, err := database.InsertPost(db, content, image, userID)
+		if err != nil {
+			http.Error(w, "Failed to insert post", http.StatusInternalServerError)
+			return
+		}
 
-        // Associate the post with categories
-        categoryIDs := r.Form["categories"]
-        for _, categoryID := range categoryIDs {
-            categoryIDInt, err := strconv.Atoi(categoryID)
-            if err != nil {
-                http.Error(w, "Invalid category ID", http.StatusBadRequest)
-                return
-            }
-            err = database.InsertPostCategory(db, postID, categoryIDInt)
-            if err != nil {
-                http.Error(w, "Failed to associate category with post", http.StatusInternalServerError)
-                return
-            }
-        }
+		// Associate the post with categories
+		categoryIDs := r.Form["categories"]
+		for _, categoryID := range categoryIDs {
+			categoryIDInt, err := strconv.Atoi(categoryID)
+			if err != nil {
+				http.Error(w, "Invalid category ID", http.StatusBadRequest)
+				return
+			}
+			err = database.InsertPostCategory(db, postID, categoryIDInt)
+			if err != nil {
+				http.Error(w, "Failed to associate category with post", http.StatusInternalServerError)
+				return
+			}
+		}
 
-        // Redirect to the user's home page
-        http.Redirect(w, r, "/home?user="+userID, http.StatusSeeOther)
+		// Redirect to the user's home page
+		http.Redirect(w, r, "/home?user="+userID, http.StatusSeeOther)
 
-    default:
-        // Handle unsupported methods
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-    }
+	default:
+		// Handle unsupported methods
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
 }
 
 func SettingsPage(w http.ResponseWriter, r *http.Request) {
@@ -996,31 +996,31 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostPage(w http.ResponseWriter, r *http.Request) {
-    if r.URL.Path != "/post" {
-        http.Redirect(w, r, "/home", http.StatusSeeOther)
-        return
-    }
+	if r.URL.Path != "/post" {
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		return
+	}
 
-    if r.Method != "GET" {
-        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-        return
-    }
+	if r.Method != "GET" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
-    db, err := sql.Open("sqlite3", "./database/main.db")
-    if err != nil {
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-        return
-    }
-    defer db.Close()
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
 
-    postID := r.URL.Query().Get("id")
-    if postID == "" {
-        http.Redirect(w, r, "/home", http.StatusSeeOther)
-        return
-    }
+	postID := r.URL.Query().Get("id")
+	if postID == "" {
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		return
+	}
 
-    var post database.Post
-    err = db.QueryRow(`
+	var post database.Post
+	err = db.QueryRow(`
         SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -1029,10 +1029,10 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
         JOIN user ON post.user_userid = user.userid
         WHERE post.postid = ?
     `, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
-    if err != nil {
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-        return
-    }
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	postIDInt, err := strconv.Atoi(postID)
 	if err != nil {
@@ -1040,18 +1040,78 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	comments, err := database.GetCommentsForPost(db, postIDInt)
-    if err != nil {
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-        return
-    }
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
-    data := PageData{
-        Post:     post,
-        Comments: comments,
-    }
+	data := PageData{
+		Post:     post,
+		Comments: comments,
+	}
 
-    err = templates.ExecuteTemplate(w, "post.html", data)
-    if err != nil {
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-    }
+	err = templates.ExecuteTemplate(w, "post.html", data)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func LikePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	postID, err := strconv.Atoi(r.FormValue("post_id"))
+	if err != nil {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		return
+	}
+
+	userID := r.FormValue("user_id")
+
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	err = database.ToggleLike(db, postID, userID)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func DislikePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	postID, err := strconv.Atoi(r.FormValue("post_id"))
+	if err != nil {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		return
+	}
+
+	userID := r.FormValue("user_id")
+
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	err = database.ToggleDislike(db, postID, userID)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }
