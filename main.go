@@ -19,8 +19,13 @@ func main() {
 	http.HandleFunc("/login", server.LoginPage)
 	http.HandleFunc("/signup", server.SignupPage)
 	http.HandleFunc("/home", server.HomePage)
+	http.HandleFunc("/newpost", server.NewPostPage)
+	http.HandleFunc("/settings", server.SettingsPage)
+    http.HandleFunc("/notifications", server.NotificationsPage)
+	http.HandleFunc("/myprofile", server.MyProfilePage)
+	http.HandleFunc("/profile", server.ProfilePage)
 
-	fmt.Println("Server running on http://localhost:8080 \nTo stop the server press Ctrl+C")
+	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

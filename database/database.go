@@ -123,7 +123,7 @@ func DataBase() {
 			notificationid INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_userid INTEGER NOT NULL,
 			message TEXT NOT NULL,
-			created_at DATETIME NOT NULL,
+			created_at DATETIME default CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_userid) REFERENCES user(userid)
 		);`
 

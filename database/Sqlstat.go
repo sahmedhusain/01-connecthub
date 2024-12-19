@@ -391,14 +391,8 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
     return posts, nil
 }
 
-func GetLastNotifications(db *sql.DB, userID int) ([]Notification, error) {
-    rows, err := db.Query(`
-        SELECT notificationid, user_userid, message, created_at
-        FROM notifications
-        WHERE user_userid = ?
-        ORDER BY created_at DESC
-        LIMIT 3
-    `, userID)
+func GetLastNotifications(db *sql.DB, userID string) ([]Notification, error) {
+    rows, err := db.Query("SELECT id, user_id, message, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC", userID)
     if err != nil {
         return nil, err
     }
@@ -412,9 +406,91 @@ func GetLastNotifications(db *sql.DB, userID int) ([]Notification, error) {
         }
         notifications = append(notifications, notification)
     }
+
     if err := rows.Err(); err != nil {
         return nil, err
     }
 
     return notifications, nil
+}
+
+func InsertPost(db *sql.DB, content string, image sql.NullString, userID string) (int, error) {
+    stmt, err := db.Prepare("INSERT INTO post (image, content, post_at, user_userid) VALUES (?, ?, ?, ?)")
+    if (err != nil) {
+        return 0, err
+    }
+    defer stmt.Close()
+
+    res, err := stmt.Exec(image, content, time.Now(), userID)
+    if (err != nil) {
+        return 0, err
+    }
+
+    lastID, err := res.LastInsertId()
+    if (err != nil) {
+        return 0, err
+    }
+
+    return int(lastID), nil
+}
+
+func InsertPostCategory(db *sql.DB, postID int, categoryID int) error {
+    stmt, err := db.Prepare("INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (?, ?)")
+    if (err != nil) {
+        return err
+    }
+    defer stmt.Close()
+
+    _, err = stmt.Exec(postID, categoryID)
+    return err
+}
+
+func GetUserPosts(db *sql.DB, userID string) ([]Post, error) {
+    rows, err := db.Query("SELECT postid, image, content, post_at FROM post WHERE user_userid = ? ORDER BY post_at DESC", userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var posts []Post
+    for rows.Next() {
+        var post Post
+        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt); err != nil {
+            return nil, err
+        }
+        posts = append(posts, post)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return posts, nil
+}
+
+func GetFollowersCount(db *sql.DB, userID string) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ?", userID).Scan(&count)
+    return count, err
+}
+
+func GetFollowingCount(db *sql.DB, userID string) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_id = ?", userID).Scan(&count)
+    return count, err
+}
+
+func GetFriendsCount(db *sql.DB, userID string) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_id = ?", userID).Scan(&count)
+    return count, err
+}
+
+func IsFollowing(db *sql.DB, userID string, profileUserID string) (bool, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ? AND follower_id = ?", profileUserID, userID).Scan(&count)
+    if err != nil {
+        return false, err
+    }
+    return count > 0, nil
 }
