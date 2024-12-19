@@ -640,7 +640,8 @@
                     <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
                     <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
                 </ul>
-                <h3 class="menu-heading">Forum Management</h3>
+                {{if or (eq .RoleID 1) (eq .RoleID 2)}}
+                <h3 class="menu-heading">Forum management</h3>
                 <ul>
                     {{if eq .RoleID 1}}
                     <li><a href="/admin?user={{.UserID}}" class="admin-dashboard"><i class="fas fa-user-shield"></i> Admin Dashboard</a></li>
@@ -648,6 +649,7 @@
                     <li><a href="/moderator?user={{.UserID}}" class="moderator-panel"><i class="fas fa-user-cog"></i> Moderator Panel</a></li>
                     {{end}}
                 </ul>
+                {{end}}
             </nav>
             <div class="social-icons">
                 <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i>
