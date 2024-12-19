@@ -230,12 +230,22 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	var posts []database.Post
 	filter := r.URL.Query().Get("filter")
-	if filter == "" {
-		filter = "all"
-	}
 	selectedTab := r.URL.Query().Get("tab")
+
 	if selectedTab == "" {
 		selectedTab = "posts"
+	}
+
+	if filter == "" {
+		if selectedTab == "your+posts" {
+			filter = "newest"
+		} else if selectedTab == "your+replies" {
+			filter = "newest"
+		} else if selectedTab == "your+reactions" {
+			filter = "likes"
+		} else {
+			filter = "all"
+		}
 	}
 
 	if selectedTab == "tags" && filter != "all" {

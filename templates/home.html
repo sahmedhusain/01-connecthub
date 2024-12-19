@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectHub | Home</title>
+    <title>ConnectHub | @{{.UserName}}</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -475,6 +475,12 @@
                     <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
                     <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
                 </ul>
+                <h3 class="menu-heading">Activity centre</h3>
+                <ul>
+                    <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
+                    <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
+                    <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
+                </ul>
             </nav>
             <div class="social-icons">
                 <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i>
@@ -494,6 +500,15 @@
                     <a href="/home?user={{.UserID}}&tab=posts&filter=friends"><button class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button></a>
                     <a href="/home?user={{.UserID}}&tab=posts&filter=top-rated"><button class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button></a>
                     <a href="/home?user={{.UserID}}&tab=posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button></a>
+                    {{else if eq .SelectedTab "your posts"}}
+                    <a href="/home?user={{.UserID}}&tab=your+posts&filter=newest"><button class="{{if eq .SelectedFilter "newest"}}selected{{end}}"><i class="fas fa-sort-amount-down"></i> Newest</button></a>
+                    <a href="/home?user={{.UserID}}&tab=your+posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest</button></a>
+                    {{else if eq .SelectedTab "your replies"}}
+                    <a href="/home?user={{.UserID}}&tab=your+replies&filter=newest"><button class="{{if eq .SelectedFilter "newest"}}selected{{end}}"><i class="fas fa-sort-amount-down"></i> Newest</button></a>
+                    <a href="/home?user={{.UserID}}&tab=your+replies&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest</button></a>
+                    {{else if eq .SelectedTab "your reactions"}}
+                    <a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes"><button class="{{if eq .SelectedFilter "likes"}}selected{{end}}"><i class="fa-solid fa-arrow-up"></i> Likes</button></a>
+                    <a href="/home?user={{.UserID}}&tab=your+reactions&filter=dislikes"><button class="{{if eq .SelectedFilter "dislikes"}}selected{{end}}"><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> Dislikes</button></a>
                     {{else if eq .SelectedTab "tags"}}
                     <a href="/home?user={{.UserID}}&tab=tags&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
                     {{range .Categories}}
