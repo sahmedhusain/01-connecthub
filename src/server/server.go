@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -25,11 +26,13 @@ type ErrorPageData struct {
 type PageData struct {
 	UserID         string
 	UserName       string
+	Avatar         string
 	Categories     []database.Category
 	Users          []database.User
 	Posts          []database.Post
 	SelectedTab    string
 	SelectedFilter string
+	Notifications  []database.Notification
 }
 
 func errHandler(w http.ResponseWriter, _ *http.Request, errData *ErrorPageData) {
@@ -269,11 +272,25 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.URL.Query().Get("user")
+	userIDInt, err := strconv.Atoi(userID)
+	if err != nil {
+		err := ErrorPageData{Code: "400", ErrorMsg: "Invalid user ID"}
+		errHandler(w, r, &err)
+		return
+	}
 
 	var userName string
-	err = db.QueryRow("SELECT username FROM user WHERE userid = ?", userID).Scan(&userName)
+	var avatar sql.NullString
+	err = db.QueryRow("SELECT username, avatar FROM user WHERE userid = ?", userID).Scan(&userName, &avatar)
 	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user name"}
+		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user data"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	notifications, err := database.GetLastNotifications(db, userIDInt)
+	if err != nil {
+		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch notifications"}
 		errHandler(w, r, &err)
 		return
 	}
@@ -281,11 +298,13 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
 		UserID:         userID,
 		UserName:       userName,
+		Avatar:         avatar.String,
 		Categories:     categories,
 		Users:          users,
 		Posts:          posts,
 		SelectedTab:    selectedTab,
 		SelectedFilter: filter,
+		Notifications:  notifications,
 	}
 
 	err = templates.ExecuteTemplate(w, "home.html", data)

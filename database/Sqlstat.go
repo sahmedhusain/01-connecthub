@@ -48,6 +48,13 @@ type Post struct {
 	Categories []Category
 }
 
+type Notification struct {
+	ID        int
+	UserID    int
+	Message   string
+	CreatedAt time.Time
+}
+
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT * FROM categories")
@@ -382,4 +389,32 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
     }
 
     return posts, nil
+}
+
+func GetLastNotifications(db *sql.DB, userID int) ([]Notification, error) {
+    rows, err := db.Query(`
+        SELECT notificationid, user_userid, message, created_at
+        FROM notifications
+        WHERE user_userid = ?
+        ORDER BY created_at DESC
+        LIMIT 3
+    `, userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var notifications []Notification
+    for rows.Next() {
+        var notification Notification
+        if err := rows.Scan(&notification.ID, &notification.UserID, &notification.Message, &notification.CreatedAt); err != nil {
+            return nil, err
+        }
+        notifications = append(notifications, notification)
+    }
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return notifications, nil
 }

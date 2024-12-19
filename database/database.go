@@ -202,7 +202,7 @@ func DataBase() {
 	// Assign all users to role_id=3 (User) for simplicity, except first user as Admin (role_id=1) and second as Moderator (role_id=2)
 	insertUsers := []string{
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, '/database/avatars/alicia.png');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, '/database/avatars/brian.png');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, '/static/assets/default-avatar.png');`,
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Caroline', 'Smith', 'caroS', 'carolineS@example.com', 'carolinePass', 3, 3, '/database/avatars/caroline.png');`,
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Daniel', 'Foster', 'danF', 'danF@example.com', 'danielPass', 4, 3, '/database/avatars/daniel.png');`,
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Elena', 'Garcia', 'elenaG', 'elenaG@example.com', 'elenaPass', 5, 3, '/database/avatars/elena.png');`,

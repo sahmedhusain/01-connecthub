@@ -22,12 +22,12 @@
         header {
             background-color: #FFFFFF;
             border-bottom: 2px solid #E5E7EB;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
 
         .feed-container {
             display: flex;
@@ -59,29 +59,40 @@
             font-weight: 800;
         }
 
-        .user-actions {
-            display: flex;
-            gap: 10px;
-        }
+     
+    .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
 
-        .user-actions a {
-            text-decoration: none;
-        }
+    .user-actions a,
+    .user-actions .dropdown {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
 
-        .user-actions button {
-            border-radius: 8px;
-            padding: 8px 16px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .user-actions button {
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .register {
-            background-color: #3B82F6;
-            color: white;
-        }
+    .user-actions button:hover {
+        background-color: #2563EB;
+        color: white;
+    }
+
+    .register {
+        background-color: #3B82F6;
+        color: white;
+    }
 
         .login {
             background-color: #E5E7EB;
@@ -442,18 +453,107 @@
             background-color: #3B82F6;
             color: #FFFFFF;
         }
-    </style>
+
+          /* Avatar Dropdown Improvements */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: white;
+        min-width: 180px;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        padding: 10px 0;
+    }
+
+    .dropdown-content a {
+        display: block;
+        padding: 10px 15px;
+        font-size: 14px;
+        color: #374151;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #F3F4F6;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Bell Icon Adjustments */
+    .fa-bell {
+        font-size: 25px;
+        color: #374151;
+        position: relative;
+    }
+
+    .fa-bell::after {
+        content: '';
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 8px;
+        height: 8px;
+        background-color: red;
+        border-radius: 50%;
+    }
+
+    /* Dropdown Notification Style */
+    .dropdown .dropdown-content a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .dropdown-content img {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+    }    </style>
 </head>
 
 <body>
     <header>
-        <a href="/" class="logo-container">
+        <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
             <img src="/static/assets/logo.png" alt="Connect Hub Logo">
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
-            <a href="/login"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
+            <a href="/newpost"><button class="register"><i class="fa-regular fa-square-plus"></i> New post</button></a>
+            <div class="dropdown">
+                <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
+                <div class="dropdown-content">
+                    {{range .Notifications}}
+                    <a class="dropdown-item" href="#">{{.Message}}</a>
+                    {{end}}
+                    <a class="dropdown-item" href="/notifications">More...</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                <div class="dropdown-content">
+                    <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                    <a href="/profile?user={{.UserID}}">Your Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
         </div>
     </header>
     <div class="feed-container">
