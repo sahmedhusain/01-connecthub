@@ -197,8 +197,8 @@
             <div class="dropdown">
                 <img src="{{.Avatar}}" alt="User Avatar">
                 <div class="dropdown-content">
-                    <a href="/profile">Profile</a>
-                    <a href="/settings">Settings</a>
+                    <a href="/profile?user={{.UserID}}">Profile</a>
+                    <a href="/settings?user={{.UserID}}">Settings</a>
                     <a href="/logout">Logout</a>
                 </div>
             </div>
@@ -208,6 +208,7 @@
         <div class="container">
             <h1>Create a New Post</h1>
             <form action="/newpost" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="user" value="{{.UserID}}">
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" rows="5" required></textarea>
 

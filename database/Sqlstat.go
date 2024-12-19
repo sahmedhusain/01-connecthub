@@ -56,60 +56,34 @@ type Notification struct {
 }
 
 type Report struct {
-	ID          int
-	PostID      int
-	ReportedBy  int
+	ID           int
+	PostID       int
+	ReportedBy   int
 	ReportReason string
-	CreatedAt   time.Time
+	CreatedAt    time.Time
 }
 
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
-	rows, err := db.Query("SELECT * FROM categories")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+    rows, err := db.Query("SELECT idcategories, name, description FROM categories")
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
 
-	var categories []Category
-	for rows.Next() {
-		var category Category
-		if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
-			return nil, err
-		}
-		categories = append(categories, category)
-	}
+    var categories []Category
+    for rows.Next() {
+        var category Category
+        if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
+            return nil, err
+        }
+        categories = append(categories, category)
+    }
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
 
-	// Check for errors from iterating over rows
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return categories, nil
-}
-
-func GetComment(db *sql.DB) ([]User, error) {
-	rows, err := db.Query("SELECT *  FROM comment")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var users []User
-	for rows.Next() {
-		var user User
-		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email); err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-
-	// Check for errors from iterating over rows
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return users, nil
+    return categories, nil
 }
 
 func GetComments(db *sql.DB) ([]Comment, error) {
@@ -347,7 +321,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 }
 
 func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
-    rows, err := db.Query(`
+	rows, err := db.Query(`
         SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -359,187 +333,187 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
         WHERE c.name = ?
         ORDER BY post.post_at DESC
     `, categoryName)
-    if err != nil {
-        log.Println("Error executing query:", err)
-        return nil, err
-    }
-    defer rows.Close()
+	if err != nil {
+		log.Println("Error executing query:", err)
+		return nil, err
+	}
+	defer rows.Close()
 
-    var posts []Post
-    for rows.Next() {
-        var post Post
-        var postAt string
-        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
-            log.Println("Error scanning row:", err)
-            return nil, err
-        }
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		var postAt string
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+			log.Println("Error scanning row:", err)
+			return nil, err
+		}
 
-        // Parse the postAt string into a time.Time object
-        post.PostAt, err = time.Parse(time.RFC3339, postAt)
-        if err != nil {
-            log.Println("Error parsing post_at:", err)
-            return nil, err
-        }
+		// Parse the postAt string into a time.Time object
+		post.PostAt, err = time.Parse(time.RFC3339, postAt)
+		if err != nil {
+			log.Println("Error parsing post_at:", err)
+			return nil, err
+		}
 
-        // Fetch categories for the post
-        categories, err := getCategoriesForPost(db, post.PostID)
-        if err != nil {
-            log.Println("Error fetching categories for post:", err)
-            return nil, err
-        }
-        post.Categories = categories
+		// Fetch categories for the post
+		categories, err := getCategoriesForPost(db, post.PostID)
+		if err != nil {
+			log.Println("Error fetching categories for post:", err)
+			return nil, err
+		}
+		post.Categories = categories
 
-        posts = append(posts, post)
-    }
-    if err := rows.Err(); err != nil {
-        log.Println("Error in rows:", err)
-        return nil, err
-    }
+		posts = append(posts, post)
+	}
+	if err := rows.Err(); err != nil {
+		log.Println("Error in rows:", err)
+		return nil, err
+	}
 
-    return posts, nil
+	return posts, nil
 }
 
 func GetLastNotifications(db *sql.DB, userID string) ([]Notification, error) {
-    rows, err := db.Query("SELECT notificationid, user_userid, message, created_at FROM notifications WHERE user_userid = ? ORDER BY created_at DESC", userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query("SELECT notificationid, user_userid, message, created_at FROM notifications WHERE user_userid = ? ORDER BY created_at DESC", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var notifications []Notification
-    for rows.Next() {
-        var notification Notification
-        if err := rows.Scan(&notification.ID, &notification.UserID, &notification.Message, &notification.CreatedAt); err != nil {
-            return nil, err
-        }
-        notifications = append(notifications, notification)
-    }
+	var notifications []Notification
+	for rows.Next() {
+		var notification Notification
+		if err := rows.Scan(&notification.ID, &notification.UserID, &notification.Message, &notification.CreatedAt); err != nil {
+			return nil, err
+		}
+		notifications = append(notifications, notification)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return notifications, nil
+	return notifications, nil
 }
 
 func InsertPost(db *sql.DB, content string, image sql.NullString, userID string) (int, error) {
-    stmt, err := db.Prepare("INSERT INTO post (image, content, post_at, user_userid) VALUES (?, ?, ?, ?)")
-    if (err != nil) {
-        return 0, err
-    }
-    defer stmt.Close()
+	stmt, err := db.Prepare("INSERT INTO post (image, content, post_at, user_userid) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
 
-    res, err := stmt.Exec(image, content, time.Now(), userID)
-    if (err != nil) {
-        return 0, err
-    }
+	res, err := stmt.Exec(image, content, time.Now(), userID)
+	if err != nil {
+		return 0, err
+	}
 
-    lastID, err := res.LastInsertId()
-    if (err != nil) {
-        return 0, err
-    }
+	lastID, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
 
-    return int(lastID), nil
+	return int(lastID), nil
 }
 
 func InsertPostCategory(db *sql.DB, postID int, categoryID int) error {
-    stmt, err := db.Prepare("INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (?, ?)")
-    if (err != nil) {
-        return err
-    }
-    defer stmt.Close()
+	stmt, err := db.Prepare("INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
 
-    _, err = stmt.Exec(postID, categoryID)
-    return err
+	_, err = stmt.Exec(postID, categoryID)
+	return err
 }
 
 func GetUserPosts(db *sql.DB, userID string) ([]Post, error) {
-    rows, err := db.Query("SELECT postid, image, content, post_at FROM post WHERE user_userid = ? ORDER BY post_at DESC", userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query("SELECT postid, image, content, post_at FROM post WHERE user_userid = ? ORDER BY post_at DESC", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var posts []Post
-    for rows.Next() {
-        var post Post
-        if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt); err != nil {
-            return nil, err
-        }
-        posts = append(posts, post)
-    }
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt); err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return posts, nil
+	return posts, nil
 }
 
 func GetFollowersCount(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ?", userID).Scan(&count)
+	return count, err
 }
 
 func GetFollowingCount(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_id = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_id = ?", userID).Scan(&count)
+	return count, err
 }
 
 func GetFriendsCount(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_id = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_id = ?", userID).Scan(&count)
+	return count, err
 }
 
 func IsFollowing(db *sql.DB, userID string, profileUserID string) (bool, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ? AND follower_id = ?", profileUserID, userID).Scan(&count)
-    if err != nil {
-        return false, err
-    }
-    return count > 0, nil
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ? AND follower_id = ?", profileUserID, userID).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func GetTotalUsersCount(db *sql.DB) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
+	return count, err
 }
 
 func GetTotalPostsCount(db *sql.DB) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM post").Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM post").Scan(&count)
+	return count, err
 }
 
 func GetTotalCategoriesCount(db *sql.DB) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM categories").Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM categories").Scan(&count)
+	return count, err
 }
 
 func GetAllReports(db *sql.DB) ([]Report, error) {
-    rows, err := db.Query("SELECT id, post_id, reported_by, report_reason, created_at FROM reports ORDER BY created_at DESC")
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query("SELECT id, post_id, reported_by, report_reason, created_at FROM reports ORDER BY created_at DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var reports []Report
-    for rows.Next() {
-        var report Report
-        if err := rows.Scan(&report.ID, &report.PostID, &report.ReportedBy, &report.ReportReason, &report.CreatedAt); err != nil {
-            return nil, err
-        }
-        reports = append(reports, report)
-    }
+	var reports []Report
+	for rows.Next() {
+		var report Report
+		if err := rows.Scan(&report.ID, &report.PostID, &report.ReportedBy, &report.ReportReason, &report.CreatedAt); err != nil {
+			return nil, err
+		}
+		reports = append(reports, report)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return reports, nil
+	return reports, nil
 }

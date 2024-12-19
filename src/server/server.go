@@ -321,88 +321,81 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewPostPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/newpost" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.Method == http.MethodGet {
+        userID := r.URL.Query().Get("user")
+        if userID == "" {
+            http.Error(w, "User ID is required", http.StatusBadRequest)
+            return
+        }
 
-	db, err := sql.Open("sqlite3", "./database/main.db")
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-		errHandler(w, r, &err)
-		return
-	}
-	defer db.Close()
+        db, err := sql.Open("sqlite3", "./database/main.db")
+        if err != nil {
+            http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+            return
+        }
+        defer db.Close()
 
-	switch r.Method {
-	case "GET":
-		categories, err := database.GetAllCategories(db)
-		if err != nil {
-			err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch categories"}
-			errHandler(w, r, &err)
-			return
-		}
-		data := struct {
-			Categories []database.Category
-		}{
-			Categories: categories,
-		}
-		err = templates.ExecuteTemplate(w, "newpost.html", data)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	case "POST":
-		err := r.ParseMultipartForm(10 << 20)
-		if err != nil {
-			http.Error(w, "Could not parse form", http.StatusBadRequest)
-			return
-		}
+        categories, err := database.GetAllCategories(db)
+        if err != nil {
+            http.Error(w, "Failed to load categories", http.StatusInternalServerError)
+            return
+        }
 
-		content := r.FormValue("content")
-		categoryIDs := r.Form["categories"]
-		userID := r.FormValue("user_id") // Replace with actual user ID retrieval logic
+        data := struct {
+            UserID     string
+            Categories []database.Category
+        }{
+            UserID:     userID,
+            Categories: categories,
+        }
 
-		var imagePath sql.NullString
-		file, handler, err := r.FormFile("image")
-		if err == nil {
-			defer file.Close()
-			imagePath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
-			imagePath.Valid = true
-			f, err := os.OpenFile(imagePath.String, os.O_WRONLY|os.O_CREATE, 0666)
-			if err != nil {
-				http.Error(w, "Unable to save image", http.StatusInternalServerError)
-				return
-			}
-			defer f.Close()
-			io.Copy(f, file)
-		}
+        tmpl, err := template.ParseFiles("./templates/newpost.html")
+        if err != nil {
+            http.Error(w, "Failed to load template", http.StatusInternalServerError)
+            return
+        }
 
-		postID, err := database.InsertPost(db, content, imagePath, userID)
-		if err != nil {
-			err := ErrorPageData{Code: "500", ErrorMsg: "Failed to create post"}
-			errHandler(w, r, &err)
-			return
-		}
+        err = tmpl.Execute(w, data)
+        if err != nil {
+            http.Error(w, "Failed to render template", http.StatusInternalServerError)
+            return
+        }
+    } else if r.Method == http.MethodPost {
+        r.ParseForm()
+        content := r.FormValue("content")
+        image := sql.NullString{String: r.FormValue("image"), Valid: r.FormValue("image") != ""}
+        userID := r.FormValue("user")
 
-		for _, catID := range categoryIDs {
-			categoryID, err := strconv.Atoi(catID)
-			if err != nil {
-				continue
-			}
-			err = database.InsertPostCategory(db, postID, categoryID)
-			if err != nil {
-				err := ErrorPageData{Code: "500", ErrorMsg: "Failed to associate categories"}
-				errHandler(w, r, &err)
-				return
-			}
-		}
+        db, err := sql.Open("sqlite3", "./database/main.db")
+        if err != nil {
+            http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+            return
+        }
+        defer db.Close()
 
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-	default:
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
-	}
+        postID, err := database.InsertPost(db, content, image, userID)
+        if err != nil {
+            http.Error(w, "Failed to create post", http.StatusInternalServerError)
+            return
+        }
+
+        categoryIDs := r.Form["categories"]
+        for _, categoryID := range categoryIDs {
+            categoryIDInt, err := strconv.Atoi(categoryID)
+            if err != nil {
+                http.Error(w, "Invalid category ID", http.StatusBadRequest)
+                return
+            }
+            err = database.InsertPostCategory(db, postID, categoryIDInt)
+            if err != nil {
+                http.Error(w, "Failed to associate category with post", http.StatusInternalServerError)
+                return
+            }
+        }
+
+        http.Redirect(w, r, "/home?user="+userID, http.StatusSeeOther)
+        return
+    }
 }
 
 func SettingsPage(w http.ResponseWriter, r *http.Request) {
