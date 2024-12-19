@@ -520,28 +520,28 @@ func GetAllReports(db *sql.DB) ([]Report, error) {
 }
 
 func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
-	var comments []Comment
+    var comments []Comment
 
-	query := `SELECT id, post_id, user_id, content, created_at FROM comments WHERE post_id = ?`
-	rows, err := db.Query(query, postID)
-	if err != nil {
-		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
-	}
-	defer rows.Close()
+    query := `SELECT commentid, post_postid, user_userid, content, comment_at FROM comment WHERE post_postid = ?`
+    rows, err := db.Query(query, postID)
+    if err != nil {
+        return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+    }
+    defer rows.Close()
 
-	for rows.Next() {
-		var comment Comment
-		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &comment.CreatedAt); err != nil {
-			return nil, fmt.Errorf("GetCommentsForPost: %v", err)
-		}
-		comments = append(comments, comment)
-	}
+    for rows.Next() {
+        var comment Comment
+        if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &comment.CreatedAt); err != nil {
+            return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+        }
+        comments = append(comments, comment)
+    }
 
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
-	}
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+    }
 
-	return comments, nil
+    return comments, nil
 }
 
 func ToggleLike(db *sql.DB, postID int, userID string) error {

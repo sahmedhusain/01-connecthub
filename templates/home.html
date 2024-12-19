@@ -707,7 +707,7 @@
                             </div>
                         </div>
                         <div class="post-body">
-                            <a class="action-link" href="/post?id={{.PostID}}"><p>{{.Content}}</p></a>
+                            <a class="action-link" href="/post?id={{.PostID}}" style="text-decoration: none;"><p>{{.Content}}</p></a>
                             <div class="post-categories">
                                 {{range .Categories}}
                                 <a href="/home?user={{$.UserID}}&tab=tags&filter={{.Name}}"><span class="category-box">{{.Name}}</span></a>
@@ -725,7 +725,7 @@
                                 <input type="hidden" name="user_id" value="{{$.UserID}}">
                                 <button type="submit" class="action-link"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i> {{.Dislikes}}</span></button>
                             </form>
-                            <a class="action-link" href="/post?id={{.PostID}}"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
+                            <a class="action-link" href="/post?id={{.PostID}}" style="text-decoration: none;"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
                     </article>

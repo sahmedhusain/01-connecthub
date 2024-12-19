@@ -6,6 +6,7 @@ import (
 	"forum/database"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -1008,6 +1009,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
+		log.Println("Error opening database:", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -1030,17 +1032,20 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
         WHERE post.postid = ?
     `, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
 	if err != nil {
+		log.Println("Error querying post:", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	postIDInt, err := strconv.Atoi(postID)
 	if err != nil {
+		log.Println("Error converting post ID to integer:", err)
 		http.Error(w, "Invalid post ID", http.StatusBadRequest)
 		return
 	}
 	comments, err := database.GetCommentsForPost(db, postIDInt)
 	if err != nil {
+		log.Println("Error getting comments for post:", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -1052,6 +1057,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 	err = templates.ExecuteTemplate(w, "post.html", data)
 	if err != nil {
+		log.Println("Error executing template:", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
