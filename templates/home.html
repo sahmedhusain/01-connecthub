@@ -457,6 +457,7 @@
           /* Avatar Dropdown Improvements */
     .dropdown {
         position: relative;
+        display: inline-block;
     }
 
     .dropdown img {
@@ -496,6 +497,11 @@
     .dropdown:hover .dropdown-content {
         display: block;
     }
+    .dropdown-content img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
 
     /* Bell Icon Adjustments */
     .fa-bell {
@@ -526,7 +532,59 @@
         width: 20px;
         height: 20px;
         border-radius: 50%;
-    }    </style>
+    }    
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #FFFFFF;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+        opacity: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 14px 20px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+        border-bottom: 1px solid #E5E7EB;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .dropdown-content a:last-child {
+        border-bottom: none;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #2563EB;
+        color: #FFFFFF;
+    }
+
+    .dropdown-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 20px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .dropdown-avatar img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+    </style>
 </head>
 
 <body>
@@ -550,8 +608,9 @@
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
                 <div class="dropdown-content">
                     <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
-                    <a href="/myprofile?user={{.UserID}}">Your Profile</a>
-                    <a href="/">Logout</a>
+                    <a href="/myprofile?user={{.UserID}}"><i class="fas fa-user"></i> Your Profile</a>
+                    <a href="/settings?user={{.UserID}}"><i class="fas fa-cog"></i> Account settings</a>
+                    <a href="/" style="color: red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
         </div>
