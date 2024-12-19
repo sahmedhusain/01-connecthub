@@ -41,6 +41,8 @@ type PageData struct {
 	SelectedFilter string
 	Notifications  []database.Notification
 	RoleID         int
+	Post           database.Post
+	Comments       []database.Comment
 }
 
 func errHandler(w http.ResponseWriter, _ *http.Request, errData *ErrorPageData) {
@@ -991,4 +993,65 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		errHandler(w, r, &err)
 		return
 	}
+}
+
+func PostPage(w http.ResponseWriter, r *http.Request) {
+    if r.URL.Path != "/post" {
+        http.Redirect(w, r, "/home", http.StatusSeeOther)
+        return
+    }
+
+    if r.Method != "GET" {
+        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+        return
+    }
+    defer db.Close()
+
+    postID := r.URL.Query().Get("id")
+    if postID == "" {
+        http.Redirect(w, r, "/home", http.StatusSeeOther)
+        return
+    }
+
+    var post database.Post
+    err = db.QueryRow(`
+        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+               (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+               (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+               (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
+        FROM post
+        JOIN user ON post.user_userid = user.userid
+        WHERE post.postid = ?
+    `, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
+    if err != nil {
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+        return
+    }
+
+	postIDInt, err := strconv.Atoi(postID)
+	if err != nil {
+		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		return
+	}
+	comments, err := database.GetCommentsForPost(db, postIDInt)
+    if err != nil {
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+        return
+    }
+
+    data := PageData{
+        Post:     post,
+        Comments: comments,
+    }
+
+    err = templates.ExecuteTemplate(w, "post.html", data)
+    if err != nil {
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+    }
 }

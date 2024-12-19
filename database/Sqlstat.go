@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 )
@@ -25,11 +26,11 @@ type Category struct {
 }
 
 type Comment struct {
-	ID         int       // Comment ID
-	Content    string    // Comment text
-	CommentAt  time.Time // Timestamp of the comment
-	PostPostID int       // Post ID the comment belongs to
-	UserUserID int       // User ID who made the comment
+	ID        int
+	PostID    int
+	UserID    int
+	Content   string
+	CreatedAt time.Time
 }
 
 type Post struct {
@@ -65,25 +66,25 @@ type Report struct {
 
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
-    rows, err := db.Query("SELECT idcategories, name, description FROM categories")
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query("SELECT idcategories, name, description FROM categories")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var categories []Category
-    for rows.Next() {
-        var category Category
-        if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
-            return nil, err
-        }
-        categories = append(categories, category)
-    }
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	var categories []Category
+	for rows.Next() {
+		var category Category
+		if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return categories, nil
+	return categories, nil
 }
 
 func GetComments(db *sql.DB) ([]Comment, error) {
@@ -100,12 +101,12 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 		var commentAt time.Time // SQLite DATETIME is fetched as a string
 
 		// Scan each row into the Comment struct
-		if err := rows.Scan(&comment.ID, &comment.Content, &commentAt, &comment.PostPostID, &comment.UserUserID); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.Content, &commentAt, &comment.PostID, &comment.UserID); err != nil {
 			return nil, err
 		}
 
 		// Parse comment_at into a time.Time object
-		comment.CommentAt = commentAt
+		comment.CreatedAt = commentAt
 
 		comments = append(comments, comment)
 	}
@@ -516,4 +517,29 @@ func GetAllReports(db *sql.DB) ([]Report, error) {
 	}
 
 	return reports, nil
+}
+
+func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
+	var comments []Comment
+
+	query := `SELECT id, post_id, user_id, content, created_at FROM comments WHERE post_id = ?`
+	rows, err := db.Query(query, postID)
+	if err != nil {
+		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment Comment
+		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &comment.CreatedAt); err != nil {
+			return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+		}
+		comments = append(comments, comment)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+	}
+
+	return comments, nil
 }

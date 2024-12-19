@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Post | ConnectHub</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #F9FAFB;
+            color: #333;
+        }
+
+        header {
+            background-color: #FFFFFF;
+            border-bottom: 2px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            text-decoration: none;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .logo-container span {
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .logo-container span:first-child {
+            font-weight: 400;
+        }
+
+        .logo-container span:last-child {
+            font-weight: 800;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-actions a,
+        .user-actions .dropdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .user-actions button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .user-actions button:hover {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        .register {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .login {
+            background-color: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #FFFFFF;
+            min-width: 180px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            padding: 10px 0;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #374151;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #F3F4F6;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-info h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .post-info p {
+            margin: 5px 0;
+            color: #6B7280;
+        }
+
+        .post-content {
+            margin-bottom: 20px;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6B7280;
+            align-items: center;
+        }
+
+        .post-actions span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .post-actions span:hover {
+            color: #3B82F6;
+        }
+
+        .comments-section {
+            margin-top: 40px;
+        }
+
+        .comments-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .comment {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comment img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .comment-content {
+            flex: 1;
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .comment-content time {
+            display: block;
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-top: 5px;
+        }
+
+        .add-comment {
+            margin-top: 20px;
+        }
+
+        .add-comment textarea {
+            width: 100%;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .add-comment button {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .add-comment button:hover {
+            background-color: #2563EB;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
+            <img src="/static/assets/logo.png" alt="ConnectHub Logo">
+            <span>Connect</span><span>Hub</span>
+        </a>
+        <div class="user-actions">
+            <div class="dropdown">
+                <img src="{{.Avatar}}" alt="User Avatar">
+                <div class="dropdown-content">
+                    <a href="/profile">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div class="post-header">
+                <img src="{{.Post.Avatar}}" alt="User Avatar">
+                <div class="post-info">
+                    <h1>{{.Post.Username}}</h1>
+                    <p>{{.Post.PostAt}}</p>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>{{.Post.Content}}</p>
+                {{if .Post.Image.Valid}}
+                <img src="{{.Post.Image.String}}" alt="Post Image">
+                {{end}}
+            </div>
+            <div class="post-actions">
+                <span><i class="fa-solid fa-arrow-up"></i> {{.Post.Likes}}</span>
+                <span><i class="fa-solid fa-arrow-up" style="rotate: 180deg ;"></i> {{.Post.Dislikes}}</span>
+                <span><i class="fa-regular fa-message"></i> {{.Post.Comments}}</span>
+            </div>
+            <div class="comments-section">
+                <h2>Comments</h2>
+                {{range .Comments}}
+                <div class="comment">
+                    <img src="{{.Avatar}}" alt="User Avatar">
+                    <div class="comment-content">
+                        <p>{{.Content}}</p>
+                        <time>{{.CommentAt}}</time>
+                    </div>
+                </div>
+                {{end}}
+                <div class="add-comment">
+                    <form action="/addcomment" method="POST">
+                        <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea>
+                        <input type="hidden" name="post_id" value="{{.Post.PostID}}">
+                        <button type="submit">Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
