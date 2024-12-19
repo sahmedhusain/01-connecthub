@@ -42,7 +42,7 @@ type PageData struct {
 	Notifications  []database.Notification
 }
 
-func errHandler(w http.ResponseWriter, r *http.Request, errData *ErrorPageData) {
+func errHandler(w http.ResponseWriter, _ *http.Request, errData *ErrorPageData) {
 	err := templates.ExecuteTemplate(w, "error.html", errData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
