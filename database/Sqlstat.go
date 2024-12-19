@@ -400,7 +400,7 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 }
 
 func GetLastNotifications(db *sql.DB, userID string) ([]Notification, error) {
-    rows, err := db.Query("SELECT id, user_id, message, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC", userID)
+    rows, err := db.Query("SELECT notificationid, user_userid, message, created_at FROM notifications WHERE user_userid = ? ORDER BY created_at DESC", userID)
     if err != nil {
         return nil, err
     }
