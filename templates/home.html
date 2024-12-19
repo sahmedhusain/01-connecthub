@@ -22,12 +22,12 @@
         header {
             background-color: #FFFFFF;
             border-bottom: 2px solid #E5E7EB;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 30px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
 
         .feed-container {
             display: flex;
@@ -639,6 +639,14 @@
                     <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
                     <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
                     <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
+                </ul>
+                <h3 class="menu-heading">Forum Management</h3>
+                <ul>
+                    {{if eq .RoleID 1}}
+                    <li><a href="/admin?user={{.UserID}}" class="admin-dashboard"><i class="fas fa-user-shield"></i> Admin Dashboard</a></li>
+                    {{else if eq .RoleID 2}}
+                    <li><a href="/moderator?user={{.UserID}}" class="moderator-panel"><i class="fas fa-user-cog"></i> Moderator Panel</a></li>
+                    {{end}}
                 </ul>
             </nav>
             <div class="social-icons">
