@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | ConnectHub</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #F9FAFB;
+            color: #333;
+        }
+
+        header {
+            background-color: #FFFFFF;
+            border-bottom: 2px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            text-decoration: none;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .logo-container span {
+            font-size: 18px;
+            color: #1F2937;
+        }
+
+        .logo-container span:first-child {
+            font-weight: 400;
+        }
+
+        .logo-container span:last-child {
+            font-weight: 800;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-actions a,
+        .user-actions .dropdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .user-actions button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .user-actions button:hover {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        .register {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .login {
+            background-color: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #FFFFFF;
+            min-width: 180px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            padding: 10px 0;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #374151;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #F3F4F6;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-stats div {
+            text-align: center;
+            padding: 20px;
+            background-color: #F3F4F6;
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .dashboard-stats div span {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #E5E7EB;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #F3F4F6;
+        }
+
+        .role-select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+        }
+
+        .save-button, .delete-button, .add-button {
+            background-color: #3B82F6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .save-button:hover, .delete-button:hover, .add-button:hover {
+            background-color: #2563EB;
+        }
+
+        .delete-button {
+            background-color: #EF4444;
+        }
+
+        .delete-button:hover {
+            background-color: #DC2626;
+        }
+
+        .category-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
+            <img src="/static/assets/logo.png" alt="ConnectHub Logo">
+            <span>Connect</span><span>Hub</span>
+        </a>
+        <div class="user-actions">
+            <div class="dropdown">
+                <img src="{{.Avatar}}" alt="User Avatar">
+                <div class="dropdown-content">
+                    <a href="/profile">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <h1>Admin Panel</h1>
+            <div class="dashboard-stats">
+                <div>
+                    <span>{{.TotalUsers}}</span>
+                    Total Users
+                </div>
+                <div>
+                    <span>{{.TotalPosts}}</span>
+                    Total Posts
+                </div>
+                <div>
+                    <span>{{.TotalCategories}}</span>
+                    Total Categories
+                </div>
+            </div>
+            <h2>Manage User Roles</h2>
+            <form action="/admin" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Users}}
+                        <tr>
+                            <td>{{.ID}}</td>
+                            <td>{{.Username}}</td>
+                            <td>{{.Email}}</td>
+                            <td>
+                                <select name="role_{{.ID}}" class="role-select">
+                                    <option value="1" {{if eq .RoleID 1}}selected{{end}}>Admin</option>
+                                    <option value="2" {{if eq .RoleID 2}}selected{{end}}>Moderator</option>
+                                    <option value="3" {{if eq .RoleID 3}}selected{{end}}>User</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="submit" name="delete_user" value="{{.ID}}" class="delete-button">Delete</button>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+                <button type="submit" class="save-button">Save Changes</button>
+            </form>
+            <h2>Manage Posts</h2>
+            <form action="/admin" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Post ID</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Posts}}
+                        <tr>
+                            <td>{{.PostID}}</td>
+                            <td>{{.Content}}</td>
+                            <td>
+                                <button type="submit" name="delete_post" value="{{.PostID}}" class="delete-button">Delete</button>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </form>
+            <h2>Manage Categories</h2>
+            <form action="/admin" method="POST" class="category-form">
+                <input type="text" name="new_category" placeholder="New Category Name" required>
+                <button type="submit" name="add_category" class="add-button">Add Category</button>
+            </form>
+            <form action="/admin" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category ID</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Categories}}
+                        <tr>
+                            <td>{{.ID}}</td>
+                            <td>{{.Name}}</td>
+                            <td>
+                                <button type="submit" name="delete_category" value="{{.ID}}" class="delete-button">Delete</button>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </form>
+            <h2>Manage Reports</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Post ID</th>
+                        <th>Reported By</th>
+                        <th>Reason</th>
+                        <th>Created At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Reports}}
+                    <tr>
+                        <td>{{.ID}}</td>
+                        <td>{{.PostID}}</td>
+                        <td>{{.ReportedBy}}</td>
+                        <td>{{.ReportReason}}</td>
+                        <td>{{.CreatedAt}}</td>
+                        <td>
+                            <button type="submit" name="delete_report" value="{{.ID}}" class="delete-button">Delete</button>
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+
+</html>

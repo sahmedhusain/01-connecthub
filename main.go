@@ -24,6 +24,8 @@ func main() {
     http.HandleFunc("/notifications", server.NotificationsPage)
 	http.HandleFunc("/myprofile", server.MyProfilePage)
 	http.HandleFunc("/profile", server.ProfilePage)
+	http.HandleFunc("/admin", server.AdminPage)
+	http.HandleFunc("/moderator", server.ModeratorPage)
 
 	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 

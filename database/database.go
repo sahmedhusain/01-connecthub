@@ -136,6 +136,17 @@ func DataBase() {
 			FOREIGN KEY (following_userid) REFERENCES user(userid)
 		);`
 
+	const CreateReportsTable = `
+		CREATE TABLE IF NOT EXISTS reports (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			post_id INTEGER NOT NULL,
+			reported_by INTEGER NOT NULL,
+			report_reason TEXT,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (post_id) REFERENCES post(postid),
+			FOREIGN KEY (reported_by) REFERENCES user(userid)
+		);`
+
 	// Drop and create tables
 	sqlStatements := []string{
 		`DROP TABLE IF EXISTS categories;`, CreateCategoriesTable,
@@ -151,6 +162,7 @@ func DataBase() {
 		`DROP TABLE IF EXISTS followers;`, CreateFollowersTable,
 		`DROP TABLE IF EXISTS notifications;`, CreateNotificationsTable,
 		`DROP TABLE IF EXISTS following;`, CreateFollowingTable,
+		`DROP TABLE IF EXISTS reports;`, CreateReportsTable,
 	}
 
 	for _, stmt := range sqlStatements {

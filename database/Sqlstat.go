@@ -55,6 +55,14 @@ type Notification struct {
 	CreatedAt time.Time
 }
 
+type Report struct {
+	ID          int
+	PostID      int
+	ReportedBy  int
+	ReportReason string
+	CreatedAt   time.Time
+}
+
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT * FROM categories")
@@ -493,4 +501,45 @@ func IsFollowing(db *sql.DB, userID string, profileUserID string) (bool, error) 
         return false, err
     }
     return count > 0, nil
+}
+
+func GetTotalUsersCount(db *sql.DB) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
+    return count, err
+}
+
+func GetTotalPostsCount(db *sql.DB) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM post").Scan(&count)
+    return count, err
+}
+
+func GetTotalCategoriesCount(db *sql.DB) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM categories").Scan(&count)
+    return count, err
+}
+
+func GetAllReports(db *sql.DB) ([]Report, error) {
+    rows, err := db.Query("SELECT id, post_id, reported_by, report_reason, created_at FROM reports ORDER BY created_at DESC")
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var reports []Report
+    for rows.Next() {
+        var report Report
+        if err := rows.Scan(&report.ID, &report.PostID, &report.ReportedBy, &report.ReportReason, &report.CreatedAt); err != nil {
+            return nil, err
+        }
+        reports = append(reports, report)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return reports, nil
 }
