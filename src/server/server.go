@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"html/template"
 	"net/http"
@@ -22,6 +23,8 @@ type ErrorPageData struct {
 }
 
 type PageData struct {
+	UserID         string
+	UserName       string
 	Categories     []database.Category
 	Users          []database.User
 	Posts          []database.Post
@@ -117,15 +120,60 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/login" {
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		w.WriteHeader(http.StatusNotFound)
 		errHandler(w, r, &err)
+		return
+	}
+
+	if r.Method == "POST" {
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+
+		db, err := sql.Open("sqlite3", "./database/main.db")
+		if err != nil {
+			err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+			errHandler(w, r, &err)
+			return
+		}
+		defer db.Close()
+
+		var userID int
+		var dbPassword string
+		err = db.QueryRow("SELECT userid, password FROM user WHERE email = ?", email).Scan(&userID, &dbPassword)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				// No user found with the given email
+				err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
+					"ErrorMsg": "Invalid email or password",
+				})
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+			err := ErrorPageData{Code: "500", ErrorMsg: "Database query failed"}
+			errHandler(w, r, &err)
+			return
+		}
+
+		// Check if the password is correct
+		if password != dbPassword {
+			err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
+				"ErrorMsg": "Invalid email or password",
+			})
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+
+		// If login is successful, redirect to the Home page with user ID
+		http.Redirect(w, r, fmt.Sprintf("/home?user=%d&tab=posts&filter=all", userID), http.StatusSeeOther)
 		return
 	}
 
 	err := templates.ExecuteTemplate(w, "login.html", nil)
 	if err != nil {
 		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to parse template"}
-		w.WriteHeader(http.StatusInternalServerError)
 		errHandler(w, r, &errData)
 	}
 }
@@ -133,7 +181,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 func SignupPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/signup" {
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		w.WriteHeader(http.StatusNotFound)
 		errHandler(w, r, &err)
 		return
 	}
@@ -142,13 +189,12 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "signup.html", nil)
 	if err != nil {
 		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to parse template"}
-		w.WriteHeader(http.StatusInternalServerError)
 		errHandler(w, r, &errData)
 	}
 }
 
-func IndexsPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/indexs" {
+func HomePage(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/home" {
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return
@@ -160,9 +206,10 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Redirect to /?tab=posts&filter=all if no tab is specified
+	// Redirect to /home?tab=posts&filter=all if no tab is specified
 	if r.URL.Query().Get("tab") == "" {
-		http.Redirect(w, r, "/?tab=posts&filter=all", http.StatusFound)
+		userID := r.URL.Query().Get("user")
+		http.Redirect(w, r, fmt.Sprintf("/home?user=%s&tab=posts&filter=all", userID), http.StatusFound)
 		return
 	}
 
@@ -211,7 +258,19 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userID := r.URL.Query().Get("user")
+
+	var userName string
+	err = db.QueryRow("SELECT username FROM user WHERE userid = ?", userID).Scan(&userName)
+	if err != nil {
+		err := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user name"}
+		errHandler(w, r, &err)
+		return
+	}
+
 	data := PageData{
+		UserID:         userID,
+		UserName:       userName,
 		Categories:     categories,
 		Users:          users,
 		Posts:          posts,
@@ -219,7 +278,7 @@ func IndexsPage(w http.ResponseWriter, r *http.Request) {
 		SelectedFilter: filter,
 	}
 
-	err = templates.ExecuteTemplate(w, "indexs.html", data)
+	err = templates.ExecuteTemplate(w, "home.html", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

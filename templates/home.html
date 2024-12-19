@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectHub | Guest</title>
-    <link rel="icon" type="image/x-icon" href="/static/assets/logo.png">
+    <title>ConnectHub | Home</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -472,8 +472,8 @@
                 </div>
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
-                    <li><a href="/indexs/?tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
-                    <li><a href="/indexs/?tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
+                    <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
+                    <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
                 </ul>
             </nav>
             <div class="social-icons">
@@ -489,15 +489,15 @@
             <section class="feed">
                 <div class="filters">
                     {{if eq .SelectedTab "posts"}}
-                    <a href="/indexs/?tab=posts&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
-                    <a href="/indexs/?tab=posts&filter=following"><button class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</button></a>
-                    <a href="/indexs/?tab=posts&filter=friends"><button class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button></a>
-                    <a href="/indexs/?tab=posts&filter=top-rated"><button class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button></a>
-                    <a href="/indexs/?tab=posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button></a>
+                    <a href="/home?user={{.UserID}}&tab=posts&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
+                    <a href="/home?user={{.UserID}}&tab=posts&filter=following"><button class="{{if eq .SelectedFilter "following"}}selected{{end}}"><i class="fas fa-user-friends"></i> Following</button></a>
+                    <a href="/home?user={{.UserID}}&tab=posts&filter=friends"><button class="{{if eq .SelectedFilter "friends"}}selected{{end}}"><i class="fas fa-users"></i> Friends</button></a>
+                    <a href="/home?user={{.UserID}}&tab=posts&filter=top-rated"><button class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button></a>
+                    <a href="/home?user={{.UserID}}&tab=posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button></a>
                     {{else if eq .SelectedTab "tags"}}
-                    <a href="/indexs/?tab=tags&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
+                    <a href="/home?user={{.UserID}}&tab=tags&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
                     {{range .Categories}}
-                    <a href="/indexs/?tab=tags&filter={{.Name}}"><button class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</button></a>
+                    <a href="/home?user={{$.UserID}}&tab=tags&filter={{.Name}}"><button class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</button></a>
                     {{end}}
                     {{end}}
                 </div>
