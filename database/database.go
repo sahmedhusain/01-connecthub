@@ -127,6 +127,15 @@ func DataBase() {
 			FOREIGN KEY (user_userid) REFERENCES user(userid)
 		);`
 
+	const CreateFollowingTable = `
+		CREATE TABLE IF NOT EXISTS following (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_userid INTEGER NOT NULL,
+			following_userid INTEGER NOT NULL,
+			FOREIGN KEY (user_userid) REFERENCES user(userid),
+			FOREIGN KEY (following_userid) REFERENCES user(userid)
+		);`
+
 	// Drop and create tables
 	sqlStatements := []string{
 		`DROP TABLE IF EXISTS categories;`, CreateCategoriesTable,
@@ -141,6 +150,7 @@ func DataBase() {
 		`DROP TABLE IF EXISTS friends;`, CreateFriendsTable,
 		`DROP TABLE IF EXISTS followers;`, CreateFollowersTable,
 		`DROP TABLE IF EXISTS notifications;`, CreateNotificationsTable,
+		`DROP TABLE IF EXISTS following;`, CreateFollowingTable,
 	}
 
 	for _, stmt := range sqlStatements {
@@ -294,12 +304,34 @@ func DataBase() {
 	insertFriends := []string{
 		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 3);`,
 		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 4);`,
+		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 2);`,
+		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 3);`,
+		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 1);`,
+		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 3);`,
+		`INSERT INTO friends (user_userid, friend_userid) VALUES (3, 1);`,
+		`INSERT INTO friends (user_userid, friend_userid) VALUES (3, 2);`,
 	}
 
 	// Insert followers
 	insertFollowers := []string{
 		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 5);`,
 		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 6);`,
+		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 2);`,
+		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 3);`,
+		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 1);`,
+		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 3);`,
+		`INSERT INTO followers (user_userid, follower_userid) VALUES (3, 1);`,
+		`INSERT INTO followers (user_userid, follower_userid) VALUES (3, 2);`,
+	}
+
+	// Insert following
+	insertFollowing := []string{
+		`INSERT INTO following (user_userid, following_userid) VALUES (1, 2);`,
+		`INSERT INTO following (user_userid, following_userid) VALUES (1, 3);`,
+		`INSERT INTO following (user_userid, following_userid) VALUES (2, 1);`,
+		`INSERT INTO following (user_userid, following_userid) VALUES (2, 3);`,
+		`INSERT INTO following (user_userid, following_userid) VALUES (3, 1);`,
+		`INSERT INTO following (user_userid, following_userid) VALUES (3, 2);`,
 	}
 
 	// Combine all insert statements
@@ -316,6 +348,7 @@ func DataBase() {
 		insertNotifications,
 		insertFriends,
 		insertFollowers,
+		insertFollowing,
 	}
 
 	for _, group := range allInserts {
