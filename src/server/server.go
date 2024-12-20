@@ -132,64 +132,76 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/login" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.URL.Path != "/login" {
+        err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	if r.Method == "POST" {
-		email := r.FormValue("email")
-		password := r.FormValue("password")
+    if r.Method == "POST" {
+        email := r.FormValue("email")
+        password := r.FormValue("password")
 
-		db, err := sql.Open("sqlite3", "./database/main.db")
-		if err != nil {
-			err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-			errHandler(w, r, &err)
-			return
-		}
-		defer db.Close()
+        db, err := sql.Open("sqlite3", "./database/main.db")
+        if err != nil {
+            err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+            errHandler(w, r, &err)
+            return
+        }
+        defer db.Close()
 
-		var userID int
-		var dbPassword string
-		err = db.QueryRow("SELECT userid, password FROM user WHERE email = ?", email).Scan(&userID, &dbPassword)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				// No user found with the given email
-				err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
-					"ErrorMsg": "Invalid email or password",
-				})
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-				}
-				return
-			}
-			err := ErrorPageData{Code: "500", ErrorMsg: "Database query failed"}
-			errHandler(w, r, &err)
-			return
-		}
+        var userID int
+        var dbPassword string
+        err = db.QueryRow("SELECT userid, password FROM user WHERE email = ?", email).Scan(&userID, &dbPassword)
+        if err != nil {
+            if err == sql.ErrNoRows {
+                // No user found with the given email
+                err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
+                    "ErrorMsg": "Invalid email or password",
+                })
+                if err != nil {
+                    http.Error(w, err.Error(), http.StatusInternalServerError)
+                }
+                return
+            }
+            err := ErrorPageData{Code: "500", ErrorMsg: "Database query failed"}
+            errHandler(w, r, &err)
+            return
+        }
 
-		// Check if the password is correct
-		if password != dbPassword {
-			err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
-				"ErrorMsg": "Invalid email or password",
-			})
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
-			return
-		}
+        // Check if the password is correct
+        if password != dbPassword {
+            err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
+                "ErrorMsg": "Invalid email or password",
+            })
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+            return
+        }
 
-		// If login is successful, redirect to the Home page with user ID
-		http.Redirect(w, r, fmt.Sprintf("/home?user=%d&tab=posts&filter=all", userID), http.StatusSeeOther)
-		return
-	}
+        // Set the userID in the session
+        session, _ := store.Get(r, "session-name")
+        session.Values["userID"] = strconv.Itoa(userID)
+        err = session.Save(r, w)
+        if err != nil {
+            log.Println("Error saving session:", err)
+            http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+            return
+        }
 
-	err := templates.ExecuteTemplate(w, "login.html", nil)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to parse template"}
-		errHandler(w, r, &errData)
-	}
+        log.Println("User logged in with userID:", userID)
+
+        // If login is successful, redirect to the Home page with user ID
+        http.Redirect(w, r, fmt.Sprintf("/home?user=%d&tab=posts&filter=all", userID), http.StatusSeeOther)
+        return
+    }
+
+    err := templates.ExecuteTemplate(w, "login.html", nil)
+    if err != nil {
+        errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to parse template"}
+        errHandler(w, r, &errData)
+    }
 }
 
 func SignupPage(w http.ResponseWriter, r *http.Request) {
@@ -393,111 +405,114 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func SettingsPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/settings" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.URL.Path != "/settings" {
+        err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	db, err := sql.Open("sqlite3", "./database/main.db")
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-		errHandler(w, r, &err)
-		return
-	}
-	defer db.Close()
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+        errHandler(w, r, &err)
+        return
+    }
+    defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+    // Retrieve UserID from session
+    session, _ := store.Get(r, "session-name")
+    userID, ok := session.Values["userID"].(string)
+    if !ok || userID == "" {
+        log.Println("UserID not found in session, redirecting to login page")
+        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        return
+    }
 
-	switch r.Method {
-	case "GET":
-		var user database.User
-		err := db.QueryRow("SELECT id, first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user data"}
-			errHandler(w, r, &errData)
-			return
-		}
+    log.Println("UserID retrieved from session:", userID)
 
-		data := struct {
-			UserID    string
-			FirstName string
-			LastName  string
-			Username  string
-			Email     string
-			Avatar    string
-		}{
-			UserID:    userID,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Username:  user.Username,
-			Email:     user.Email,
-			Avatar:    user.Avatar.String,
-		}
+    switch r.Method {
+    case "GET":
+        var user database.User
+        err := db.QueryRow("SELECT id, first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user data"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		err = templates.ExecuteTemplate(w, "settings.html", data)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case "POST":
-		err := r.ParseMultipartForm(10 << 20)
-		if err != nil {
-			http.Error(w, "Could not parse form", http.StatusBadRequest)
-			return
-		}
+        data := struct {
+            UserID    string
+            FirstName string
+            LastName  string
+            Username  string
+            Email     string
+            Avatar    string
+        }{
+            UserID:    userID,
+            FirstName: user.FirstName,
+            LastName:  user.LastName,
+            Username:  user.Username,
+            Email:     user.Email,
+            Avatar:    user.Avatar.String,
+        }
 
-		firstName := r.FormValue("first_name")
-		lastName := r.FormValue("last_name")
-		username := r.FormValue("username")
-		email := r.FormValue("email")
-		password := r.FormValue("password")
+        err = templates.ExecuteTemplate(w, "settings.html", data)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+    case "POST":
+        err := r.ParseMultipartForm(10 << 20)
+        if err != nil {
+            http.Error(w, "Could not parse form", http.StatusBadRequest)
+            return
+        }
 
-		var avatarPath sql.NullString
-		file, handler, err := r.FormFile("avatar")
-		if err == nil {
-			defer file.Close()
-			avatarPath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
-			avatarPath.Valid = true
+        firstName := r.FormValue("first_name")
+        lastName := r.FormValue("last_name")
+        username := r.FormValue("username")
+        email := r.FormValue("email")
+        password := r.FormValue("password")
 
-			// Ensure the directory exists
-			os.MkdirAll("static/uploads", os.ModePerm)
+        var avatarPath sql.NullString
+        file, handler, err := r.FormFile("avatar")
+        if err == nil {
+            defer file.Close()
+            avatarPath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
+            avatarPath.Valid = true
 
-			f, err := os.OpenFile(avatarPath.String, os.O_WRONLY|os.O_CREATE, 0666)
-			if err != nil {
-				http.Error(w, "Unable to save avatar", http.StatusInternalServerError)
-				return
-			}
-			defer f.Close()
-			io.Copy(f, file)
-		} else if err != http.ErrMissingFile {
-			http.Error(w, "Error uploading file", http.StatusInternalServerError)
-			return
-		}
+            // Ensure the directory exists
+            os.MkdirAll("static/uploads", os.ModePerm)
 
-		if password != "" {
-			_, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, password = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, password, avatarPath, userID)
-		} else {
-			_, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, avatarPath, userID)
-		}
+            f, err := os.OpenFile(avatarPath.String, os.O_WRONLY|os.O_CREATE, 0666)
+            if err != nil {
+                http.Error(w, "Unable to save avatar", http.StatusInternalServerError)
+                return
+            }
+            defer f.Close()
+            io.Copy(f, file)
+        } else if err != http.ErrMissingFile {
+            http.Error(w, "Error uploading file", http.StatusInternalServerError)
+            return
+        }
 
-		if err != nil {
-			http.Error(w, "Failed to update user data", http.StatusInternalServerError)
-			return
-		}
+        if password != "" {
+            _, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, password = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, password, avatarPath, userID)
+        } else {
+            _, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, avatarPath, userID)
+        }
 
-		http.Redirect(w, r, "/settings", http.StatusSeeOther)
-	default:
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
-		return
-	}
+        if err != nil {
+            http.Error(w, "Failed to update user data", http.StatusInternalServerError)
+            return
+        }
+
+        http.Redirect(w, r, "/settings", http.StatusSeeOther)
+    default:
+        err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+        errHandler(w, r, &err)
+        return
+    }
 }
 
 func NotificationsPage(w http.ResponseWriter, r *http.Request) {
@@ -548,93 +563,96 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func MyProfilePage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/myprofile" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.URL.Path != "/myprofile" {
+        err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	db, err := sql.Open("sqlite3", "./database/main.db")
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-		errHandler(w, r, &err)
-		return
-	}
-	defer db.Close()
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+        errHandler(w, r, &err)
+        return
+    }
+    defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+    // Retrieve UserID from session
+    session, _ := store.Get(r, "session-name")
+    userID, ok := session.Values["userID"].(string)
+    if !ok || userID == "" {
+        log.Println("UserID not found in session, redirecting to login page")
+        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        return
+    }
 
-	var user database.User
-	err = db.QueryRow("SELECT id, first_name, last_name, username, avatar FROM user WHERE id = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user data"}
-		errHandler(w, r, &errData)
-		return
-	}
+    log.Println("UserID retrieved from session:", userID)
 
-	posts, err := database.GetUserPosts(db, userID)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user posts"}
-		errHandler(w, r, &errData)
-		return
-	}
+    var user database.User
+    err = db.QueryRow("SELECT id, first_name, last_name, username, avatar FROM user WHERE id = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar)
+    if err != nil {
+        errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user data"}
+        errHandler(w, r, &errData)
+        return
+    }
 
-	followersCount, err := database.GetFollowersCount(db, userID)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch followers count"}
-		errHandler(w, r, &errData)
-		return
-	}
+    posts, err := database.GetUserPosts(db, userID)
+    if err != nil {
+        errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user posts"}
+        errHandler(w, r, &errData)
+        return
+    }
 
-	followingCount, err := database.GetFollowingCount(db, userID)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch following count"}
-		errHandler(w, r, &errData)
-		return
-	}
+    followersCount, err := database.GetFollowersCount(db, userID)
+    if err != nil {
+        errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch followers count"}
+        errHandler(w, r, &errData)
+        return
+    }
 
-	friendsCount, err := database.GetFriendsCount(db, userID)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch friends count"}
-		errHandler(w, r, &errData)
-		return
-	}
+    followingCount, err := database.GetFollowingCount(db, userID)
+    if err != nil {
+        errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch following count"}
+        errHandler(w, r, &errData)
+        return
+    }
 
-	data := struct {
-		UserID         string
-		FirstName      string
-		LastName       string
-		Username       string
-		Avatar         string
-		PostsCount     int
-		FollowersCount int
-		FollowingCount int
-		FriendsCount   int
-		Posts          []database.Post
-	}{
-		UserID:         userID,
-		FirstName:      user.FirstName,
-		LastName:       user.LastName,
-		Username:       user.Username,
-		Avatar:         user.Avatar.String,
-		PostsCount:     len(posts),
-		FollowersCount: followersCount,
-		FollowingCount: followingCount,
-		FriendsCount:   friendsCount,
-		Posts:          posts,
-	}
+    friendsCount, err := database.GetFriendsCount(db, userID)
+    if err != nil {
+        errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch friends count"}
+        errHandler(w, r, &errData)
+        return
+    }
 
-	err = templates.ExecuteTemplate(w, "myprofile.html", data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+    data := struct {
+        UserID         string
+        FirstName      string
+        LastName       string
+        Username       string
+        Avatar         string
+        PostsCount     int
+        FollowersCount int
+        FollowingCount int
+        FriendsCount   int
+        Posts          []database.Post
+    }{
+        UserID:         userID,
+        FirstName:      user.FirstName,
+        LastName:       user.LastName,
+        Username:       user.Username,
+        Avatar:         user.Avatar.String,
+        PostsCount:     len(posts),
+        FollowersCount: followersCount,
+        FollowingCount: followingCount,
+        FriendsCount:   friendsCount,
+        Posts:          posts,
+    }
+
+    err = templates.ExecuteTemplate(w, "myprofile.html", data)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
 }
 
 func ProfilePage(w http.ResponseWriter, r *http.Request) {
