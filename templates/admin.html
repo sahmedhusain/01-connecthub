@@ -572,19 +572,14 @@
             </div>
             <h3 class="menu-heading">Menu</h3>
             <ul>
-                <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "
-                        posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "
-                        tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
             </ul>
             <h3 class="menu-heading">Activity centre</h3>
             <ul>
-                <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "
-                        your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "
-                        your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "
-                        your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
             </ul>
             {{if or (eq .RoleID 1) (eq .RoleID 2)}}
             <h3 class="menu-heading">Forum management</h3>
