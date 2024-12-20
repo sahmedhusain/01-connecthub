@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   <style>
+    <style>
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -89,6 +89,7 @@
             color: #1F2937;
         }
 
+        /* Dropdown styling (top right avatar and notifications) */
         .dropdown {
             position: relative;
             display: inline-block;
@@ -113,6 +114,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 10;
             padding: 10px 0;
+            transition: opacity 0.3s ease;
+            opacity: 0;
         }
 
         .dropdown-content a {
@@ -122,6 +125,11 @@
             color: #374151;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
         }
 
         .dropdown-content a:hover {
@@ -130,104 +138,56 @@
 
         .dropdown:hover .dropdown-content {
             display: block;
+            opacity: 1;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            background: #ffffff;
+        .fa-bell {
+            font-size: 25px;
+            color: #374151;
+            position: relative;
+        }
+
+        .fa-bell::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            width: 8px;
+            height: 8px;
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        /* Sidebar styling (unchanged as requested) */
+        .sidebar-rights {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            text-align: center;
-        }
-
-        .dashboard-stats {
+            width: 260px;
+            height: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-stats div {
-            text-align: center;
-            padding: 20px;
-            background-color: #F3F4F6;
-            border-radius: 8px;
-            width: 200px;
-        }
-
-        .dashboard-stats div span {
-            display: block;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #E5E7EB;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #F3F4F6;
-        }
-
-        .role-select {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #E5E7EB;
-            border-radius: 4px;
-        }
-
-        .save-button, .delete-button, .add-button {
-            background-color: #3B82F6;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .save-button:hover, .delete-button:hover, .add-button:hover {
-            background-color: #2563EB;
-        }
-
-        .delete-button {
-            background-color: #EF4444;
-        }
-
-        .delete-button:hover {
-            background-color: #DC2626;
-        }
-
-        .category-form {
-            display: flex;
+            justify-content: center;
+            align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            max-height: 200px;
+            overflow: hidden;
         }
 
-        .category-form input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #E5E7EB;
-            border-radius: 4px;
+        .sidebar-rights img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .rights {
+            text-align: center;
+            padding: 0px 0;
+            color: #6B7280;
+            font-size: 14px;
         }
 
         .sidebar {
@@ -287,12 +247,6 @@
         .sidebar nav ul li a:hover {
             background-color: #3B82F6;
             color: #FFFFFF;
-        }
-
-        .sidebar nav ul li a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .search-container {
@@ -375,46 +329,10 @@
         .social-link:hover {
             color: #3B82F6;
         }
+
         .selected {
             font-weight: bold;
             color: #3B82F6;
-        }
-
-        .rights {
-            text-align: center;
-            padding: 0px 0;
-            color: #6B7280;
-            font-size: 14px;
-        }
-
-        .sidebar-rights {
-            position: fixed;
-            bottom: 30px;
-            left: 20px;
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 20px;
-            width: 260px;
-            height: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            max-height: 200px;
-            overflow: hidden;
-
-        }
-
-        .sidebar-rights img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
         }
 
         .filters a.selected {
@@ -426,147 +344,185 @@
             background-color: #3B82F6;
             color: #FFFFFF;
         }
-     /* Avatar Dropdown Improvements */
-     .dropdown {
-        position: relative;
-        display: inline-block;
-    }
 
-    .dropdown img {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+        /* Main container enhancements */
+        main {
+            padding: 20px;
+            flex: 1;
+        }
 
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: white;
-        min-width: 180px;
-        border: 1px solid #E5E7EB;
-        border-radius: 6px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 10;
-        padding: 10px 0;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    .dropdown-content a {
-        display: block;
-        padding: 10px 15px;
-        font-size: 14px;
-        color: #374151;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-    }
+        h1,
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
 
-    .dropdown-content a:hover {
-        background-color: #F3F4F6;
-    }
+        h1 {
+            font-size: 26px;
+            text-align: center;
+            color: #1F2937;
+        }
 
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-    .dropdown-content img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-    }
+        h2 {
+            font-size: 20px;
+            color: #1F2937;
+            margin-top: 40px;
+        }
 
-    /* Bell Icon Adjustments */
-    .fa-bell {
-        font-size: 25px;
-        color: #374151;
-        position: relative;
-    }
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
 
-    .fa-bell::after {
-        content: '';
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        width: 8px;
-        height: 8px;
-        background-color: red;
-        border-radius: 50%;
-    }
+        .dashboard-stats div {
+            text-align: center;
+            padding: 20px;
+            background-color: #F3F4F6;
+            border-radius: 8px;
+            width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
 
-    /* Dropdown Notification Style */
-    .dropdown .dropdown-content a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+        .dashboard-stats div span {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 5px;
+        }
 
-    .dropdown-content img {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-    }    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: #FFFFFF;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
 
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #FFFFFF;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        border-radius: 8px;
-        border: 1px solid #E5E7EB;
-        transition: opacity 0.3s ease;
-        opacity: 0;
-    }
+        table,
+        th,
+        td {
+            border: 1px solid #E5E7EB;
+        }
 
-    .dropdown:hover .dropdown-content {
-        display: block;
-        opacity: 1;
-    }
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+            color: #374151;
+        }
 
-    .dropdown-content a {
-        color: black;
-        padding: 14px 20px;
-        text-decoration: none;
-        display: block;
-        text-align: left;
-        border-bottom: 1px solid #E5E7EB;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
+        th {
+            background-color: #F9FAFB;
+            font-weight: 700;
+        }
 
-    .dropdown-content a:last-child {
-        border-bottom: none;
-    }
+        tbody tr:nth-child(even) {
+            background-color: #F3F4F6;
+        }
 
-    .dropdown-content a:hover {
-        background-color: #2563EB;
-        color: #FFFFFF;
-    }
+        select,
+        input[type="text"] {
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            transition: border-color 0.3s ease;
+        }
 
-    .dropdown-avatar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 14px 20px;
-        border-bottom: 1px solid #E5E7EB;
-    }
+        select:hover,
+        input[type="text"]:hover {
+            border-color: #3B82F6;
+        }
 
-    .dropdown-avatar img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-    }
-    .action-link {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        color: #6B7280;
-        font-size: 14px;
-        cursor: pointer;
-    }
-    .action-link:hover {
-        color: #3B82F6;
-    }
+        .role-select {
+            width: 100%;
+        }
+
+        .user-logs-select,
+        .user-sessions-select {
+            width: 200px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .save-button,
+        .delete-button,
+        .add-button,
+        .view-logs-button,
+        .view-sessions-button {
+            background-color: #3B82F6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .save-button:hover,
+        .delete-button:hover,
+        .add-button:hover,
+        .view-logs-button:hover,
+        .view-sessions-button:hover {
+            background-color: #2563EB;
+        }
+
+        .delete-button {
+            background-color: #EF4444;
+        }
+
+        .delete-button:hover {
+            background-color: #DC2626;
+        }
+
+        .category-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .category-form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #6B7280;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            color: #3B82F6;
+        }
     </style>
 </head>
 
@@ -583,7 +539,8 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/newpost?user={{.UserID}}"><button class="register"><i class="fa-regular fa-square-plus"></i> New post</button></a>
+            <a href="/newpost?user={{.UserID}}"><button class="register"><i class="fa-regular fa-square-plus"></i> New
+                    post</button></a>
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -594,9 +551,11 @@
                 </div>
             </div>
             <div class="dropdown">
-                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                    class="avatar">
                 <div class="dropdown-content">
-                    <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                    <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                        class="avatar">
                     <a href="/myprofile?user={{.UserID}}"><i class="fas fa-user"></i> Your Profile</a>
                     <a href="/settings?user={{.UserID}}"><i class="fas fa-cog"></i> Account settings</a>
                     <a href="/" style="color: red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -613,29 +572,38 @@
             </div>
             <h3 class="menu-heading">Menu</h3>
             <ul>
-                <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "
+                        posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "
+                        tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
             </ul>
             <h3 class="menu-heading">Activity centre</h3>
             <ul>
-                <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "
+                        your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "
+                        your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
+                <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "
+                        your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
             </ul>
             {{if or (eq .RoleID 1) (eq .RoleID 2)}}
             <h3 class="menu-heading">Forum management</h3>
             <ul>
                 {{if eq .RoleID 1}}
-                <li><a href="/admin?user={{.UserID}}" class="admin-dashboard"><i class="fas fa-user-shield"></i> Admin Dashboard</a></li>
+                <li><a href="/admin?user={{.UserID}}" class="admin-dashboard"><i class="fas fa-user-shield"></i> Admin
+                        Dashboard</a></li>
                 {{else if eq .RoleID 2}}
-                <li><a href="/moderator?user={{.UserID}}" class="moderator-panel"><i class="fas fa-user-cog"></i> Moderator Panel</a></li>
+                <li><a href="/moderator?user={{.UserID}}" class="moderator-panel"><i class="fas fa-user-cog"></i>
+                        Moderator Panel</a></li>
                 {{end}}
             </ul>
             {{end}}
         </nav>
         <div class="social-icons">
-            <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>
+            <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
+                    class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i
+                    class="fab fa-linkedin"></i></a>
             <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i></a>
         </div>
     </aside>
@@ -656,6 +624,7 @@
                     Total Categories
                 </div>
             </div>
+
             <h2>Manage User Roles</h2>
             <form action="/admin" method="POST">
                 <table>
@@ -682,7 +651,8 @@
                                 </select>
                             </td>
                             <td>
-                                <button type="submit" name="delete_user" value="{{.ID}}" class="delete-button">Delete</button>
+                                <button type="submit" name="delete_user" value="{{.ID}}"
+                                    class="delete-button">Delete</button>
                             </td>
                         </tr>
                         {{end}}
@@ -690,6 +660,7 @@
                 </table>
                 <button type="submit" class="save-button">Save Changes</button>
             </form>
+
             <h2>Manage Posts</h2>
             <form action="/admin" method="POST">
                 <table>
@@ -706,13 +677,15 @@
                             <td>{{.PostID}}</td>
                             <td>{{.Content}}</td>
                             <td>
-                                <button type="submit" name="delete_post" value="{{.PostID}}" class="delete-button">Delete</button>
+                                <button type="submit" name="delete_post" value="{{.PostID}}"
+                                    class="delete-button">Delete</button>
                             </td>
                         </tr>
                         {{end}}
                     </tbody>
                 </table>
             </form>
+
             <h2>Manage Categories</h2>
             <form action="/admin" method="POST" class="category-form">
                 <input type="text" name="new_category" placeholder="New Category Name" required>
@@ -733,13 +706,15 @@
                             <td>{{.ID}}</td>
                             <td>{{.Name}}</td>
                             <td>
-                                <button type="submit" name="delete_category" value="{{.ID}}" class="delete-button">Delete</button>
+                                <button type="submit" name="delete_category" value="{{.ID}}"
+                                    class="delete-button">Delete</button>
                             </td>
                         </tr>
                         {{end}}
                     </tbody>
                 </table>
             </form>
+
             <h2>Manage Reports</h2>
             <table>
                 <thead>
@@ -761,15 +736,18 @@
                         <td>{{.ReportReason}}</td>
                         <td>{{.CreatedAt}}</td>
                         <td>
-                            <button type="submit" name="delete_report" value="{{.ID}}" class="delete-button">Delete</button>
+                            <form action="/admin" method="POST" style="margin:0;">
+                                <button type="submit" name="delete_report" value="{{.ID}}"
+                                    class="delete-button">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {{end}}
                 </tbody>
             </table>
-            <!-- Add this section to display user logs -->
+
             <h2>Manage User Logs</h2>
-            <form action="/admin" method="GET">
+            <form action="/admin" method="GET" style="margin-bottom: 20px;">
                 <select name="user_logs" class="user-logs-select">
                     {{range .Users}}
                     <option value="{{.ID}}">{{.Username}}</option>
@@ -798,9 +776,8 @@
                 </tbody>
             </table>
 
-            <!-- Add this section to display user sessions -->
             <h2>Manage User Sessions</h2>
-            <form action="/admin" method="GET">
+            <form action="/admin" method="GET" style="margin-bottom: 20px;">
                 <select name="user_sessions" class="user-sessions-select">
                     {{range .Users}}
                     <option value="{{.ID}}">{{.Username}}</option>
