@@ -64,6 +64,20 @@ type Report struct {
 	CreatedAt    time.Time
 }
 
+type UserLog struct {
+    ID        int
+    UserID    int
+    Action    string
+    Timestamp time.Time
+}
+
+type UserSession struct {
+    ID     int
+    UserID int
+    Start  time.Time
+    End    time.Time
+}
+
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT idcategories, name, description FROM categories")
@@ -572,4 +586,40 @@ func ToggleDislike(db *sql.DB, postID int, userID string) error {
         _, err = db.Exec("INSERT INTO dislikes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
     }
     return err
+}
+
+func GetUserLogs(db *sql.DB, userID int) ([]UserLog, error) {
+    rows, err := db.Query("SELECT id, user_id, action, timestamp FROM user_logs WHERE user_id = ?", userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var logs []UserLog
+    for rows.Next() {
+        var log UserLog
+        if err := rows.Scan(&log.ID, &log.UserID, &log.Action, &log.Timestamp); err != nil {
+            return nil, err
+        }
+        logs = append(logs, log)
+    }
+    return logs, nil
+}
+
+func GetUserSessions(db *sql.DB, userID int) ([]UserSession, error) {
+    rows, err := db.Query("SELECT id, user_id, start, end FROM session WHERE user_id = ?", userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var sessions []UserSession
+    for rows.Next() {
+        var session UserSession
+        if err := rows.Scan(&session.ID, &session.UserID, &session.Start, &session.End); err != nil {
+            return nil, err
+        }
+        sessions = append(sessions, session)
+    }
+    return sessions, nil
 }

@@ -749,170 +749,199 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func AdminPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/admin" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.URL.Path != "/admin" {
+        err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+        errHandler(w, r, &err)
+        return
+    }
 
-	db, err := sql.Open("sqlite3", "./database/main.db")
-	if err != nil {
-		err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
-		errHandler(w, r, &err)
-		return
-	}
-	defer db.Close()
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        err := ErrorPageData{Code: "500", ErrorMsg: "Database connection failed"}
+        errHandler(w, r, &err)
+        return
+    }
+    defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+    // Retrieve UserID from session
+    session, _ := store.Get(r, "session-name")
+    userID, ok := session.Values["userID"].(string)
+    if !ok || userID == "" {
+        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        return
+    }
 
-	// Check if the user is an admin
-	var roleID int
-	err = db.QueryRow("SELECT role_id FROM user WHERE id = ?", userID).Scan(&roleID)
-	if err != nil || roleID != 1 {
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-		return
-	}
+    // Check if the user is an admin
+    var roleID int
+    err = db.QueryRow("SELECT role_id FROM user WHERE id = ?", userID).Scan(&roleID)
+    if err != nil || roleID != 1 {
+        http.Redirect(w, r, "/home", http.StatusSeeOther)
+        return
+    }
 
-	switch r.Method {
-	case "GET":
-		users, err := database.GetAllUsers(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
-			errHandler(w, r, &errData)
-			return
-		}
+    switch r.Method {
+    case "GET":
+        users, err := database.GetAllUsers(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch users"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		posts, err := database.GetAllPosts(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
-			errHandler(w, r, &errData)
-			return
-		}
+        posts, err := database.GetAllPosts(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch posts"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		categories, err := database.GetAllCategories(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch categories"}
-			errHandler(w, r, &errData)
-			return
-		}
+        categories, err := database.GetAllCategories(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch categories"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		reports, err := database.GetAllReports(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch reports"}
-			errHandler(w, r, &errData)
-			return
-		}
+        reports, err := database.GetAllReports(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch reports"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		totalUsers, err := database.GetTotalUsersCount(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch total users count"}
-			errHandler(w, r, &errData)
-			return
-		}
+        totalUsers, err := database.GetTotalUsersCount(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch total users count"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		totalPosts, err := database.GetTotalPostsCount(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch total posts count"}
-			errHandler(w, r, &errData)
-			return
-		}
+        totalPosts, err := database.GetTotalPostsCount(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch total posts count"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		totalCategories, err := database.GetTotalCategoriesCount(db)
-		if err != nil {
-			errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch total categories count"}
-			errHandler(w, r, &errData)
-			return
-		}
+        totalCategories, err := database.GetTotalCategoriesCount(db)
+        if err != nil {
+            errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch total categories count"}
+            errHandler(w, r, &errData)
+            return
+        }
 
-		data := struct {
-			UserID          string
-			Avatar          string
-			Users           []database.User
-			Posts           []database.Post
-			Categories      []database.Category
-			Reports         []database.Report
-			TotalUsers      int
-			TotalPosts      int
-			TotalCategories int
-		}{
-			UserID:          userID,
-			Avatar:          session.Values["avatar"].(string),
-			Users:           users,
-			Posts:           posts,
-			Categories:      categories,
-			Reports:         reports,
-			TotalUsers:      totalUsers,
-			TotalPosts:      totalPosts,
-			TotalCategories: totalCategories,
-		}
+        var userLogs []database.UserLog
+        var userSessions []database.UserSession
+        if userID := r.URL.Query().Get("user_logs"); userID != "" {
+            userIDInt, err := strconv.Atoi(userID)
+            if err == nil {
+                userLogs, err = database.GetUserLogs(db, userIDInt)
+                if err != nil {
+                    errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user logs"}
+                    errHandler(w, r, &errData)
+                    return
+                }
+            }
+        }
 
-		err = templates.ExecuteTemplate(w, "admin.html", data)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case "POST":
-		r.ParseForm()
-		if r.FormValue("delete_user") != "" {
-			userID := r.FormValue("delete_user")
-			_, err := db.Exec("DELETE FROM user WHERE id = ?", userID)
-			if err != nil {
-				http.Error(w, "Failed to delete user", http.StatusInternalServerError)
-				return
-			}
-		} else if r.FormValue("delete_post") != "" {
-			postID := r.FormValue("delete_post")
-			_, err := db.Exec("DELETE FROM post WHERE postid = ?", postID)
-			if err != nil {
-				http.Error(w, "Failed to delete post", http.StatusInternalServerError)
-				return
-			}
-		} else if r.FormValue("delete_category") != "" {
-			categoryID := r.FormValue("delete_category")
-			_, err := db.Exec("DELETE FROM categories WHERE id = ?", categoryID)
-			if err != nil {
-				http.Error(w, "Failed to delete category", http.StatusInternalServerError)
-				return
-			}
-		} else if r.FormValue("add_category") != "" {
-			categoryName := r.FormValue("new_category")
-			_, err := db.Exec("INSERT INTO categories (name) VALUES (?)", categoryName)
-			if err != nil {
-				http.Error(w, "Failed to add category", http.StatusInternalServerError)
-				return
-			}
-		} else if r.FormValue("resolve_report") != "" {
-			reportID := r.FormValue("resolve_report")
-			_, err := db.Exec("DELETE FROM reports WHERE id = ?", reportID)
-			if err != nil {
-				http.Error(w, "Failed to resolve report", http.StatusInternalServerError)
-				return
-			}
-		} else {
-			for key, values := range r.Form {
-				if len(values) > 0 && key[:5] == "role_" {
-					userID := key[5:]
-					roleID := values[0]
-					_, err := db.Exec("UPDATE user SET role_id = ? WHERE id = ?", roleID, userID)
-					if err != nil {
-						http.Error(w, "Failed to update user role", http.StatusInternalServerError)
-						return
-					}
-				}
-			}
-		}
-		http.Redirect(w, r, "/admin", http.StatusSeeOther)
-	default:
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
-		return
-	}
+        if userID := r.URL.Query().Get("user_sessions"); userID != "" {
+            userIDInt, err := strconv.Atoi(userID)
+            if err == nil {
+                userSessions, err = database.GetUserSessions(db, userIDInt)
+                if err != nil {
+                    errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to fetch user sessions"}
+                    errHandler(w, r, &errData)
+                    return
+                }
+            }
+        }
+
+        data := struct {
+            UserID          string
+            Avatar          string
+            Users           []database.User
+            Posts           []database.Post
+            Categories      []database.Category
+            Reports         []database.Report
+            TotalUsers      int
+            TotalPosts      int
+            TotalCategories int
+            UserLogs        []database.UserLog
+            UserSessions    []database.UserSession
+        }{
+            UserID:          userID,
+            Avatar:          session.Values["avatar"].(string),
+            Users:           users,
+            Posts:           posts,
+            Categories:      categories,
+            Reports:         reports,
+            TotalUsers:      totalUsers,
+            TotalPosts:      totalPosts,
+            TotalCategories: totalCategories,
+            UserLogs:        userLogs,
+            UserSessions:    userSessions,
+        }
+
+        err = templates.ExecuteTemplate(w, "admin.html", data)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
+    case "POST":
+        r.ParseForm()
+        if r.FormValue("delete_user") != "" {
+            userID := r.FormValue("delete_user")
+            _, err := db.Exec("DELETE FROM user WHERE id = ?", userID)
+            if err != nil {
+                http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+                return
+            }
+        } else if r.FormValue("delete_post") != "" {
+            postID := r.FormValue("delete_post")
+            _, err := db.Exec("DELETE FROM post WHERE postid = ?", postID)
+            if err != nil {
+                http.Error(w, "Failed to delete post", http.StatusInternalServerError)
+                return
+            }
+        } else if r.FormValue("delete_category") != "" {
+            categoryID := r.FormValue("delete_category")
+            _, err := db.Exec("DELETE FROM categories WHERE idcategories = ?", categoryID)
+            if err != nil {
+                http.Error(w, "Failed to delete category", http.StatusInternalServerError)
+                return
+            }
+        } else if r.FormValue("add_category") != "" {
+            categoryName := r.FormValue("new_category")
+            _, err := db.Exec("INSERT INTO categories (name) VALUES (?)", categoryName)
+            if err != nil {
+                http.Error(w, "Failed to add category", http.StatusInternalServerError)
+                return
+            }
+        } else if r.FormValue("resolve_report") != "" {
+            reportID := r.FormValue("resolve_report")
+            _, err := db.Exec("DELETE FROM reports WHERE id = ?", reportID)
+            if err != nil {
+                http.Error(w, "Failed to resolve report", http.StatusInternalServerError)
+                return
+            }
+        } else {
+            for key, values := range r.Form {
+                if len(values) > 0 && key[:5] == "role_" {
+                    userID := key[5:]
+                    roleID := values[0]
+                    _, err := db.Exec("UPDATE user SET role_id = ? WHERE id = ?", roleID, userID)
+                    if err != nil {
+                        http.Error(w, "Failed to update user role", http.StatusInternalServerError)
+                        return
+                    }
+                }
+            }
+        }
+        http.Redirect(w, r, "/admin", http.StatusSeeOther)
+    default:
+        err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+        errHandler(w, r, &err)
+        return
+    }
 }
 
 func ModeratorPage(w http.ResponseWriter, r *http.Request) {

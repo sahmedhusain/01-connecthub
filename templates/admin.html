@@ -376,6 +376,67 @@
                     {{end}}
                 </tbody>
             </table>
+            <!-- Add this section to display user logs -->
+            <h2>Manage User Logs</h2>
+            <form action="/admin" method="GET">
+                <select name="user_logs" class="user-logs-select">
+                    {{range .Users}}
+                    <option value="{{.ID}}">{{.Username}}</option>
+                    {{end}}
+                </select>
+                <button type="submit" class="view-logs-button">View Logs</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Log ID</th>
+                        <th>User ID</th>
+                        <th>Action</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .UserLogs}}
+                    <tr>
+                        <td>{{.ID}}</td>
+                        <td>{{.UserID}}</td>
+                        <td>{{.Action}}</td>
+                        <td>{{.Timestamp}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+
+            <!-- Add this section to display user sessions -->
+            <h2>Manage User Sessions</h2>
+            <form action="/admin" method="GET">
+                <select name="user_sessions" class="user-sessions-select">
+                    {{range .Users}}
+                    <option value="{{.ID}}">{{.Username}}</option>
+                    {{end}}
+                </select>
+                <button type="submit" class="view-sessions-button">View Sessions</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>User ID</th>
+                        <th>Start</th>
+                        <th>End</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .UserSessions}}
+                    <tr>
+                        <td>{{.ID}}</td>
+                        <td>{{.UserID}}</td>
+                        <td>{{.Start}}</td>
+                        <td>{{.End}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
         </div>
     </main>
 </body>
