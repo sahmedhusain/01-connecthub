@@ -205,18 +205,81 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignupPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/signup" {
-		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
-		return
-	}
+    if r.URL.Path != "/signup" {
+        http.NotFound(w, r)
+        return
+    }
 
-	// Render the template
-	err := templates.ExecuteTemplate(w, "signup.html", nil)
-	if err != nil {
-		errData := ErrorPageData{Code: "500", ErrorMsg: "Failed to parse template"}
-		errHandler(w, r, &errData)
-	}
+    if r.Method == "POST" {
+        username := r.FormValue("username")
+        email := r.FormValue("email")
+        password := r.FormValue("password")
+        confirmPassword := r.FormValue("confirm-password")
+
+        if password != confirmPassword {
+            err := templates.ExecuteTemplate(w, "signup.html", map[string]string{
+                "ErrorMessage": "Passwords do not match",
+            })
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+            return
+        }
+
+        db, err := sql.Open("sqlite3", "./database/main.db")
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer db.Close()
+
+        var usernameExists, emailExists bool
+        err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM user WHERE username = ?)", username).Scan(&usernameExists)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM user WHERE email = ?)", email).Scan(&emailExists)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        if usernameExists {
+            err := templates.ExecuteTemplate(w, "signup.html", map[string]string{
+                "ErrorMessage": "Username already exists",
+            })
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+            return
+        }
+
+        if emailExists {
+            err := templates.ExecuteTemplate(w, "signup.html", map[string]string{
+                "ErrorMessage": "Email already exists",
+            })
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+            return
+        }
+
+        _, err = db.Exec("INSERT INTO user (username, email, password) VALUES (?, ?, ?)", username, email, password)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        http.Redirect(w, r, "/home", http.StatusSeeOther)
+        return
+    }
+
+    err := templates.ExecuteTemplate(w, "signup.html", nil)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {

@@ -317,7 +317,10 @@
             <div class="header">
                 <h1>Create your account</h1>
             </div>
-            <form action="/indexs" method="POST">
+            {{if .ErrorMessage}}
+            <div class="error-message">{{.ErrorMessage}}</div>
+            {{end}}
+            <form action="/signup" method="POST">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
