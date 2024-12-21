@@ -7,9 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -30,19 +28,6 @@
             align-items: center;
             padding: 15px 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            animation: fadeInDown 0.5s ease-in-out;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .feed-container {
@@ -126,19 +111,6 @@
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .sidebar {
@@ -159,19 +131,6 @@
             max-height: calc(100vh - 180px);
             overflow-y: auto;
             margin-bottom: 20px;
-            animation: fadeInLeft 0.5s ease-in-out;
-        }
-
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
 
         .sidebar nav {
@@ -227,7 +186,7 @@
             margin-bottom: 20px;
         }
 
-        .filters a {
+        .filters button {
             text-decoration: none;
         }
 
@@ -263,7 +222,7 @@
 
         .post:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
         }
 
         .post-header {
@@ -455,19 +414,6 @@
             gap: 10px;
             max-height: 200px;
             overflow: hidden;
-            animation: fadeInUp 0.5s ease-in-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .sidebar-rights img {
@@ -475,7 +421,7 @@
             height: 40px;
         }
 
-        .filters a.selected {
+        .filters button.selected {
             background-color: #3B82F6;
             color: #FFFFFF;
         }
@@ -523,14 +469,34 @@
                 </div>
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
-                    <li><a href="/?tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
-                    <li><a href="/?tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
+                    <li>
+                        <form action="/" method="GET" style="display:inline;">
+                            <input type="hidden" name="tab" value="posts">
+                            <input type="hidden" name="filter" value="all">
+                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}"
+                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                                <i class="fas fa-newspaper"></i> Posts
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/" method="GET" style="display:inline;">
+                            <input type="hidden" name="tab" value="tags">
+                            <input type="hidden" name="filter" value="all">
+                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}"
+                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                                <i class="fas fa-tags"></i> Tags
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </nav>
             <div class="social-icons">
-                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i>
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
+                        class="fab fa-instagram"></i>
                 </a>
-                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i class="fab fa-linkedin"></i>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i
+                        class="fab fa-linkedin"></i>
                 </a>
                 <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i>
                 </a>
@@ -540,13 +506,48 @@
             <section class="feed">
                 <div class="filters">
                     {{if eq .SelectedTab "posts"}}
-                    <a href="/?tab=posts&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
-                    <a href="/?tab=posts&filter=top-rated"><button class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"><i class="fas fa-star"></i> Top Rated</button></a>
-                    <a href="/?tab=posts&filter=oldest"><button class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"><i class="fas fa-sort-amount-up"></i> Oldest to Newest</button></a>
+                    <form action="/" method="GET" style="display:inline;">
+                        <input type="hidden" name="tab" value="posts">
+                        <input type="hidden" name="filter" value="all">
+                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}"
+                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-th-list"></i> All
+                        </button>
+                    </form>
+                    <form action="/" method="GET" style="display:inline;">
+                        <input type="hidden" name="tab" value="posts">
+                        <input type="hidden" name="filter" value="top-rated">
+                        <button type="submit" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"
+                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-star"></i> Top Rated
+                        </button>
+                    </form>
+                    <form action="/" method="GET" style="display:inline;">
+                        <input type="hidden" name="tab" value="posts">
+                        <input type="hidden" name="filter" value="oldest">
+                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"
+                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-sort-amount-up"></i> Oldest to Newest
+                        </button>
+                    </form>
                     {{else if eq .SelectedTab "tags"}}
-                    <a href="/?tab=tags&filter=all"><button class="{{if eq .SelectedFilter "all"}}selected{{end}}"><i class="fas fa-th-list"></i> All</button></a>
+                    <form action="/" method="GET" style="display:inline;">
+                        <input type="hidden" name="tab" value="tags">
+                        <input type="hidden" name="filter" value="all">
+                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}"
+                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-th-list"></i> All
+                        </button>
+                    </form>
                     {{range .Categories}}
-                    <a href="/?tab=tags&filter={{.Name}}"><button class="{{if eq $.SelectedFilter .Name}}selected{{end}}"><i class="fas fa-tag"></i> {{.Name}}</button></a>
+                    <form action="/" method="GET" style="display:inline;">
+                        <input type="hidden" name="tab" value="tags">
+                        <input type="hidden" name="filter" value="{{.Name}}">
+                        <button type="submit" class="{{if eq $.SelectedFilter .Name}}selected{{end}}"
+                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-tag"></i> {{.Name}}
+                        </button>
+                    </form>
                     {{end}}
                     {{end}}
                 </div>
@@ -554,7 +555,8 @@
                     {{range .Posts}}
                     <article class="post">
                         <div class="post-header">
-                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar">
+                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
+                                alt="Avatar">
                             <div class="post-info">
                                 <h3>{{.FirstName}} {{.LastName}}</h3>
                                 <p>@{{.Username}}</p>
@@ -564,14 +566,24 @@
                             <p>{{.Content}}</p>
                             <div class="post-categories">
                                 {{range .Categories}}
-                                <a href="/?tab=tags&filter={{.Name}}"><span class="category-box">{{.Name}}</span></a>
+                                <form action="/" method="GET" style="display:inline;">
+                                    <input type="hidden" name="tab" value="tags">
+                                    <input type="hidden" name="filter" value="{{.Name}}">
+                                    <button type="submit"
+                                        style="background:none; border:none; color:inherit; cursor:pointer;">
+                                        <span class="category-box">{{.Name}}</span>
+                                    </button>
+                                </form>
                                 {{end}}
                             </div>
                         </div>
                         <div class="post-actions">
-                            <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</span></a>
-                            <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i> {{.Dislikes}}</span></a>
-                            <a href="/login" style="text-decoration: none;"><span><i class="fa-regular fa-message"></i> {{.Comments}}</span></a>
+                            <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up"></i>
+                                    {{.Likes}}</span></a>
+                            <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up"
+                                        style="rotate: 180deg;"></i> {{.Dislikes}}</span></a>
+                            <a href="/login" style="text-decoration: none;"><span><i class="fa-regular fa-message"></i>
+                                    {{.Comments}}</span></a>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
                     </article>

@@ -625,22 +625,42 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/newpost?user={{.UserID}}"><button class="register"><i class="fa-regular fa-square-plus"></i> New post</button></a>
+            <form action="/newpost" method="GET" style="display:inline;">
+                <input type="hidden" name="user" value="{{.UserID}}">
+                <button type="submit" class="register" style="background:none; border:none; color:inherit; cursor:pointer;">
+                    <i class="fa-regular fa-square-plus"></i> New post
+                </button>
+            </form>
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
                     {{range .Notifications}}
                     <a class="dropdown-item" href="#">{{.Message}}</a>
                     {{end}}
-                    <a class="dropdown-item" href="/notifications?user={{.UserID}}">More...</a>
+                    <form action="/notifications" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <button type="submit" class="dropdown-item" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            More...
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
                 <div class="dropdown-content">
                     <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
-                    <a href="/myprofile?user={{.UserID}}"><i class="fas fa-user"></i> Your Profile</a>
-                    <a href="/settings?user={{.UserID}}"><i class="fas fa-cog"></i> Account settings</a>
+                    <form action="/myprofile" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-user"></i> Your Profile
+                        </button>
+                    </form>
+                    <form action="/settings" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-cog"></i> Account settings
+                        </button>
+                    </form>
                     <a href="/" style="color: red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -699,22 +719,81 @@
             </div>
             <h3 class="menu-heading">Menu</h3>
             <ul>
-                <li><a href="/home?user={{.UserID}}&tab=posts&filter=all" class="{{if eq .SelectedTab "posts"}}selected{{end}}"><i class="fas fa-newspaper"></i> Posts</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=tags&filter=all" class="{{if eq .SelectedTab "tags"}}selected{{end}}"><i class="fas fa-tags"></i> Tags</a></li>
+                <li>
+                    <form action="/home" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <input type="hidden" name="tab" value="posts">
+                        <input type="hidden" name="filter" value="all">
+                        <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-newspaper"></i> Posts
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/home" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <input type="hidden" name="tab" value="tags">
+                        <input type="hidden" name="filter" value="all">
+                        <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-tags"></i> Tags
+                        </button>
+                    </form>
+                </li>
             </ul>
             <h3 class="menu-heading">Activity centre</h3>
             <ul>
-                <li><a href="/home?user={{.UserID}}&tab=your+posts&filter=newest" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}"><i class="fa-solid fa-grip-lines"></i> Your posts</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=your+replies&filter=newest" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"><i class="fa-solid fa-reply"></i> Your replies</a></li>
-                <li><a href="/home?user={{.UserID}}&tab=your+reactions&filter=likes" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"><i class="fa-regular fa-heart"></i> Your reactions</a></li>
+                <li>
+                    <form action="/home" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <input type="hidden" name="tab" value="your+posts">
+                        <input type="hidden" name="filter" value="newest">
+                        <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fa-solid fa-grip-lines"></i> Your posts
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/home" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <input type="hidden" name="tab" value="your+replies">
+                        <input type="hidden" name="filter" value="newest">
+                        <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fa-solid fa-reply"></i> Your replies
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/home" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <input type="hidden" name="tab" value="your+reactions">
+                        <input type="hidden" name="filter" value="likes">
+                        <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fa-regular fa-heart"></i> Your reactions
+                        </button>
+                    </form>
+                </li>
             </ul>
             {{if or (eq .RoleID 1) (eq .RoleID 2)}}
             <h3 class="menu-heading">Forum management</h3>
             <ul>
                 {{if eq .RoleID 1}}
-                <li><a href="/admin?user={{.UserID}}" class="admin-dashboard"><i class="fas fa-user-shield"></i> Admin Dashboard</a></li>
+                <li>
+                    <form action="/admin" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <button type="submit" class="admin-dashboard" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-user-shield"></i> Admin Dashboard
+                        </button>
+                    </form>
+                </li>
                 {{else if eq .RoleID 2}}
-                <li><a href="/moderator?user={{.UserID}}" class="moderator-panel"><i class="fas fa-user-cog"></i> Moderator Panel</a></li>
+                <li>
+                    <form action="/moderator" method="GET" style="display:inline;">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <button type="submit" class="moderator-panel" style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <i class="fas fa-user-cog"></i> Moderator Panel
+                        </button>
+                    </form>
+                </li>
                 {{end}}
             </ul>
             {{end}}
