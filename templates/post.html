@@ -836,6 +836,25 @@
                 </form>
                 <span><i class="fa-regular fa-message"></i> {{.Post.Comments}}</span>
             </div>
+            {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
+            <div class="post-actions">
+                <div class="dropdown" style="position: absolute; right: 0;">
+                    <button class="dropbtn">...</button>
+                    <div class="dropdown-content">
+                        {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
+                        <a href="/deletepost?id={{.PostID}}">Delete Post</a>
+                        {{end}}
+                        {{if eq (printf "%v" $.RoleID) "1"}}
+                        <a href="/deletepost?id={{.PostID}}">Delete Post</a>
+                        {{end}}
+                        {{if eq (printf "%v" $.RoleID) "2"}}
+                        <a href="/deletepost?id={{.PostID}}">Delete Post</a>
+                        <a href="/reportpost?id={{.PostID}}">Report Post</a>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+            {{end}}
             <div class="comments-section">
                 <h2>Comments</h2>
                 {{range .Comments}}
@@ -845,6 +864,25 @@
                         <p>{{.Content}}</p>
                         <time>{{.CommentAt}}</time>
                     </div>
+                    {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
+                    <div class="comment-actions">
+                        <div class="dropdown" style="position: absolute; right: 0;">
+                            <button class="dropbtn">...</button>
+                            <div class="dropdown-content">
+                                {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
+                                <a href="/deletecomment?id={{.CommentID}}">Delete Comment</a>
+                                {{end}}
+                                {{if eq (printf "%v" $.RoleID) "1"}}
+                                <a href="/deletecomment?id={{.CommentID}}">Delete Comment</a>
+                                {{end}}
+                                {{if eq (printf "%v" $.RoleID) "2"}}
+                                <a href="/deletecomment?id={{.CommentID}}">Delete Comment</a>
+                                <a href="/reportcomment?id={{.CommentID}}">Report Comment</a>
+                                {{end}}
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
                 </div>
                 {{else}}
                 <p>No comments available</p>

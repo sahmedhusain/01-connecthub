@@ -1172,7 +1172,25 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 				errHandler(w, r, &err)
 				return
 			}
-		} else {
+		} else if r.FormValue("delete_comment") != "" {
+			commentID := r.FormValue("delete_comment")
+			_, err := db.Exec("DELETE FROM comment WHERE commentid = ?", commentID)
+			if err != nil {
+				log.Println("Failed to delete comment")
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				errHandler(w, r, &err)
+				return
+			}
+		} else if r.FormValue("delete_comment") != "" {
+            commentID := r.FormValue("delete_comment")
+            _, err := db.Exec("DELETE FROM comment WHERE commentid = ?", commentID)
+            if err != nil {
+                log.Println("Failed to delete comment")
+                err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+                errHandler(w, r, &err)
+                return
+            }
+        }else{
 			for key, values := range r.Form {
 				if len(values) > 0 && key[:5] == "role_" {
 					userID := key[5:]
@@ -1252,9 +1270,9 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			Posts:  posts,
 		}
 
-		err = templates.ExecuteTemplate(w, "moderator.html", data)
+		err = templates.ExecuteTemplate(w, "home.html", data) // Changed from "moderator.html" to "home.html"
 		if err != nil {
-			log.Println("Error rendering moderator page:", err)
+			log.Println("Error rendering home page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &err)
 			return
@@ -1280,7 +1298,25 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 				errHandler(w, r, &err)
 				return
 			}
-		}
+		} else if r.FormValue("delete_comment") != "" {
+            commentID := r.FormValue("delete_comment")
+            _, err := db.Exec("DELETE FROM comment WHERE commentid = ?", commentID)
+            if err != nil {
+                log.Println("Failed to delete comment")
+                err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+                errHandler(w, r, &err)
+                return
+            }
+        } else if r.FormValue("report_comment") != "" {
+            commentID := r.FormValue("report_comment")
+            _, err := db.Exec("INSERT INTO reports (comment_id, reported_by, report_reason) VALUES (?, ?, ?)", commentID, userID, "Reported by moderator")
+            if err != nil {
+                log.Println("Failed to report comment")
+                err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+                errHandler(w, r, &err)
+                return
+            }
+        }
 		log.Println("Moderator action completed")
 		http.Redirect(w, r, "/moderator", http.StatusSeeOther)
 	default:
@@ -1441,4 +1477,60 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Dislike toggled")
 	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "GET" {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    postID := r.URL.Query().Get("id")
+    if postID == "" {
+        http.Error(w, "Post ID is required", http.StatusBadRequest)
+        return
+    }
+
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+        return
+    }
+    defer db.Close()
+
+    _, err = db.Exec("DELETE FROM post WHERE postid = ?", postID)
+    if err != nil {
+        http.Error(w, "Failed to delete post", http.StatusInternalServerError)
+        return
+    }
+
+    http.Redirect(w, r, "/home?user="+r.URL.Query().Get("user"), http.StatusSeeOther)
+}
+
+func ReportPost(w http.ResponseWriter, r *http.Request) {
+    if r.Method != "GET" {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    postID := r.URL.Query().Get("id")
+    if postID == "" {
+        http.Error(w, "Post ID is required", http.StatusBadRequest)
+        return
+    }
+
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+        return
+    }
+    defer db.Close()
+
+    _, err = db.Exec("INSERT INTO reports (post_id, reported_by, report_reason) VALUES (?, ?, ?)", postID, r.URL.Query().Get("user"), "Reported by moderator")
+    if err != nil {
+        http.Error(w, "Failed to report post", http.StatusInternalServerError)
+        return
+    }
+
+    http.Redirect(w, r, "/home?user="+r.URL.Query().Get("user"), http.StatusSeeOther)
 }

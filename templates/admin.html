@@ -826,6 +826,30 @@
                 </tbody>
             </table>
 
+            <h2>Manage Comments</h2>
+            <form action="/admin" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comment ID</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Comments}}
+                        <tr>
+                            <td>{{.CommentID}}</td>
+                            <td>{{.Content}}</td>
+                            <td>
+                                <button type="submit" name="delete_comment" value="{{.CommentID}}" class="delete-button">Delete</button>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </form>
+
             <h2>Manage User Logs</h2>
             <form action="/admin" method="GET" style="margin-bottom: 20px;">
                 <select name="user_logs" class="user-logs-select">

@@ -667,6 +667,25 @@
                     {{end}}
                 </ul>
                 {{end}}
+                {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
+                <div class="post-actions">
+                    <div class="dropdown" style="position: absolute; right: 0;">
+                        <button class="dropbtn">...</button>
+                        <div class="dropdown-content">
+                            {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
+                            <a href="/deletepost?id={{.PostID}}">Delete Post</a>
+                            {{end}}
+                            {{if eq (printf "%v" $.RoleID) "1"}}
+                            <a href="/deletepost?id={{.PostID}}">Delete Post</a>
+                            {{end}}
+                            {{if eq (printf "%v" $.RoleID) "2"}}
+                            <a href="/deletepost?id={{.PostID}}">Delete Post</a>
+                            <a href="/reportpost?id={{.PostID}}">Report Post</a>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+                {{end}}
             </div>
         </div>
     </main>

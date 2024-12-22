@@ -645,6 +645,30 @@
                     </tbody>
                 </table>
             </form>
+            <h2>Manage Comments</h2>
+            <form action="/moderator" method="POST">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comment ID</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Comments}}
+                        <tr>
+                            <td>{{.CommentID}}</td>
+                            <td>{{.Content}}</td>
+                            <td>
+                                <button type="submit" name="delete_comment" value="{{.CommentID}}" class="delete-button">Delete</button>
+                                <button type="submit" name="report_comment" value="{{.CommentID}}" class="report-button">Report</button>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </form>
         </div>
     </main>
 </body>
