@@ -623,3 +623,72 @@ func GetUserSessions(db *sql.DB, userID int) ([]UserSession, error) {
     }
     return sessions, nil
 }
+
+func GetFollowers(db *sql.DB, userID string) ([]User, error) {
+    rows, err := db.Query(`
+        SELECT user.userid, user.F_name, user.L_name, user.Username, user.Avatar
+        FROM followers
+        JOIN user ON followers.follower_userid = user.userid
+        WHERE followers.user_userid = ?
+    `, userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var followers []User
+    for rows.Next() {
+        var user User
+        if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
+            return nil, err
+        }
+        followers = append(followers, user)
+    }
+    return followers, nil
+}
+
+func GetFollowing(db *sql.DB, userID string) ([]User, error) {
+    rows, err := db.Query(`
+        SELECT user.userid, user.F_name, user.L_name, user.Username, user.Avatar
+        FROM following
+        JOIN user ON following.following_userid = user.userid
+        WHERE following.user_userid = ?
+    `, userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var following []User
+    for rows.Next() {
+        var user User
+        if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
+            return nil, err
+        }
+        following = append(following, user)
+    }
+    return following, nil
+}
+
+func GetFriends(db *sql.DB, userID string) ([]User, error) {
+    rows, err := db.Query(`
+        SELECT user.userid, user.F_name, user.L_name, user.Username, user.Avatar
+        FROM friends
+        JOIN user ON friends.friend_userid = user.userid
+        WHERE friends.user_userid = ?
+    `, userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var friends []User
+    for rows.Next() {
+        var user User
+        if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
+            return nil, err
+        }
+        friends = append(friends, user)
+    }
+    return friends, nil
+}

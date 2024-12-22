@@ -679,11 +679,19 @@
                             Posts
                         </div>
                         <div>
-                            <span>{{.ProfileFollowersCount}}</span>
+                            <form method="GET" action="/profile">
+                                <input type="hidden" name="user" value="{{.ProfileUserID}}">
+                                <input type="hidden" name="view" value="followers">
+                                <button type="submit">{{.ProfileFollowersCount}}</button>
+                            </form>
                             Followers
                         </div>
                         <div>
-                            <span>{{.ProfileFollowingCount}}</span>
+                            <form method="GET" action="/profile">
+                                <input type="hidden" name="user" value="{{.ProfileUserID}}">
+                                <input type="hidden" name="view" value="following">
+                                <button type="submit">{{.ProfileFollowingCount}}</button>
+                            </form>
                             Following
                         </div>
                     </div>
@@ -693,6 +701,24 @@
                     <button class="follow-button" onclick="location.href='/follow?user={{.ProfileUserID}}'">Follow</button>
                     {{end}}
                 </div>
+            </div>
+            <div id="list-container">
+                {{if eq .View "followers"}}
+                <h2>Followers</h2>
+                <ul>
+                    {{range .Followers}}
+                    <li>{{.FirstName}} {{.LastName}} (@{{.Username}})</li>
+                    {{end}}
+                </ul>
+                {{end}}
+                {{if eq .View "following"}}
+                <h2>Following</h2>
+                <ul>
+                    {{range .Following}}
+                    <li>{{.FirstName}} {{.LastName}} (@{{.Username}})</li>
+                    {{end}}
+                </ul>
+                {{end}}
             </div>
             <div class="posts-container">
                 {{range .ProfilePosts}}

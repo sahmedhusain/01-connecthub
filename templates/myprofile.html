@@ -619,38 +619,58 @@
                     <p>{{.Username}}</p>
                     <div class="profile-stats">
                         <div>
-                            <span>{{.PostsCount}}</span>
-                            Posts
-                        </div>
-                        <div>
-                            <span>{{.FollowersCount}}</span>
+                            <form method="GET" action="/myprofile">
+                                <input type="hidden" name="view" value="followers">
+                                <button type="submit">{{.FollowersCount}}</button>
+                            </form>
                             Followers
                         </div>
                         <div>
-                            <span>{{.FollowingCount}}</span>
+                            <form method="GET" action="/myprofile">
+                                <input type="hidden" name="view" value="following">
+                                <button type="submit">{{.FollowingCount}}</button>
+                            </form>
                             Following
                         </div>
                         <div>
-                            <span>{{.FriendsCount}}</span>
+                            <form method="GET" action="/myprofile">
+                                <input type="hidden" name="view" value="friends">
+                                <button type="submit">{{.FriendsCount}}</button>
+                            </form>
                             Friends
                         </div>
                     </div>
                 </div>
             </div>
             <div class="posts-container">
-                {{range .Posts}}
-                <div class="post">
-                    {{if .Image.Valid}}
-                    <img src="{{.Image.String}}" alt="Post Image">
+                {{if eq .View "followers"}}
+                <h2>Followers</h2>
+                <ul>
+                    {{range .Followers}}
+                    <li>{{.FirstName}} {{.LastName}} (@{{.Username}})</li>
                     {{end}}
-                    <div class="post-content">
-                        <p>{{.Content}}</p>
-                    </div>
-                </div>
+                </ul>
+                {{end}}
+                {{if eq .View "following"}}
+                <h2>Following</h2>
+                <ul>
+                    {{range .Following}}
+                    <li>{{.FirstName}} {{.LastName}} (@{{.Username}})</li>
+                    {{end}}
+                </ul>
+                {{end}}
+                {{if eq .View "friends"}}
+                <h2>Friends</h2>
+                <ul>
+                    {{range .Friends}}
+                    <li>{{.FirstName}} {{.LastName}} (@{{.Username}})</li>
+                    {{end}}
+                </ul>
                 {{end}}
             </div>
         </div>
     </main>
+</div>
 </body>
 
 </html>
