@@ -52,8 +52,11 @@ type Post struct {
 type Notification struct {
 	ID        int
 	UserID    int
+	PostID    int // Add this field
 	Message   string
 	CreatedAt time.Time
+	UserImage string // Add this field
+	UserName  string // Add this field
 }
 
 type Report struct {
@@ -389,26 +392,34 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 }
 
 func GetLastNotifications(db *sql.DB, userID string) ([]Notification, error) {
-	rows, err := db.Query("SELECT notificationid, user_userid, message, created_at FROM notifications WHERE user_userid = ? ORDER BY created_at DESC", userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+    rows, err := db.Query(`
+        SELECT n.notificationid, n.user_userid, n.post_id, n.message, n.created_at, u.Avatar, u.Username
+        FROM notifications n
+        JOIN user u ON n.user_userid = u.userid
+        WHERE n.user_userid = ?
+        ORDER BY n.created_at DESC
+    `, userID)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
 
-	var notifications []Notification
-	for rows.Next() {
-		var notification Notification
-		if err := rows.Scan(&notification.ID, &notification.UserID, &notification.Message, &notification.CreatedAt); err != nil {
-			return nil, err
-		}
-		notifications = append(notifications, notification)
-	}
+    var notifications []Notification
+    for rows.Next() {
+        var notification Notification
+        var avatar sql.NullString
+        if err := rows.Scan(&notification.ID, &notification.UserID, &notification.PostID, &notification.Message, &notification.CreatedAt, &avatar, &notification.UserName); err != nil {
+            return nil, err
+        }
+        notification.UserImage = avatar.String
+        notifications = append(notifications, notification)
+    }
 
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
 
-	return notifications, nil
+    return notifications, nil
 }
 
 func InsertPost(db *sql.DB, content string, image sql.NullString, userID string) (int, error) {

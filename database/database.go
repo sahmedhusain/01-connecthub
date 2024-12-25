@@ -122,9 +122,11 @@ func DataBase() {
 		CREATE TABLE IF NOT EXISTS notifications (
 			notificationid INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_userid INTEGER NOT NULL,
+			post_id INTEGER NOT NULL,
 			message TEXT NOT NULL,
 			created_at DATETIME default CURRENT_TIMESTAMP,
-			FOREIGN KEY (user_userid) REFERENCES user(userid)
+			FOREIGN KEY (user_userid) REFERENCES user(userid),
+			FOREIGN KEY (post_id) REFERENCES post(postid)
 		);`
 
 	const CreateFollowingTable = `
@@ -308,8 +310,8 @@ func DataBase() {
 
 	// Insert notifications as examples
 	insertNotifications := []string{
-		`INSERT INTO notifications (user_userid, message, created_at) VALUES (1, 'Your post on AI & ML just received a new comment!', '2024-12-20 14:00:00');`,
-		`INSERT INTO notifications (user_userid, message, created_at) VALUES (2, 'Your Cloud & DevOps post was liked by a user!', '2024-12-20 14:30:00');`,
+		`INSERT INTO notifications (user_userid, post_id, message, created_at) VALUES (1, 1, 'Your post on AI & ML just received a new comment!', '2024-12-20 14:00:00');`,
+		`INSERT INTO notifications (user_userid, post_id, message, created_at) VALUES (2, 2, 'Your Cloud & DevOps post was liked by a user!', '2024-12-20 14:30:00');`,
 	}
 
 	// Insert friends

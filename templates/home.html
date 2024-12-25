@@ -8,6 +8,154 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .filters button {
+            text-decoration: none;
+        }
+
+        .filters button {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .filters .new {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
+
+        .filters button:hover {
+            background-color: #2563EB;
+            color: #FFFFFF;
+        }
+
+        .post {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-info h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .post-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .post-body p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+            margin-top: 15px;
+        }
+
+        .post-categories {
+            margin-top: 10px;
+            display: inline;
+        }
+
+        .post-categories button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .category-box {
+            display: inline-block;
+            background-color: #E5E7EB;
+            color: #374151;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+        }
+
+        .category-box:hover {
+            background-color: #D1D5DB;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6B7280;
+            align-items: center;
+            position: relative;
+        }
+
+        .post-actions button,
+        .post-actions a {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .post-actions button:hover,
+        .post-actions a:hover {
+            color: #3B82F6;
+        }
+
+        .post-actions time {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            font-size: 0.8em;
+            color: #888;
+        }
+
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -26,19 +174,15 @@
             align-items: center;
             padding: 15px 30px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            animation: fadeInDown 0.5s ease-in-out;
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .feed {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            margin-top: 10px;
         }
 
         .feed-container {
@@ -110,6 +254,8 @@
         .register {
             background-color: #3B82F6;
             color: white;
+            border: none;
+            cursor: pointer;
         }
 
         .register:hover {
@@ -129,19 +275,6 @@
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .sidebar {
@@ -162,19 +295,15 @@
             max-height: calc(100vh - 180px);
             overflow-y: auto;
             margin-bottom: 20px;
-            animation: fadeInLeft 0.5s ease-in-out;
         }
 
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .sidebar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
         }
 
         .sidebar nav {
@@ -199,7 +328,7 @@
             gap: 15px;
         }
 
-        .sidebar nav ul li a {
+        .sidebar nav ul li button {
             text-decoration: none;
             font-size: 16px;
             color: #1F2937;
@@ -209,150 +338,10 @@
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        .sidebar nav ul li a:hover {
+        .sidebar nav ul li button:hover {
             background-color: #3B82F6;
             color: #FFFFFF;
             transform: translateY(-2px);
-        }
-
-        .feed {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            overflow-y: auto;
-        }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .filters a {
-            text-decoration: none;
-        }
-
-        .filters button {
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .filters .new {
-            background-color: #3B82F6;
-            color: #FFFFFF;
-        }
-
-        .filters button:hover {
-            background-color: #2563EB;
-            color: #FFFFFF;
-            transform: translateY(-2px);
-        }
-
-        .post {
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .post:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .post-header img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .post-info h3 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-            color: #1F2937;
-        }
-
-        .post-info p {
-            margin: 0;
-            font-size: 13px;
-            color: #6B7280;
-        }
-
-        .post-body p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #374151;
-            margin-top: 15px;
-        }
-
-        .post-categories {
-            margin-top: 10px;
-        }
-
-        .category-box {
-            display: inline-block;
-            background-color: #E5E7EB;
-            color: #374151;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #6B7280;
-            align-items: center;
-            position: relative;
-        }
-
-        .post-actions button,
-        .post-actions a {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            padding: 0;
-            font: inherit;
-            color: inherit;
-            transition: color 0.3s ease;
-            text-decoration: none;
-        }
-
-        .post-actions button:hover,
-        .post-actions a:hover {
-            color: #3B82F6;
-        }
-
-        .post-actions time {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            font-size: 0.8em;
-            color: #888;
         }
 
         .search-container {
@@ -461,19 +450,6 @@
             gap: 10px;
             max-height: 200px;
             overflow: hidden;
-            animation: fadeInUp 0.5s ease-in-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .sidebar-rights img {
@@ -481,13 +457,16 @@
             height: 40px;
         }
 
-        .filters a.selected,
-        .sidebar nav ul li a.selected {
+        .filters button.selected,
+        .sidebar nav ul li button.selected {
             background-color: #3B82F6;
             color: #FFFFFF;
+            padding: 10px 20px;
         }
 
         .selected {
+            display: block;
+            width: 100%;
             font-weight: bold;
             color: #3B82F6;
         }
@@ -500,6 +479,8 @@
             position: relative;
             display: inline-block;
         }
+
+
 
         .dropdown img {
             width: 45px;
@@ -519,7 +500,9 @@
             border-radius: 6px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 10;
-            padding: 10px 0;
+            padding: 10px 15px;
+            font-size: 14px;
+            flex-direction: column;
         }
 
         .dropdown-content a {
@@ -538,16 +521,12 @@
 
         .dropdown-content a:hover {
             background-color: #F3F4F6;
+            padding: auto;
+            border-radius: 6px;
         }
 
         .dropdown:hover .dropdown-content {
             display: block;
-        }
-
-        .dropdown-content img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
         }
 
         .fa-bell {
@@ -573,43 +552,65 @@
             gap: 10px;
         }
 
-        .dropdown-content img {
-            width: 20px;
-            height: 20px;
+        .dropdown .dropdown-content button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown .dropdown-content button:hover {
+            color: #3B82F6;
+        }
+
+        .dropdown .dropdown-content img {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
+            object-fit: cover;
+            margin: auto;
+            padding: 20px;
         }
 
-        .dropdown {
-            position: relative;
-            display: inline-block;
+        .dropdown-item {
+            display: flex;
+        align-items: center;
+        width: auto;
+        padding: 5px;
+        border: none;
+        background: none;
+        cursor: pointer;
         }
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+        .notification-user-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            padding: auto;
+            margin-right: 10px;
         }
 
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
+        .notification-user-name {
+            font-size: 14px;
+            color: #374151;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .dropdown-content a:hover {background-color: #f1f1f1}
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown:hover .dropbtn {
-            background-color: #3e8e41;
-        }
- </style>
+        .show-more {
+        display: block;
+        margin: 0 auto;
+    }
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+    </style>
 </head>
 
 <body>
@@ -619,10 +620,9 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <form action="/newpost" method="GET" style="display:inline;">
+            <form action="/newpost" method="GET">
                 <input type="hidden" name="user" value="{{.UserID}}">
-                <button type="submit" class="register"
-                    style="background:none; border:none; color:inherit; cursor:pointer;">
+                <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
@@ -630,14 +630,17 @@
                 <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
                     {{range .Notifications}}
-                    <a class="dropdown-item" href="#">{{.Message}}</a>
-                    {{end}}
-                    <form action="/notifications" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="dropdown-item"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
-                            More...
+                    <form method="GET" action="/post">
+                        <input type="hidden" name="id" value="{{.PostID}}">
+                        <button type="submit" class="dropdown-item">
+                            <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
+                            <span class="notification-user-name">@{{.UserName}} has {{.Message}}</span>
                         </button>
+                    </form>
+                    {{end}}
+                    <form action="/notifications" method="GET">
+                        <input type="hidden" name="user" value="{{.UserID}}">
+                        <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
             </div>
@@ -647,15 +650,15 @@
                 <div class="dropdown-content">
                     <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                         class="avatar">
-                    <form action="/myprofile" method="GET" style="display:inline;">
+                    <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
                     </form>
-                    <form action="/settings" method="GET" style="display:inline;">
+                    <form action="/settings" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
                     </form>
@@ -681,23 +684,21 @@
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
                     <li>
-                        <form action="/home" method="GET" style="display:inline;">
+                        <form action="/home" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
                             <input type="hidden" name="tab" value="posts">
                             <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
                                 <i class="fas fa-newspaper"></i> Posts
                             </button>
                         </form>
                     </li>
                     <li>
-                        <form action="/home" method="GET" style="display:inline;">
+                        <form action="/home" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
                             <input type="hidden" name="tab" value="tags">
                             <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
                                 <i class="fas fa-tags"></i> Tags
                             </button>
                         </form>
@@ -706,34 +707,31 @@
                 <h3 class="menu-heading">Activity centre</h3>
                 <ul>
                     <li>
-                        <form action="/home" method="GET" style="display:inline;">
+                        <form action="/home" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
                             <input type="hidden" name="tab" value="your+posts">
                             <input type="hidden" name="filter" value="newest">
-                            <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}">
                                 <i class="fa-solid fa-grip-lines"></i> Your posts
                             </button>
                         </form>
                     </li>
                     <li>
-                        <form action="/home" method="GET" style="display:inline;">
+                        <form action="/home" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
-                            <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
                                 <i class="fa-solid fa-reply"></i> Your replies
                             </button>
                         </form>
                     </li>
                     <li>
-                        <form action="/home" method="GET" style="display:inline;">
+                        <form action="/home" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
                             <input type="hidden" name="tab" value="your+reactions">
                             <input type="hidden" name="filter" value="likes">
-                            <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}">
                                 <i class="fa-regular fa-heart"></i> Your reactions
                             </button>
                         </form>
@@ -744,20 +742,18 @@
                 <ul>
                     {{if eq .RoleID 1}}
                     <li>
-                        <form action="/admin" method="GET" style="display:inline;">
+                        <form action="/admin" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
-                            <button type="submit" class="admin-dashboard"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="admin-dashboard">
                                 <i class="fas fa-user-shield"></i> Admin Dashboard
                             </button>
                         </form>
                     </li>
                     {{else if eq .RoleID 2}}
                     <li>
-                        <form action="/moderator" method="GET" style="display:inline;">
+                        <form action="/moderator" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
-                            <button type="submit" class="moderator-panel"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="moderator-panel">
                                 <i class="fas fa-user-cog"></i> Moderator Panel
                             </button>
                         </form>
@@ -781,125 +777,112 @@
             <section class="feed">
                 <div class="filters">
                     {{if eq .SelectedTab "posts"}}
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}">
                             <i class="fas fa-th-list"></i> All
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="following">
-                        <button type="submit" class="{{if eq .SelectedFilter "following"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "following"}}selected{{end}}">
                             <i class="fas fa-user-friends"></i> Following
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="friends">
-                        <button type="submit" class="{{if eq .SelectedFilter "friends"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "friends"}}selected{{end}}">
                             <i class="fas fa-users"></i> Friends
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="top-rated">
-                        <button type="submit" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}">
                             <i class="fas fa-star"></i> Top Rated
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="oldest">
-                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}">
                             <i class="fas fa-sort-amount-up"></i> Oldest to Newest
                         </button>
                     </form>
-                    {{else if eq .SelectedTab "your posts"}}
-                    <form action="/home" method="GET" style="display:inline;">
+                    {{else if eq .SelectedTab "your+posts"}}
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="your+posts">
                         <input type="hidden" name="filter" value="newest">
-                        <button type="submit" class="{{if eq .SelectedFilter "newest"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "newest"}}selected{{end}}">
                             <i class="fas fa-sort-amount-down"></i> Newest
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="your+posts">
                         <input type="hidden" name="filter" value="oldest">
-                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}">
                             <i class="fas fa-sort-amount-up"></i> Oldest
                         </button>
                     </form>
-                    {{else if eq .SelectedTab "your replies"}}
-                    <form action="/home" method="GET" style="display:inline;">
+                    {{else if eq .SelectedTab "your+replies"}}
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="your+replies">
                         <input type="hidden" name="filter" value="newest">
-                        <button type="submit" class="{{if eq .SelectedFilter "newest"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "newest"}}selected{{end}}">
                             <i class="fas fa-sort-amount-down"></i> Newest
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="your+replies">
                         <input type="hidden" name="filter" value="oldest">
-                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}">
                             <i class="fas fa-sort-amount-up"></i> Oldest
                         </button>
                     </form>
-                    {{else if eq .SelectedTab "your reactions"}}
-                    <form action="/home" method="GET" style="display:inline;">
+                    {{else if eq .SelectedTab "your+reactions"}}
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="your+reactions">
                         <input type="hidden" name="filter" value="likes">
-                        <button type="submit" class="{{if eq .SelectedFilter "likes"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "likes"}}selected{{end}}">
                             <i class="fa-solid fa-arrow-up"></i> Likes
                         </button>
                     </form>
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="your+reactions">
                         <input type="hidden" name="filter" value="dislikes">
-                        <button type="submit" class="{{if eq .SelectedFilter "dislikes"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "dislikes"}}selected{{end}}">
                             <i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i> Dislikes
                         </button>
                     </form>
                     {{else if eq .SelectedTab "tags"}}
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="tags">
                         <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}">
                             <i class="fas fa-th-list"></i> All
                         </button>
                     </form>
                     {{range .Categories}}
-                    <form action="/home" method="GET" style="display:inline;">
+                    <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{$.UserID}}">
                         <input type="hidden" name="tab" value="tags">
                         <input type="hidden" name="filter" value="{{.Name}}">
-                        <button type="submit" class="{{if eq $.SelectedFilter .Name}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq $.SelectedFilter .Name}}selected{{end}}">
                             <i class="fas fa-tag"></i> {{.Name}}
                         </button>
                     </form>
@@ -917,7 +900,8 @@
                                 <p>@{{.Username}}</p>
                             </div>
                         </div>
-                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
+                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v"
+                        $.UserID) (printf "%v" .UserUserID))}}
                         <div class="post-actions">
                             <div class="dropdown" style="position: absolute; right: 0;">
                                 <button class="dropbtn">...</button>
@@ -937,7 +921,7 @@
                         </div>
                         {{end}}
                         <div class="post-body">
-                            <form action="/post" method="GET" style="display:inline;">
+                            <form action="/post" method="GET">
                                 <input type="hidden" name="id" value="{{.PostID}}">
                                 <button type="submit" class="action-link"
                                     style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
@@ -946,12 +930,11 @@
                             </form>
                             <div class="post-categories">
                                 {{range .Categories}}
-                                <form action="/home" method="GET" style="display:inline;">
+                                <form action="/home" method="GET">
                                     <input type="hidden" name="user" value="{{$.UserID}}">
                                     <input type="hidden" name="tab" value="tags">
                                     <input type="hidden" name="filter" value="{{.Name}}">
-                                    <button type="submit"
-                                        style="background:none; border:none; color:inherit; cursor:pointer;">
+                                    <button type="submit">
                                         <span class="category-box">{{.Name}}</span>
                                     </button>
                                 </form>
@@ -959,19 +942,19 @@
                             </div>
                         </div>
                         <div class="post-actions">
-                            <form action="/like" method="POST" style="display:inline;">
+                            <form action="/like" method="POST">
                                 <input type="hidden" name="post_id" value="{{.PostID}}">
                                 <input type="hidden" name="user_id" value="{{$.UserID}}">
                                 <button type="submit" class="action-link"><span><i class="fa-solid fa-arrow-up"></i>
                                         {{.Likes}}</span></button>
                             </form>
-                            <form action="/dislike" method="POST" style="display:inline;">
+                            <form action="/dislike" method="POST">
                                 <input type="hidden" name="post_id" value="{{.PostID}}">
                                 <input type="hidden" name="user_id" value="{{$.UserID}}">
                                 <button type="submit" class="action-link"><span><i class="fa-solid fa-arrow-up"
                                             style="rotate: 180deg;"></i> {{.Dislikes}}</span></button>
                             </form>
-                            <form action="/post" method="GET" style="display:inline;">
+                            <form action="/post" method="GET">
                                 <input type="hidden" name="id" value="{{.PostID}}">
                                 <button type="submit" class="action-link"
                                     style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
