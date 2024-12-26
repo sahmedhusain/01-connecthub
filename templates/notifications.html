@@ -8,10 +8,81 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 26px;
+            text-align: center;
+            color: #1F2937;
+            font-weight: 700;
+        }
+
+        .notification {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            border-bottom: 1px solid #E5E7EB;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .notification:hover {
+            background-color: #F3F4F6;
+        }
+
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+        .notification img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .notification-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .notification-content time {
+            display: block;
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-top: 5px;
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #6B7280;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            color: #3B82F6;
+        }
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
             background-color: #F9FAFB;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             color: #333;
         }
 
@@ -25,11 +96,30 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
+        .feed {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .feed-container {
+            display: flex;
+            flex: 1;
+        }
+
         .logo-container {
             display: flex;
             align-items: center;
             gap: 1px;
             text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-container:hover {
+            opacity: 0.8;
         }
 
         .logo-container img {
@@ -40,6 +130,7 @@
         .logo-container span {
             font-size: 18px;
             color: #1F2937;
+            letter-spacing: 0.5px;
         }
 
         .logo-container span:first-child {
@@ -71,17 +162,24 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .user-actions button:hover {
             background-color: #2563EB;
             color: white;
+            transform: translateY(-2px);
         }
 
         .register {
             background-color: #3B82F6;
             color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .register:hover {
+            background-color: #2563EB;
         }
 
         .login {
@@ -89,103 +187,14 @@
             color: #1F2937;
         }
 
-        .dropdown {
-            position: relative;
-            display: inline-block;
+        .login:hover {
+            background-color: #D1D5DB;
         }
 
-        .dropdown img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: #FFFFFF;
-            min-width: 180px;
-            border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            padding: 10px 0;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 10px 15px;
-            font-size: 14px;
-            color: #374151;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .dropdown-content a:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #F3F4F6;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-            opacity: 1;
-        }
-
-        .fa-bell {
-            font-size: 25px;
-            color: #374151;
-            position: relative;
-        }
-
-        .fa-bell::after {
-            content: '';
-            position: absolute;
-            top: 1px;
-            right: 1px;
-            width: 8px;
-            height: 8px;
-            background-color: red;
-            border-radius: 50%;
-        }
-
-        .sidebar-rights {
-            position: fixed;
-            bottom: 30px;
-            left: 20px;
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
+        main {
+            flex: 1;
+            overflow-y: auto;
             padding: 20px;
-            width: 260px;
-            height: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            max-height: 200px;
-            overflow: hidden;
-        }
-
-        .sidebar-rights img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .rights {
-            text-align: center;
-            padding: 0px 0;
-            color: #6B7280;
-            font-size: 14px;
         }
 
         .sidebar {
@@ -198,8 +207,6 @@
             padding: 20px;
             width: 260px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
             position: sticky;
             margin-left: 20px;
             top: 20px;
@@ -208,6 +215,15 @@
             max-height: calc(100vh - 180px);
             overflow-y: auto;
             margin-bottom: 20px;
+        }
+
+        .sidebar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
         }
 
         .sidebar nav {
@@ -232,25 +248,20 @@
             gap: 15px;
         }
 
-        .sidebar nav ul li a {
+        .sidebar nav ul li button {
             text-decoration: none;
             font-size: 16px;
             color: #1F2937;
             font-weight: 500;
             padding: 10px 20px;
             border-radius: 6px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        .sidebar nav ul li a:hover {
+        .sidebar nav ul li button:hover {
             background-color: #3B82F6;
             color: #FFFFFF;
-        }
-
-        .sidebar nav ul li a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            transform: translateY(-2px);
         }
 
         .search-container {
@@ -327,150 +338,272 @@
             color: #1F2937;
             font-size: 24px;
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .social-link:hover {
             color: #3B82F6;
+            transform: translateY(-2px);
+        }
+
+        .rights {
+            text-align: center;
+            padding: 0px 0;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .sidebar-rights {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            width: 260px;
+            height: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-height: 200px;
+            overflow: hidden;
+        }
+
+        .sidebar-rights img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .filters button.selected,
+        .sidebar nav ul li button.selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+            padding: 10px 20px;
         }
 
         .selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            color: #3B82F6;
         }
 
-        .filters a.selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
+        p {
+            margin: 0;
         }
 
-        .sidebar nav ul li a.selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
+        .dropdown {
+            position: relative;
+            display: inline-block;
         }
 
-        main {
-            padding: 20px;
-            flex: 1;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            margin-bottom: 30px;
-            font-size: 26px;
-            text-align: center;
-            color: #1F2937;
-            font-weight: 700;
-        }
-
-        .notification {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px;
-            border-bottom: 1px solid #E5E7EB;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .notification:hover {
-            background-color: #F3F4F6;
-        }
-
-        .notification:last-child {
-            border-bottom: none;
-        }
-
-        .notification img {
+        .dropdown img {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            margin-right: 15px;
-            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        .notification-content p {
-            margin: 0;
+        .dropdown img:hover {
+            transform: scale(1.1);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #FFFFFF;
+            min-width: 220px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            padding: 10px 0;
+            font-size: 14px;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
             font-size: 14px;
             color: #374151;
-            line-height: 1.5;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-bottom: 1px solid #E5E7EB;
         }
 
-        .notification-content time {
-            display: block;
-            font-size: 12px;
-            color: #9CA3AF;
-            margin-top: 5px;
+        .dropdown-content a:last-child {
+            border-bottom: none;
         }
 
-        .action-link {
+        .dropdown-content a:hover {
+            background-color: #F3F4F6;
+            color: #1D4ED8;
+        }
+
+        .fa-bell {
+            font-size: 25px;
+            color: #374151;
+            position: relative;
+        }
+
+        .fa-bell::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        .dropdown .dropdown-content a {
             display: flex;
             align-items: center;
-            gap: 5px;
-            color: #6B7280;
-            font-size: 14px;
-            cursor: pointer;
+            gap: 10px;
         }
 
-        .action-link:hover {
-            color: #3B82F6;
+        .dropdown .dropdown-content button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown .dropdown-content button:hover {
+            color: #1D4ED8;
+        }
+
+        .dropdown .dropdown-content img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: auto;
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            width: auto;
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification-user-image {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .notification-user-name {
+            font-size: 14px;
+            color: #374151;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .show-more {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            text-align: center;
+            color: #1D4ED8;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .show-more:hover {
+            background-color: #F3F4F6;
+            color: #1D4ED8;
+        }
+
+        .dropdown-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .notification-item {
+            padding: 10px 20px;
+            border-top: 1px solid #E5E7EB;
         }
     </style>
 </head>
 
 <body>
-    <div class="sidebar-rights">
-        <img src="/static/assets/logo.png" alt="Connect Hub Logo">
-        <div class="rights">
-            <p>© 2024 | All rights reserved.</p>
-        </div>
-    </div>
     <header>
         <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
             <img src="/static/assets/logo.png" alt="ConnectHub Logo">
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <form action="/newpost" method="GET" style="display:inline;">
+            <form action="/newpost" method="GET">
                 <input type="hidden" name="user" value="{{.UserID}}">
-                <button type="submit" class="register" style="background:none; border:none; color:inherit; cursor:pointer;">
+                <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
+                    <h2 style="text-align: center;">Notifications</h2>
                     {{range .Notifications}}
-                    <a class="dropdown-item" href="#">{{.Message}}</a>
+                    <div class="notification-item">
+                        <form method="GET" action="/post">
+                            <input type="hidden" name="id" value="{{.PostID}}">
+                            <button type="submit" class="dropdown-item">
+                                <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
+                                <span class="notification-user-name">@{{.UserName}} has {{.Message}}</span>
+                            </button>
+                        </form>
+                    </div>
                     {{end}}
-                    <form action="/notifications" method="GET" style="display:inline;">
+                    <form action="/notifications" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="dropdown-item" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            More...
-                        </button>
+                        <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
             </div>
             <div class="dropdown">
-                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                    class="avatar">
                 <div class="dropdown-content">
-                    <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
-                    <form action="/myprofile" method="GET" style="display:inline;">
+                    <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
                     </form>
-                    <form action="/settings" method="GET" style="display:inline;">
+                    <form action="/settings" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
                     </form>
@@ -479,101 +612,116 @@
             </div>
         </div>
     </header>
-    <aside class="sidebar">
-        <nav>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <span>Search</span>
-                <input type="text" placeholder="Type to search..." class="search-bar">
+    <div class="feed-container">
+        <div class="sidebar-rights">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <div class="rights">
+                <p>© 2024 | All rights reserved.</p>
             </div>
-            <h3 class="menu-heading">Menu</h3>
-            <ul>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="posts">
-                        <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-newspaper"></i> Posts
-                        </button>
-                    </form>
-                </li>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="tags">
-                        <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-tags"></i> Tags
-                        </button>
-                    </form>
-                </li>
-            </ul>
-            <h3 class="menu-heading">Activity centre</h3>
-            <ul>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="your+posts">
-                        <input type="hidden" name="filter" value="newest">
-                        <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fa-solid fa-grip-lines"></i> Your posts
-                        </button>
-                    </form>
-                </li>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="your+replies">
-                        <input type="hidden" name="filter" value="newest">
-                        <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fa-solid fa-reply"></i> Your replies
-                        </button>
-                    </form>
-                </li>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="your+reactions">
-                        <input type="hidden" name="filter" value="likes">
-                        <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fa-regular fa-heart"></i> Your reactions
-                        </button>
-                    </form>
-                </li>
-            </ul>
-            {{if or (eq .RoleID 1) (eq .RoleID 2)}}
-            <h3 class="menu-heading">Forum management</h3>
-            <ul>
-                {{if eq .RoleID 1}}
-                <li>
-                    <form action="/admin" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="admin-dashboard" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-user-shield"></i> Admin Dashboard
-                        </button>
-                    </form>
-                </li>
-                {{else if eq .RoleID 2}}
-                <li>
-                    <form action="/moderator" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="moderator-panel" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-user-cog"></i> Moderator Panel
-                        </button>
-                    </form>
-                </li>
-                {{end}}
-            </ul>
-            {{end}}
-        </nav>
-        <div class="social-icons">
-            <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>
-            <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i></a>
         </div>
-    </aside>
-    <main>
+        <aside class="sidebar">
+            <nav>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                    <input type="text" placeholder="Type to search..." class="search-bar">
+                </div>
+                <h3 class="menu-heading">Menu</h3>
+                <ul>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="posts">
+                            <input type="hidden" name="filter" value="all">
+                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
+                                <i class="fas fa-newspaper"></i> Posts
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="tags">
+                            <input type="hidden" name="filter" value="all">
+                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
+                                <i class="fas fa-tags"></i> Tags
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+                <h3 class="menu-heading">Activity centre</h3>
+                <ul>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="your+posts">
+                            <input type="hidden" name="filter" value="newest">
+                            <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}">
+                                <i class="fa-solid fa-grip-lines"></i> Your posts
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="your+replies">
+                            <input type="hidden" name="filter" value="newest">
+                            <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
+                                <i class="fa-solid fa-reply"></i> Your replies
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="your+reactions">
+                            <input type="hidden" name="filter" value="likes">
+                            <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}">
+                                <i class="fa-regular fa-heart"></i> Your reactions
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+                {{if or (eq .RoleID 1) (eq .RoleID 2)}}
+                <h3 class="menu-heading">Forum management</h3>
+                <ul>
+                    {{if eq .RoleID 1}}
+                    <li>
+                        <form action="/admin" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="admin">
+                            <button type="submit" class="{{if eq .SelectedTab "admin"}}selected{{end}}">
+                                <i class="fas fa-user-shield"></i> Admin Dashboard
+                            </button>
+                        </form>
+                    </li>
+                    {{else if eq .RoleID 2}}
+                    <li>
+                        <form action="/moderator" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="moderator">
+                            <button type="submit" class="{{if eq .SelectedTab "moderator"}}selected{{end}}">
+                                <i class="fas fa-user-cog"></i> Moderator Panel
+                            </button>
+                        </form>
+                    </li>
+                    {{end}}
+                </ul>
+                {{end}}
+            </nav>
+            <div class="social-icons">
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
+                        class="fab fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i
+                        class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i>
+                </a>
+            </div>
+        </aside>
+        <main>
+            <section class="feed">
         <div class="container">
             <h1>Notifications</h1>
             {{range .Notifications}}
@@ -588,6 +736,7 @@
             <p>No notifications available</p>
             {{end}}
         </div>
+    </section>
     </main>
 </body>
 

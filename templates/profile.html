@@ -8,344 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #F9FAFB;
-            color: #333;
-        }
-
-        header {
-            background-color: #FFFFFF;
-            border-bottom: 2px solid #E5E7EB;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1px;
-            text-decoration: none;
-        }
-
-        .logo-container img {
-            width: 60px;
-            height: 60px;
-        }
-
-        .logo-container span {
-            font-size: 18px;
-            color: #1F2937;
-        }
-
-        .logo-container span:first-child {
-            font-weight: 400;
-        }
-
-        .logo-container span:last-child {
-            font-weight: 800;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .user-actions a,
-        .user-actions .dropdown {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        .user-actions button {
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .user-actions button:hover {
-            background-color: #2563EB;
-            color: white;
-        }
-
-        .register {
-            background-color: #3B82F6;
-            color: white;
-        }
-
-        .login {
-            background-color: #E5E7EB;
-            color: #1F2937;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: #FFFFFF;
-            min-width: 180px;
-            border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            padding: 10px 0;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 10px 15px;
-            font-size: 14px;
-            color: #374151;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .dropdown-content a:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #F3F4F6;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-            opacity: 1;
-        }
-
-        .fa-bell {
-            font-size: 25px;
-            color: #374151;
-            position: relative;
-        }
-
-        .fa-bell::after {
-            content: '';
-            position: absolute;
-            top: 1px;
-            right: 1px;
-            width: 8px;
-            height: 8px;
-            background-color: red;
-            border-radius: 50%;
-        }
-
-        .sidebar-rights {
-            position: fixed;
-            bottom: 30px;
-            left: 20px;
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 20px;
-            width: 260px;
-            height: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            max-height: 200px;
-            overflow: hidden;
-        }
-
-        .sidebar-rights img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .rights {
-            text-align: center;
-            padding: 0px 0;
-            color: #6B7280;
-            font-size: 14px;
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 20px;
-            width: 260px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            margin-left: 20px;
-            top: 20px;
-            bottom: 60px;
-            margin-top: 20px;
-            max-height: calc(100vh - 180px);
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .sidebar nav {
-            margin-bottom: 20px;
-        }
-
-        .sidebar nav h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #1F2937;
-            border-bottom: 1px solid #E5E7EB;
-            padding-bottom: 5px;
-        }
-
-        .sidebar nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .sidebar nav ul li a {
-            text-decoration: none;
-            font-size: 16px;
-            color: #1F2937;
-            font-weight: 500;
-            padding: 10px 20px;
-            border-radius: 6px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .sidebar nav ul li a:hover {
-            background-color: #3B82F6;
-            color: #FFFFFF;
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            border-radius: 6px;
-            background-color: #F3F4F6;
-            color: #374151;
-            cursor: pointer;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-
-        .search-container:hover {
-            background-color: #E5E7EB;
-        }
-
-        .search-container i {
-            font-size: 18px;
-        }
-
-        .search-container span {
-            font-size: 16px;
-            font-weight: 500;
-            color: #374151;
-        }
-
-        .search-bar {
-            position: absolute;
-            left: 0px;
-            top: 0px;
-            width: 0;
-            opacity: 0;
-            padding: 10px;
-            border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            background-color: #FFFFFF;
-            color: #374151;
-            font-size: 16px;
-            transition: width 0.3s ease, opacity 0.3s ease;
-        }
-
-        .search-container:hover .search-bar,
-        .search-bar:focus {
-            width: calc(100% - 20px);
-            opacity: 1;
-        }
-
-        .search-bar:focus {
-            outline: none;
-            border-color: #3B82F6;
-        }
-
-        .menu-heading {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #1F2937;
-            border-bottom: 1px solid #E5E7EB;
-            padding-bottom: 5px;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding-bottom: 1px;
-            margin-top: auto;
-        }
-
-        .social-link {
-            color: #1F2937;
-            font-size: 24px;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .social-link:hover {
-            color: #3B82F6;
-        }
-
-        .selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
-        }
-
-        .filters a.selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
-        }
-
-        .sidebar nav ul li a.selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
-        }
-
-        main {
-            padding: 20px;
-            flex: 1;
-        }
-
         .container {
             max-width: 1000px;
             margin: 40px auto;
@@ -461,6 +123,337 @@
             line-height: 1.4;
         }
 
+        .action-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #6B7280;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            color: #3B82F6;
+        }
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #F9FAFB;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        header {
+            background-color: #FFFFFF;
+            border-bottom: 2px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feed {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .feed-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-container:hover {
+            opacity: 0.8;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .logo-container span {
+            font-size: 18px;
+            color: #1F2937;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-container span:first-child {
+            font-weight: 400;
+        }
+
+        .logo-container span:last-child {
+            font-weight: 800;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-actions a,
+        .user-actions .dropdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .user-actions button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .user-actions button:hover {
+            background-color: #2563EB;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .register {
+            background-color: #3B82F6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .register:hover {
+            background-color: #2563EB;
+        }
+
+        .login {
+            background-color: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .login:hover {
+            background-color: #D1D5DB;
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            width: 260px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            margin-left: 20px;
+            top: 20px;
+            bottom: 60px;
+            margin-top: 20px;
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .sidebar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar nav {
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1F2937;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 5px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar nav ul li button {
+            text-decoration: none;
+            font-size: 16px;
+            color: #1F2937;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .sidebar nav ul li button:hover {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            background-color: #F3F4F6;
+            color: #374151;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .search-container:hover {
+            background-color: #E5E7EB;
+        }
+
+        .search-container i {
+            font-size: 18px;
+        }
+
+        .search-container span {
+            font-size: 16px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .search-bar {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 0;
+            opacity: 0;
+            padding: 10px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            background-color: #FFFFFF;
+            color: #374151;
+            font-size: 16px;
+            transition: width 0.3s ease, opacity 0.3s ease;
+        }
+
+        .search-container:hover .search-bar,
+        .search-bar:focus {
+            width: calc(100% - 20px);
+            opacity: 1;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+
+        .menu-heading {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1F2937;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding-bottom: 1px;
+            margin-top: auto;
+        }
+
+        .social-link {
+            color: #1F2937;
+            font-size: 24px;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #3B82F6;
+            transform: translateY(-2px);
+        }
+
+        .rights {
+            text-align: center;
+            padding: 0px 0;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .sidebar-rights {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            width: 260px;
+            height: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-height: 200px;
+            overflow: hidden;
+        }
+
+        .sidebar-rights img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .filters button.selected,
+        .sidebar nav ul li button.selected {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+            padding: 10px 20px;
+        }
+
+        .selected {
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            color: #3B82F6;
+        }
+
+        p {
+            margin: 0;
+        }
+
         .dropdown {
             position: relative;
             display: inline-block;
@@ -471,6 +464,11 @@
             height: 45px;
             border-radius: 50%;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown img:hover {
+            transform: scale(1.1);
         }
 
         .dropdown-content {
@@ -479,35 +477,42 @@
             top: 100%;
             right: 0;
             background-color: #FFFFFF;
-            min-width: 180px;
+            min-width: 220px;
             border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             z-index: 10;
             padding: 10px 0;
+            font-size: 14px;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .dropdown-content a {
             display: block;
-            padding: 10px 15px;
+            padding: 12px 20px;
             font-size: 14px;
             color: #374151;
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
         }
 
         .dropdown-content a:hover {
             background-color: #F3F4F6;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-content img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+            color: #1D4ED8;
         }
 
         .fa-bell {
@@ -521,8 +526,8 @@
             position: absolute;
             top: 1px;
             right: 1px;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: red;
             border-radius: 50%;
         }
@@ -533,124 +538,131 @@
             gap: 10px;
         }
 
-        .dropdown-content img {
+        .dropdown .dropdown-content button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown .dropdown-content button:hover {
+            color: #1D4ED8;
+        }
+
+        .dropdown .dropdown-content img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: auto;
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            width: auto;
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification-user-image {
             width: 20px;
             height: 20px;
             border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
         }
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #FFFFFF;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            border-radius: 8px;
-            border: 1px solid #E5E7EB;
-            transition: opacity 0.3s ease;
-            opacity: 0;
+        .notification-user-name {
+            font-size: 14px;
+            color: #374151;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .dropdown:hover .dropdown-content {
+        .show-more {
             display: block;
-            opacity: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 14px 20px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-            border-bottom: 1px solid #E5E7EB;
+            margin: 0 auto;
+            padding: 10px 20px;
+            text-align: center;
+            color: #1D4ED8;
+            cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .dropdown-content a:last-child {
-            border-bottom: none;
+        .show-more:hover {
+            background-color: #F3F4F6;
+            color: #1D4ED8;
         }
 
-        .dropdown-content a:hover {
-            background-color: #2563EB;
-            color: #FFFFFF;
+        .dropdown-item:hover {
+            background-color: #F3F4F6;
         }
 
-        .dropdown-avatar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 20px;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .dropdown-avatar img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-
-        .action-link {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #6B7280;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .action-link:hover {
-            color: #3B82F6;
+        .notification-item {
+            padding: 10px 20px;
+            border-top: 1px solid #E5E7EB;
         }
     </style>
 </head>
 
 <body>
-    <div class="sidebar-rights">
-        <img src="/static/assets/logo.png" alt="Connect Hub Logo">
-        <div class="rights">
-            <p>© 2024 | All rights reserved.</p>
-        </div>
-    </div>
     <header>
         <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
             <img src="/static/assets/logo.png" alt="ConnectHub Logo">
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <form action="/newpost" method="GET" style="display:inline;">
+            <form action="/newpost" method="GET">
                 <input type="hidden" name="user" value="{{.UserID}}">
-                <button type="submit" class="register" style="background:none; border:none; color:inherit; cursor:pointer;">
+                <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
+                    <h2 style="text-align: center;">Notifications</h2>
                     {{range .Notifications}}
-                    <a class="dropdown-item" href="#">{{.Message}}</a>
+                    <div class="notification-item">
+                        <form method="GET" action="/post">
+                            <input type="hidden" name="id" value="{{.PostID}}">
+                            <button type="submit" class="dropdown-item">
+                                <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
+                                <span class="notification-user-name">@{{.UserName}} has {{.Message}}</span>
+                            </button>
+                        </form>
+                    </div>
                     {{end}}
-                    <form action="/notifications" method="GET" style="display:inline;">
+                    <form action="/notifications" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="dropdown-item" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            More...
-                        </button>
+                        <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
             </div>
             <div class="dropdown">
-                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                    class="avatar">
                 <div class="dropdown-content">
-                    <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
-                    <form action="/myprofile" method="GET" style="display:inline;">
+                    <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
                     </form>
-                    <form action="/settings" method="GET" style="display:inline;">
+                    <form action="/settings" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
                     </form>
@@ -659,7 +671,116 @@
             </div>
         </div>
     </header>
-    <main>
+    <div class="feed-container">
+        <div class="sidebar-rights">
+            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
+            <div class="rights">
+                <p>© 2024 | All rights reserved.</p>
+            </div>
+        </div>
+        <aside class="sidebar">
+            <nav>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                    <input type="text" placeholder="Type to search..." class="search-bar">
+                </div>
+                <h3 class="menu-heading">Menu</h3>
+                <ul>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="posts">
+                            <input type="hidden" name="filter" value="all">
+                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
+                                <i class="fas fa-newspaper"></i> Posts
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="tags">
+                            <input type="hidden" name="filter" value="all">
+                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
+                                <i class="fas fa-tags"></i> Tags
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+                <h3 class="menu-heading">Activity centre</h3>
+                <ul>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="your+posts">
+                            <input type="hidden" name="filter" value="newest">
+                            <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}">
+                                <i class="fa-solid fa-grip-lines"></i> Your posts
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="your+replies">
+                            <input type="hidden" name="filter" value="newest">
+                            <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
+                                <i class="fa-solid fa-reply"></i> Your replies
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/home" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="your+reactions">
+                            <input type="hidden" name="filter" value="likes">
+                            <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}">
+                                <i class="fa-regular fa-heart"></i> Your reactions
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+                {{if or (eq .RoleID 1) (eq .RoleID 2)}}
+                <h3 class="menu-heading">Forum management</h3>
+                <ul>
+                    {{if eq .RoleID 1}}
+                    <li>
+                        <form action="/admin" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="admin">
+                            <button type="submit" class="{{if eq .SelectedTab "admin"}}selected{{end}}">
+                                <i class="fas fa-user-shield"></i> Admin Dashboard
+                            </button>
+                        </form>
+                    </li>
+                    {{else if eq .RoleID 2}}
+                    <li>
+                        <form action="/moderator" method="GET">
+                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <input type="hidden" name="tab" value="moderator">
+                            <button type="submit" class="{{if eq .SelectedTab "moderator"}}selected{{end}}">
+                                <i class="fas fa-user-cog"></i> Moderator Panel
+                            </button>
+                        </form>
+                    </li>
+                    {{end}}
+                </ul>
+                {{end}}
+            </nav>
+            <div class="social-icons">
+                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
+                        class="fab fa-instagram"></i>
+                </a>
+                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i
+                        class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i>
+                </a>
+            </div>
+        </aside>
+        <main>
+            <section class="feed">
         <div class="container">
             <div class="profile-header">
                 <img src="{{.ProfileAvatar}}" alt="User Avatar">
@@ -747,101 +868,8 @@
                 {{end}}
             </div>
         </div>
+    </section>
     </main>
-    <aside class="sidebar">
-        <nav>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <span>Search</span>
-                <input type="text" placeholder="Type to search..." class="search-bar">
-            </div>
-            <h3 class="menu-heading">Menu</h3>
-            <ul>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="posts">
-                        <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-newspaper"></i> Posts
-                        </button>
-                    </form>
-                </li>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="tags">
-                        <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-tags"></i> Tags
-                        </button>
-                    </form>
-                </li>
-            </ul>
-            <h3 class="menu-heading">Activity centre</h3>
-            <ul>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="your+posts">
-                        <input type="hidden" name="filter" value="newest">
-                        <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fa-solid fa-grip-lines"></i> Your posts
-                        </button>
-                    </form>
-                </li>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="your+replies">
-                        <input type="hidden" name="filter" value="newest">
-                        <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fa-solid fa-reply"></i> Your replies
-                        </button>
-                    </form>
-                </li>
-                <li>
-                    <form action="/home" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <input type="hidden" name="tab" value="your+reactions">
-                        <input type="hidden" name="filter" value="likes">
-                        <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fa-regular fa-heart"></i> Your reactions
-                        </button>
-                    </form>
-                </li>
-            </ul>
-            {{if or (eq .RoleID 1) (eq .RoleID 2)}}
-            <h3 class="menu-heading">Forum management</h3>
-            <ul>
-                {{if eq .RoleID 1}}
-                <li>
-                    <form action="/admin" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="admin-dashboard" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-user-shield"></i> Admin Dashboard
-                        </button>
-                    </form>
-                </li>
-                {{else if eq .RoleID 2}}
-                <li>
-                    <form action="/moderator" method="GET" style="display:inline;">
-                        <input type="hidden" name="user" value="{{.UserID}}">
-                        <button type="submit" class="moderator-panel" style="background:none; border:none; color:inherit; cursor:pointer;">
-                            <i class="fas fa-user-cog"></i> Moderator Panel
-                        </button>
-                    </form>
-                </li>
-                {{end}}
-            </ul>
-            {{end}}
-        </nav>
-        <div class="social-icons">
-            <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>
-            <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i></a>
-        </div>
-    </aside>
 </body>
 
 </html>
