@@ -480,13 +480,16 @@
             display: inline-block;
         }
 
-
-
         .dropdown img {
             width: 45px;
             height: 45px;
             border-radius: 50%;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown img:hover {
+            transform: scale(1.1);
         }
 
         .dropdown-content {
@@ -495,23 +498,32 @@
             top: 100%;
             right: 0;
             background-color: #FFFFFF;
-            min-width: 180px;
+            min-width: 220px;
             border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             z-index: 10;
-            padding: 10px 15px;
+            padding: 10px 0;
             font-size: 14px;
             flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .dropdown-content a {
             display: block;
-            padding: 10px 15px;
+            padding: 12px 20px;
             font-size: 14px;
             color: #374151;
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
             border-bottom: 1px solid #E5E7EB;
         }
 
@@ -521,12 +533,7 @@
 
         .dropdown-content a:hover {
             background-color: #F3F4F6;
-            padding: auto;
-            border-radius: 6px;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
+            color: #1D4ED8;
         }
 
         .fa-bell {
@@ -540,8 +547,8 @@
             position: absolute;
             top: 1px;
             right: 1px;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: red;
             border-radius: 50%;
         }
@@ -565,34 +572,34 @@
         }
 
         .dropdown .dropdown-content button:hover {
-            color: #3B82F6;
+            color: #1D4ED8;
         }
 
         .dropdown .dropdown-content img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .dropdown-item {
-            display: flex;
-        align-items: center;
-        width: auto;
-        padding: 5px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        }
-
-        .notification-user-image {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            padding: auto;
+            margin: auto;
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            width: auto;
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification-user-image {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
             margin-right: 10px;
         }
 
@@ -603,13 +610,30 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .show-more {
-        display: block;
-        margin: 0 auto;
-    }
-    .dropdown-item:hover {
-        background-color: #f0f0f0;
-    }
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            text-align: center;
+            color: #1D4ED8;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .show-more:hover {
+            background-color: #F3F4F6;
+            color: #1D4ED8;
+        }
+
+        .dropdown-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .notification-item {
+            padding: 10px 20px;
+            border-top: 1px solid #E5E7EB;
+        }
     </style>
 </head>
 
@@ -629,14 +653,17 @@
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
+                    <h2 style="text-align: center;">Notifications</h2>
                     {{range .Notifications}}
-                    <form method="GET" action="/post">
-                        <input type="hidden" name="id" value="{{.PostID}}">
-                        <button type="submit" class="dropdown-item">
-                            <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
-                            <span class="notification-user-name">@{{.UserName}} has {{.Message}}</span>
-                        </button>
-                    </form>
+                    <div class="notification-item">
+                        <form method="GET" action="/post">
+                            <input type="hidden" name="id" value="{{.PostID}}">
+                            <button type="submit" class="dropdown-item">
+                                <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
+                                <span class="notification-user-name">@{{.UserName}} has {{.Message}}</span>
+                            </button>
+                        </form>
+                    </div>
                     {{end}}
                     <form action="/notifications" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
@@ -648,8 +675,6 @@
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar">
                 <div class="dropdown-content">
-                    <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
-                        class="avatar">
                     <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <button type="submit">
@@ -744,7 +769,8 @@
                     <li>
                         <form action="/admin" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
-                            <button type="submit" class="admin-dashboard">
+                            <input type="hidden" name="tab" value="admin">
+                            <button type="submit" class="{{if eq .SelectedTab "admin"}}selected{{end}}">
                                 <i class="fas fa-user-shield"></i> Admin Dashboard
                             </button>
                         </form>
@@ -753,7 +779,8 @@
                     <li>
                         <form action="/moderator" method="GET">
                             <input type="hidden" name="user" value="{{.UserID}}">
-                            <button type="submit" class="moderator-panel">
+                            <input type="hidden" name="tab" value="moderator">
+                            <button type="submit" class="{{if eq .SelectedTab "moderator"}}selected{{end}}">
                                 <i class="fas fa-user-cog"></i> Moderator Panel
                             </button>
                         </form>
