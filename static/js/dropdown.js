@@ -14,4 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    window.addEventListener('click', function(e) {
+        document.querySelectorAll('.dropbtn').forEach(content => {
+            if (!content.previousElementSibling.contains(e.target)) {
+                content.classList.remove('show');
+            }
+        });
+    });
 });
