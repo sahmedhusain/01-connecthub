@@ -133,6 +133,15 @@
             margin-bottom: 20px;
         }
 
+        .sidebar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
         .sidebar nav {
             margin-bottom: 20px;
         }
@@ -155,7 +164,7 @@
             gap: 15px;
         }
 
-        .sidebar nav ul li a {
+        .sidebar nav ul li button {
             text-decoration: none;
             font-size: 16px;
             color: #1F2937;
@@ -165,7 +174,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .sidebar nav ul li a:hover {
+        .sidebar nav ul li button:hover {
             background-color: #3B82F6;
             color: #FFFFFF;
             transform: translateY(-2px);
@@ -177,6 +186,7 @@
             flex-direction: column;
             gap: 20px;
             overflow-y: auto;
+            margin-top: 10px;
         }
 
         .filters {
@@ -208,7 +218,6 @@
         .filters button:hover {
             background-color: #2563EB;
             color: #FFFFFF;
-            transform: translateY(-2px);
         }
 
         .post {
@@ -260,6 +269,16 @@
 
         .post-categories {
             margin-top: 10px;
+            display: inline;
+        }
+
+        .post-categories button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            transition: color 0.3s ease;
         }
 
         .category-box {
@@ -271,6 +290,12 @@
             font-size: 12px;
             margin-right: 5px;
             margin-bottom: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .category-box:hover {
+            background-color: #D1D5DB;
         }
 
         .post-actions {
@@ -283,20 +308,25 @@
             position: relative;
         }
 
+        .post-actions button,
         .post-actions a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .post-actions span {
             display: flex;
             align-items: center;
             gap: 5px;
+            border: none;
+            background: none;
             cursor: pointer;
+            padding: 0;
+            font: inherit;
+            color: inherit;
             transition: color 0.3s ease;
+            text-decoration: none;
         }
 
-        .post-actions span:hover {
+
+
+        .post-actions button:hover,
+        .post-actions a:hover {
             color: #3B82F6;
         }
 
@@ -421,17 +451,16 @@
             height: 40px;
         }
 
-        .filters button.selected {
+        .filters button.selected,
+        .sidebar nav ul li button.selected {
             background-color: #3B82F6;
             color: #FFFFFF;
-        }
-
-        .sidebar nav ul li a.selected {
-            background-color: #3B82F6;
-            color: #FFFFFF;
+            padding: 10px 20px;
         }
 
         .selected {
+            display: block;
+            width: 100%;
             font-weight: bold;
             color: #3B82F6;
         }
@@ -470,21 +499,19 @@
                 <h3 class="menu-heading">Menu</h3>
                 <ul>
                     <li>
-                        <form action="/" method="GET" style="display:inline;">
+                        <form action="/" method="GET">
                             <input type="hidden" name="tab" value="posts">
                             <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
                                 <i class="fas fa-newspaper"></i> Posts
                             </button>
                         </form>
                     </li>
                     <li>
-                        <form action="/" method="GET" style="display:inline;">
+                        <form action="/" method="GET">
                             <input type="hidden" name="tab" value="tags">
                             <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}"
-                                style="background:none; border:none; color:inherit; cursor:pointer;">
+                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
                                 <i class="fas fa-tags"></i> Tags
                             </button>
                         </form>
@@ -506,45 +533,40 @@
             <section class="feed">
                 <div class="filters">
                     {{if eq .SelectedTab "posts"}}
-                    <form action="/" method="GET" style="display:inline;">
+                    <form action="/" method="GET">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}">
                             <i class="fas fa-th-list"></i> All
                         </button>
                     </form>
-                    <form action="/" method="GET" style="display:inline;">
+                    <form action="/" method="GET">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="top-rated">
-                        <button type="submit" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}">
                             <i class="fas fa-star"></i> Top Rated
                         </button>
                     </form>
-                    <form action="/" method="GET" style="display:inline;">
+                    <form action="/" method="GET">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="oldest">
-                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}">
                             <i class="fas fa-sort-amount-up"></i> Oldest to Newest
                         </button>
                     </form>
                     {{else if eq .SelectedTab "tags"}}
-                    <form action="/" method="GET" style="display:inline;">
+                    <form action="/" method="GET">
                         <input type="hidden" name="tab" value="tags">
                         <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}">
                             <i class="fas fa-th-list"></i> All
                         </button>
                     </form>
                     {{range .Categories}}
-                    <form action="/" method="GET" style="display:inline;">
+                    <form action="/" method="GET">
                         <input type="hidden" name="tab" value="tags">
                         <input type="hidden" name="filter" value="{{.Name}}">
-                        <button type="submit" class="{{if eq $.SelectedFilter .Name}}selected{{end}}"
-                            style="background:none; border:none; color:inherit; cursor:pointer;">
+                        <button type="submit" class="{{if eq $.SelectedFilter .Name}}selected{{end}}">
                             <i class="fas fa-tag"></i> {{.Name}}
                         </button>
                     </form>
@@ -566,11 +588,10 @@
                             <p>{{.Content}}</p>
                             <div class="post-categories">
                                 {{range .Categories}}
-                                <form action="/" method="GET" style="display:inline;">
+                                <form action="/" method="GET">
                                     <input type="hidden" name="tab" value="tags">
                                     <input type="hidden" name="filter" value="{{.Name}}">
-                                    <button type="submit"
-                                        style="background:none; border:none; color:inherit; cursor:pointer;">
+                                    <button type="submit">
                                         <span class="category-box">{{.Name}}</span>
                                     </button>
                                 </form>
