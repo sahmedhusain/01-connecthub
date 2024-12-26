@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/home.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
+    <script src="/static/js/dropdown.js" defer></script>
 </head>
 
 <body>
@@ -293,6 +296,25 @@
                 <div id="feed-content">
                     {{range .Posts}}
                     <article class="post">
+                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
+                        <div class="post-actions">
+                            <div class="dropdown" style="position: absolute; right: 0;">
+                                <button class="dropbtn">...</button>
+                                <div class="dropdown-content dot">
+                                    {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete</a>
+                                    {{end}}
+                                    {{if eq (printf "%v" $.RoleID) "1"}}
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Post</a>
+                                    {{end}}
+                                    {{if eq (printf "%v" $.RoleID) "2"}}
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Post</a>
+                                    <a href="/reportpost?id={{.PostID}}" class="action-link report"><i class="fa-solid fa-ban"></i> Report Post</a>
+                                    {{end}}
+                                </div>
+                            </div>
+                        </div>
+                        {{end}}
                         <div class="post-header">
                             <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
                                 alt="Avatar">
@@ -301,25 +323,6 @@
                                 <p>@{{.Username}}</p>
                             </div>
                         </div>
-                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
-                        <div class="post-actions">
-                            <div class="dropdown" style="position: absolute; right: 0;">
-                                <button class="dropbtn">...</button>
-                                <div class="dropdown-content">
-                                    {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
-                                    <a href="/deletepost?id={{.PostID}}">Delete Post</a>
-                                    {{end}}
-                                    {{if eq (printf "%v" $.RoleID) "1"}}
-                                    <a href="/deletepost?id={{.PostID}}">Delete Post</a>
-                                    {{end}}
-                                    {{if eq (printf "%v" $.RoleID) "2"}}
-                                    <a href="/deletepost?id={{.PostID}}">Delete Post</a>
-                                    <a href="/reportpost?id={{.PostID}}">Report Post</a>
-                                    {{end}}
-                                </div>
-                            </div>
-                        </div>
-                        {{end}}
                         <div class="post-body">
                             <form action="/post" method="GET">
                                 <input type="hidden" name="id" value="{{.PostID}}">

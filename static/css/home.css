@@ -145,3 +145,71 @@
     font-size: 0.8em;
     color: #888;
 }
+
+.post-actions .dropdown-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.post-actions .dropdown-content button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+.post-actions .dropdown-content button:hover {
+    color: #3B82F6;
+}
+
+.post-actions .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-link.delete {
+    color: red;
+    font-weight: 600;
+}
+
+.action-link.report {
+    color: black;
+}
+
+.action-link.delete:hover {
+    color: #FF0000;
+}
+
+.action-link.report:hover {
+    color: #000000;
+}
+
+.dot {
+    font-size: 15px;
+    cursor: pointer;
+    align-items: center;
+    width: 100%;
+}
+
+.dot:hover {
+    color: #3B82F6;
+}
