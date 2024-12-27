@@ -151,3 +151,20 @@
 .dot:hover {
     color: #3B82F6;
 }
+
+.fa-bell {
+    font-size: 25px;
+    color: #374151;
+    position: relative;
+}
+
+.fa-bell::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+}
