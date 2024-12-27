@@ -1,25 +1,37 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.dropbtn').forEach(button => {
-        button.addEventListener('click', function(event) {
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdownButtons = document.querySelectorAll('.dropbtn');
+    
+    dropdownButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
             event.stopPropagation();
             const dropdownContent = this.nextElementSibling;
-            dropdownContent.classList.toggle('show');
+
+            const isVisible = dropdownContent.classList.contains('show');
+            document.querySelectorAll('.dropdown-content').forEach(content => {
+                content.classList.remove('show');
+                content.previousElementSibling.setAttribute('aria-expanded', 'false');
+            });
+
+            if (!isVisible) {
+                dropdownContent.classList.add('show');
+                this.setAttribute('aria-expanded', 'true');
+            }
         });
     });
 
-    window.addEventListener('click', function(e) {
+    window.addEventListener('click', function () {
         document.querySelectorAll('.dropdown-content').forEach(content => {
-            if (!content.previousElementSibling.contains(e.target)) {
-                content.classList.remove('show');
-            }
+            content.classList.remove('show');
+            content.previousElementSibling.setAttribute('aria-expanded', 'false');
         });
     });
 
-    window.addEventListener('click', function(e) {
-        document.querySelectorAll('.dropbtn').forEach(content => {
-            if (!content.previousElementSibling.contains(e.target)) {
+    window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.dropdown-content').forEach(content => {
                 content.classList.remove('show');
-            }
-        });
+                content.previousElementSibling.setAttribute('aria-expanded', 'false');
+            });
+        }
     });
 });

@@ -193,6 +193,8 @@
                             </button>
                         </form>
                     </div>
+                    {{else}}
+                    <p>No notifications yet</p>
                     {{end}}
                     <form action="/notifications" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
