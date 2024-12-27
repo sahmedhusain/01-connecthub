@@ -34,7 +34,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
-		log.Println("Database connection failed")
+		log.Println("Database connection failed:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
@@ -43,7 +43,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	categories, err := database.GetAllCategories(db)
 	if err != nil {
-		log.Println("Failed to fetch categories")
+		log.Println("Failed to fetch categories:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
@@ -77,7 +77,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		posts, err = database.GetFilteredPosts(db, filter)
 	}
 	if err != nil {
-		log.Println("Failed to fetch posts")
+		log.Println("Failed to fetch posts:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
@@ -85,7 +85,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	users, err := database.GetAllUsers(db)
 	if err != nil {
-		log.Println("Failed to fetch users")
+		log.Println("Failed to fetch users:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
@@ -94,7 +94,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("user")
 	userIDInt, err := strconv.Atoi(userID)
 	if err != nil {
-		log.Println("Failed to parse user ID")
+		log.Println("Failed to parse user ID:", err)
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
 		errHandler(w, r, &err)
 		return
@@ -105,7 +105,33 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	var roleID int
 	err = db.QueryRow("SELECT username, avatar, role_id FROM user WHERE userid = ?", userID).Scan(&userName, &avatar, &roleID)
 	if err != nil {
-		log.Println("Failed to fetch user data")
+		log.Println("Failed to fetch user data:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	var roleName string
+	if roleID == 1 {
+		roleName = "Admin"
+	} else if roleID == 2 {
+		roleName = "Moderator"
+	} else {
+		roleName = "User"
+	}
+
+	var totalLikes, totalPosts int
+	err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&totalLikes)
+	if err != nil {
+		log.Println("Failed to fetch total likes:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&totalPosts)
+	if err != nil {
+		log.Println("Failed to fetch total posts:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
@@ -113,7 +139,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	notifications, err := database.GetLastNotifications(db, strconv.Itoa(userIDInt))
 	if err != nil {
-		log.Println("Failed to fetch notifications")
+		log.Println("Failed to fetch notifications:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
@@ -123,6 +149,9 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		UserID:         userID,
 		UserName:       userName,
 		Avatar:         avatar.String,
+		RoleName:       roleName,
+		TotalLikes:     totalLikes,
+		TotalPosts:     totalPosts,
 		Categories:     categories,
 		Users:          users,
 		Posts:          posts,

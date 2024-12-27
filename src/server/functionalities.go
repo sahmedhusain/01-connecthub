@@ -32,6 +32,9 @@ type PageData struct {
 	UserID         string
 	UserName       string
 	Avatar         string
+	RoleName       string
+	TotalLikes     int
+	TotalPosts     int
 	Categories     []database.Category
 	Users          []database.User
 	Posts          []database.Post
