@@ -203,6 +203,17 @@
                 <div class="dropdown-content">
                     <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
+                        <button>
+                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
+                            <span class="username">@{{.UserName}}</span>
+                            {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
+                                <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
+                            {{end}}
+                            <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}} [{{.TotalPosts}}]</span>
+                        </button>
+                    </form>
+                    <form action="/myprofile" method="GET">
+                        <input type="hidden" name="user" value="{{.UserID}}">
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
@@ -213,7 +224,7 @@
                             <i class="fas fa-cog"></i> Account settings
                         </button>
                     </form>
-                    <a href="/" style="color: red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="/"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
         </div>
