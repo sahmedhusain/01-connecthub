@@ -55,13 +55,15 @@
                 <div class="dropdown-content">
                     <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
-                        <button>
-                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar">
-                            <span class="username">@{{.UserName}}</span>
+                        <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
-                                <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
-                            {{end}}
-                            <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}} [{{.TotalPosts}}]</span>
+                            <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
+                        {{end}}
+                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="profile-image">
+                            <div class="profile-info">
+                                <span class="username">@{{.UserName}}</span>
+                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}} [{{.TotalPosts}}]</span>
+                            </div>
                         </button>
                     </form>
                     <form action="/myprofile" method="GET">

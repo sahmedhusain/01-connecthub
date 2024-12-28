@@ -88,10 +88,15 @@
     background: none;
 }
 
-.dropdown-content a img,
 .dropdown-content button img {
-    width: 20px;
-    height: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.profile-button .profile-image {
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
 }
 
@@ -194,28 +199,40 @@
     gap: 10px;
 }
 
-.avatar {
-    width: 300px; 
-    height: 300px; 
-    border-radius: 50%;
-    display: block;
-    margin: 0 auto; 
+.profile-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.profile-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .username {
     font-weight: bold;
-    text-align: center; 
-    margin-top: 10px; 
+    margin-bottom: 5px;
 }
 
 .role {
     color: #FF4500;
-    text-align: center; 
-    font-size: 12px; 
+    font-size: 15px;
+    margin-bottom: 10px;
 }
 
 .stats {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
     color: #FFD700;
-    text-align: center; 
-    margin-top: 10px; 
 }
