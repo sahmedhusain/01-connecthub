@@ -13,13 +13,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
     <style>
-        .container {
+                main {
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 20px ;
+    max-width: 1500px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #E5E7EB;
+    align-content: center;
+}
+.container {
             max-width: 1000px;
-            margin: 40px auto;
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
         }
 
         h1 {
@@ -268,16 +275,20 @@
         <div class="container">
             <h1>Notifications</h1>
             {{range .Notifications}}
-            <div class="notification">
-                <img src="{{.Avatar}}" alt="User Avatar">
-                <div class="notification-content">
-                    <p>{{.Message}}</p>
-                    <time>{{.CreatedAt}}</time>
-                </div>
-            </div>
-            {{else}}
-            <p>No notifications available</p>
-            {{end}}
+                    <div class="notification-item">
+                        <form method="GET" action="/post">
+                            <input type="hidden" name="id" value="{{.PostID}}">
+                            <button type="submit" class="dropdown-item">
+                                <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
+                                <div class="notification-user-name">
+                                <span >@{{.UserName}}</span><span> Has {{.Message}}</span>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    {{else}}
+                    <p>No notifications yet</p>
+                    {{end}}
         </div>
     </section>
     </main>
