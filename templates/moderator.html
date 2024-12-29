@@ -13,107 +13,92 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
     <style>
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        main {
+            padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 20px ;
+    max-width: 1500px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #E5E7EB;
         }
 
-        h1,
-        h2 {
+
+        h1, h2 {
+            color: #333;
+            padding-bottom: 10px;
             margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        h1 {
-            font-size: 26px;
             text-align: center;
-            color: #1F2937;
         }
 
-        h2 {
-            font-size: 20px;
-            color: #1F2937;
-            margin-top: 40px;
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-stats div {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            background: #FFFFFF;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid #E5E7EB;
+        table, th, td {
+            border: 1px solid #ddd;
         }
 
-        th,
-        td {
-            padding: 12px 15px;
+        th, td {
+            padding: 10px;
             text-align: left;
-            font-size: 14px;
-            color: #374151;
         }
 
         th {
-            background-color: #F9FAFB;
-            font-weight: 700;
+            background-color: #f2f2f2;
         }
 
-        tbody tr:nth-child(even) {
-            background-color: #F3F4F6;
-        }
-
-        button {
-            cursor: pointer;
+        .delete-button, .report-button {
+            background-color: #dc3545;
+            color: #fff;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
             padding: 10px 20px;
-        }
-
-        .delete-button,
-        .report-button {
-            background-color: #3B82F6;
-            color: white;
-            margin-right: 10px;
-        }
-
-        .delete-button:hover,
-        .report-button:hover {
-            background-color: #2563EB;
-        }
-
-        .delete-button {
-            background-color: #EF4444;
-        }
-
-        .delete-button:hover {
-            background-color: #DC2626;
-        }
-
-        .action-link {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #6B7280;
-            font-size: 14px;
             cursor: pointer;
+            border-radius: 5px;
+            margin-right: 5px;
         }
 
-        .action-link:hover {
-            color: #3B82F6;
+        .report-button {
+            background-color: #ffc107;
+        }
+
+        .delete-button:hover, .report-button:hover {
+            opacity: 0.8;
+        }
+
+        .category-form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .category-form input {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
         }
     </style>
 </head>
