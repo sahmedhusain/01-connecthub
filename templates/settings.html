@@ -15,101 +15,125 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
     <style>
-                        main {
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 20px 20px ;
-    max-width: 1500px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    border: 1px solid #E5E7EB;
-    align-content: center;
-}
-.container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+    main {
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px 20px;
+        max-width: 1500px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border: 1px solid #E5E7EB;
+        align-content: center;
+    }
 
-        h1 {
-            margin-bottom: 30px;
-            font-size: 26px;
-            text-align: center;
-            color: #1F2937;
-            font-weight: 700;
-        }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
 
-        form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #1F2937;
-            font-size: 14px;
-        }
+    h1 {
+        margin-bottom: 30px;
+        font-size: 26px;
+        text-align: center;
+        color: #1F2937;
+        font-weight: 700;
+    }
 
-        form input[type="text"],
-        form input[type="email"],
-        form input[type="password"] {
-            width: 100%;
-            border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            padding: 10px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            outline: none;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-        }
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #1F2937;
+        font-size: 14px;
+    }
 
-        form input[type="text"]:hover,
-        form input[type="email"]:hover,
-        form input[type="password"]:hover {
-            border-color: #3B82F6;
-        }
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"] {
+        width: 100%;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 14px;
+        margin-bottom: 15px;
+        outline: none;
+        font-family: inherit;
+        transition: border-color 0.3s ease;
+    }
 
-        .image-upload-container {
-            margin-bottom: 15px;
-        }
+    form input[type="text"]:hover,
+    form input[type="email"]:hover,
+    form input[type="password"]:hover {
+        border-color: #3B82F6;
+    }
 
-        .upload-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #E5E7EB;
-            color: #1F2937;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-            border: 1px solid #E5E7EB;
-        }
+    .image-upload-container {
+        margin-bottom: 15px;
+    }
 
-        .upload-button:hover {
-            background-color: #D1D5DB;
-        }
+    .upload-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #E5E7EB;
+        color: #1F2937;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+        border: 1px solid #E5E7EB;
+    }
 
-        #avatar {
-            display: none;
-        }
+    .upload-button:hover {
+        background-color: #D1D5DB;
+    }
 
-        form button {
-            background-color: #3B82F6;
-            color: #FFFFFF;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
+    #avatar {
+        display: none;
+    }
 
-        form button:hover {
-            background-color: #2563EB;
-        }
-    </style>
+    form button {
+        background-color: #3B82F6;
+        color: #FFFFFF;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #2563EB;
+    }
+
+    .password-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .password-buttons button {
+        flex: 1;
+        background-color: #E5E7EB;
+        color: #1F2937;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .password-buttons button:hover {
+        background-color: #D1D5DB;
+    }
+</style>
 </head>
 
 <body>
@@ -307,8 +331,11 @@
 
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" value="{{.Password}}" required>
-                <button type="submit" formaction="/showpassword">Show Password</button>
-                <button type="button" onclick="window.location.href='/changepassword'">Change Password</button>
+
+                <div class="password-buttons">
+                    <button type="submit" formaction="/showpassword">Show Password</button>
+                    <button type="button" onclick="window.location.href='/changepassword'">Change Password</button>
+                </div>
 
                 <label>Avatar:</label>
                 <div class="image-upload-container">
