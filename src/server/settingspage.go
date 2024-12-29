@@ -134,3 +134,48 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func ShowPassword(w http.ResponseWriter, r *http.Request) {
+    // Retrieve UserID from session
+    session, _ := store.Get(r, "session-name")
+    userID, ok := session.Values["userID"].(string)
+    if !ok || userID == "" {
+        log.Println("UserID not found in session, redirecting to login page")
+        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        return
+    }
+
+    db, err := sql.Open("sqlite3", "./database/main.db")
+    if err != nil {
+        log.Println("Database connection failed")
+        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+        errHandler(w, r, &err)
+        return
+    }
+    defer db.Close()
+
+    var password string
+    err = db.QueryRow("SELECT password FROM user WHERE id = ?", userID).Scan(&password)
+    if err != nil {
+        log.Println("Failed to fetch password")
+        errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+        errHandler(w, r, &errData)
+        return
+    }
+
+    data := struct {
+        UserID   string
+        Password string
+    }{
+        UserID:   userID,
+        Password: password,
+    }
+
+    err = templates.ExecuteTemplate(w, "settings.html", data)
+    if err != nil {
+        log.Println("Error rendering settings page:", err)
+        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+        errHandler(w, r, &err)
+        return
+    }
+}

@@ -124,26 +124,34 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		log.Println("Method not allowed")
+		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+		errHandler(w, r, &err)
 		return
 	}
 
 	postID := r.URL.Query().Get("id")
 	if postID == "" {
-		http.Error(w, "Post ID is required", http.StatusBadRequest)
+		log.Println("Post ID is missing")
+		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+		errHandler(w, r, &err)
 		return
 	}
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
-		http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+		log.Println("Error opening database:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
 
 	_, err = db.Exec("DELETE FROM post WHERE postid = ?", postID)
 	if err != nil {
-		http.Error(w, "Failed to delete post", http.StatusInternalServerError)
+		log.Println("Error deleting post:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 
@@ -152,26 +160,34 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 
 func ReportPost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		log.Println("Method not allowed")
+		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+		errHandler(w, r, &err)
 		return
 	}
 
 	postID := r.URL.Query().Get("id")
 	if postID == "" {
-		http.Error(w, "Post ID is required", http.StatusBadRequest)
+		log.Println("Post ID is missing")
+		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+		errHandler(w, r, &err)
 		return
 	}
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
-		http.Error(w, "Failed to connect to database", http.StatusInternalServerError)
+		log.Println("Error opening database:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
 
 	_, err = db.Exec("INSERT INTO reports (post_id, reported_by, report_reason) VALUES (?, ?, ?)", postID, r.URL.Query().Get("user"), "Reported by moderator")
 	if err != nil {
-		http.Error(w, "Failed to report post", http.StatusInternalServerError)
+		log.Println("Error reporting post:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 

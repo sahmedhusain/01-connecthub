@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConnectHub | Account Settings</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -100,68 +101,6 @@
 
         form button:hover {
             background-color: #2563EB;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: #FFFFFF;
-            min-width: 180px;
-            border: 1px solid #E5E7EB;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            padding: 10px 0;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 10px 15px;
-            font-size: 14px;
-            color: #374151;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #F3F4F6;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-content img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-
-        .action-link {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #6B7280;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .action-link:hover {
-            color: #3B82F6;
         }
     </style>
 </head>
@@ -360,7 +299,9 @@
                 <input type="email" id="email" name="email" value="{{.Email}}" required>
 
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password">
+                <input type="password" id="password" name="password" value="{{.Password}}" required>
+                <button type="submit" formaction="/showpassword">Show Password</button>
+                <button type="button" onclick="window.location.href='/changepassword'">Change Password</button>
 
                 <label>Avatar:</label>
                 <div class="image-upload-container">
