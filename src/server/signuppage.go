@@ -15,6 +15,8 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
+		F_name := r.FormValue("first_name")
+		L_name := r.FormValue("last_name")
 		username := r.FormValue("username")
 		email := r.FormValue("email")
 		password := r.FormValue("password")
@@ -82,15 +84,26 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		_, err = db.Exec("INSERT INTO user (username, email, password) VALUES (?, ?, ?)", username, email, password)
+		// Insert user data into the database
+		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
 		if err != nil {
-			log.Println("Failed to insert user data")
+			log.Println("Failed to prepare insert statement:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &errData)
 			return
 		}
-		log.Println("User registered with username:", username)
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		defer stmt.Close()
+
+		_, err = stmt.Exec(F_name, L_name, username, email, password, "", 0, "")
+		if err != nil {
+			log.Println("Failed to insert user data:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+			return
+		}
+
+		// Redirect to login page or show success message
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
