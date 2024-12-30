@@ -9,14 +9,11 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/gorilla/sessions"
-
 	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
 	templates *template.Template
-	store     = sessions.NewCookieStore([]byte("your-secret-key"))
 )
 
 func init() {

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
@@ -64,9 +65,34 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Set the userID in the session
+		// Create a new session in the database
+		startTime := time.Now()
+		endTime := startTime.Add(60 * time.Minute) //60 minutes session
+		var sessionID int
+		err = db.QueryRow(
+			"INSERT INTO session (start, end) VALUES (?, ?) RETURNING sessionid",
+			startTime, endTime,
+		).Scan(&sessionID)
+		if err != nil {
+			log.Println("Error creating session:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+			return
+		}
+
+		// Update the user's session ID in the database
+		_, err = db.Exec("UPDATE user SET session_sessionid = ? WHERE userid = ?", sessionID, userID)
+		if err != nil {
+			log.Println("Error updating user session ID:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+			return
+		}
+
+		// Set the userID in the Gorilla session
 		session, _ := store.Get(r, "session-name")
 		session.Values["userID"] = strconv.Itoa(userID)
+		session.Values["sessionID"] = sessionID
 		err = session.Save(r, w)
 		if err != nil {
 			log.Println("Error saving session:", err)
