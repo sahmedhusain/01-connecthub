@@ -13,18 +13,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
     <style>
-
-main {
-    padding: 20px;
+        main {
+            padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 20px 20px ;
+    margin: 20px 20px;
     max-width: 1500px;
     border-radius: 8px;
     margin-bottom: 30px;
     border: 1px solid #E5E7EB;
     align-content: center;
-}
+        }
 
         .container {
             max-width: 1000px;
@@ -140,6 +139,88 @@ main {
             color: #3B82F6;
         }
 
+        .profile-header .profile-info {
+            flex: 1;
+        }
+
+        .profile-header .profile-info .profile-stats {
+            margin-top: 15px;
+        }
+
+        .profile-header .profile-info .profile-stats div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-header .profile-info .profile-stats div button {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .posts-container ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .posts-container li {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .posts-container .post-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .posts-container .post-actions .dropdown {
+            position: relative;
+        }
+
+        .posts-container .post-actions .dropdown .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #FFFFFF;
+            min-width: 160px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            padding: 10px 0;
+        }
+
+        .posts-container .post-actions .dropdown .dropdown-content a {
+            display: block;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #374151;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .posts-container .post-actions .dropdown .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .posts-container .post-actions .dropdown .dropdown-content a:hover {
+            background-color: #F3F4F6;
+        }
+
+        .posts-container .post-actions .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 
