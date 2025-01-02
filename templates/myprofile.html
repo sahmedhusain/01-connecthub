@@ -254,6 +254,8 @@
                         </ul>
                         {{else}}
                         <h2>Your Posts</h2>
+                        <div class="feed-content">
+                            {{range .Posts}}
                         <article class="post">
                             <div class="post-actions">
                                 <div class="dropdown" style="position: absolute; right: 0;">
@@ -317,14 +319,14 @@
                                 </form>
                                 <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                             </div>
-
                         </article>
                         <br>
                         {{else}}
                         <p>No posts yet</p>
                         {{end}}
+                        </div>
+                        {{end}}
                     </div>
-                    {{end}}
                 </div>
     </div>
     </section>
