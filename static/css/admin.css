@@ -1,0 +1,115 @@
+main {
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 20px;
+    max-width: 1500px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #E5E7EB;
+    align-content: center;
+}
+
+.container {
+    max-width: 1500px;
+}
+
+h1 {
+    color: #444;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 32px;
+}
+
+h2 {
+    color: #444;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.dashboard-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+}
+
+.dashboard-stats div {
+    background-color: #e9ecef;
+    color: #444;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    margin: 0 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+table,
+th,
+td {
+    border: 1px solid #ccc;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #e9ecef;
+}
+
+.role-select,
+.user-logs-select,
+.user-sessions-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+}
+
+.delete-button,
+.save-button,
+.add-button,
+.view-logs-button,
+.view-sessions-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.save-button,
+.add-button,
+.view-logs-button,
+.view-sessions-button {
+    background-color: #007bff;
+}
+
+.delete-button:hover,
+.save-button:hover,
+.add-button:hover,
+.view-logs-button:hover,
+.view-sessions-button:hover {
+    opacity: 0.85;
+}
+
+.category-form {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.category-form input {
+    flex: 1;
+    padding: 12px;
+    margin-right: 12px;
+}

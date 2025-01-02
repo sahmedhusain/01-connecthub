@@ -10,108 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/dropdown.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
-    <style>
-main {
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 20px 20px ;
-    max-width: 1500px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    border: 1px solid #E5E7EB;
-    align-content: center;
-}
-        .container {
-    max-width: 1500px;
-}
 
-h1 {
-    color: #444;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-    text-align: center;
-    font-size: 32px;
-}
-
-h2 {
-    color: #444;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-}
-
-.dashboard-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 25px;
-}
-
-.dashboard-stats div {
-    background-color: #e9ecef;
-    color: #444;
-    padding: 25px;
-    border-radius: 8px;
-    text-align: center;
-    flex: 1;
-    margin: 0 15px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 25px;
-}
-
-table, th, td {
-    border: 1px solid #ccc;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #e9ecef;
-}
-
-.role-select, .user-logs-select, .user-sessions-select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 12px;
-}
-
-.delete-button, .save-button, .add-button, .view-logs-button, .view-sessions-button {
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 12px 24px;
-    cursor: pointer;
-    border-radius: 8px;
-}
-
-.save-button, .add-button, .view-logs-button, .view-sessions-button {
-    background-color: #007bff;
-}
-
-.delete-button:hover, .save-button:hover, .add-button:hover, .view-logs-button:hover, .view-sessions-button:hover {
-    opacity: 0.85;
-}
-
-.category-form {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-}
-
-.category-form input {
-    flex: 1;
-    padding: 12px;
-    margin-right: 12px;
-}
-    </style>
 </head>
 
 <body>
@@ -138,7 +40,7 @@ th {
                             <button type="submit" class="dropdown-item">
                                 <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
                                 <div class="notification-user-name">
-                                <span >@{{.UserName}}</span><span> Has {{.Message}}</span>
+                                    <span>@{{.UserName}}</span><span> Has {{.Message}}</span>
                                 </div>
                             </button>
                         </form>
@@ -153,18 +55,21 @@ th {
                 </div>
             </div>
             <div class="dropdown">
-                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar dropbtn">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                    class="avatar dropbtn">
                 <div class="dropdown-content">
                     <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
                             <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
-                        {{end}}
-                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="profile-image">
+                            {{end}}
+                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}"
+                                alt="Avatar" class="profile-image">
                             <div class="profile-info">
                                 <span class="username">@{{.UserName}}</span>
-                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}} [{{.TotalPosts}}]</span>
+                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}}
+                                    [{{.TotalPosts}}]</span>
                             </div>
                         </button>
                     </form>
@@ -295,231 +200,232 @@ th {
         </aside>
         <main>
             <section class="feed">
-        <div class="container">
-            <h1>Admin Panel</h1>
-            <div class="dashboard-stats">
-                <div>
-                    <span>{{.TotalUsers}}</span>
-                    Users
+                <div class="container">
+                    <h1>Admin Panel</h1>
+                    <div class="dashboard-stats">
+                        <div>
+                            <span>{{.TotalUsers}}</span>
+                            Users
+                        </div>
+                        <div>
+                            <span>{{.TotalPosts}}</span>
+                            Posts
+                        </div>
+                        <div>
+                            <span>{{.TotalCategories}}</span>
+                            Categories
+                        </div>
+                    </div>
+
+                    <h2>Manage User Roles</h2>
+                    <form action="/admin" method="POST">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Users}}
+                                <tr>
+                                    <td>{{.ID}}</td>
+                                    <td>{{.Username}}</td>
+                                    <td>{{.Email}}</td>
+                                    <td>
+                                        <select name="role_{{.ID}}" class="role-select">
+                                            <option value="1" {{if eq .RoleID 1}}selected{{end}}>Admin</option>
+                                            <option value="2" {{if eq .RoleID 2}}selected{{end}}>Moderator</option>
+                                            <option value="3" {{if eq .RoleID 3}}selected{{end}}>User</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="submit" name="delete_user" value="{{.ID}}"
+                                            class="delete-button">Delete</button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                        <button type="submit" class="save-button">Save Changes</button>
+                    </form>
+
+                    <h2>Manage Posts</h2>
+                    <form action="/admin" method="POST">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Post ID</th>
+                                    <th>Content</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Posts}}
+                                <tr>
+                                    <td>{{.PostID}}</td>
+                                    <td>{{.Content}}</td>
+                                    <td>
+                                        <button type="submit" name="delete_post" value="{{.PostID}}"
+                                            class="delete-button">Delete</button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <h2>Manage Categories</h2>
+                    <form action="/admin" method="POST" class="category-form">
+                        <input type="text" name="new_category" placeholder="New Category Name" required>
+                        <button type="submit" name="add_category" class="add-button">Add Category</button>
+                    </form>
+                    <form action="/admin" method="POST">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category ID</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Categories}}
+                                <tr>
+                                    <td>{{.ID}}</td>
+                                    <td>{{.Name}}</td>
+                                    <td>
+                                        <button type="submit" name="delete_category" value="{{.ID}}"
+                                            class="delete-button">Delete</button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <h2>Manage Reports</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Report ID</th>
+                                <th>Post ID</th>
+                                <th>Reported By</th>
+                                <th>Reason</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Reports}}
+                            <tr>
+                                <td>{{.ID}}</td>
+                                <td>{{.PostID}}</td>
+                                <td>{{.ReportedBy}}</td>
+                                <td>{{.ReportReason}}</td>
+                                <td>{{.CreatedAt}}</td>
+                                <td>
+                                    <form action="/admin" method="POST" style="margin:0;">
+                                        <button type="submit" name="delete_report" value="{{.ID}}"
+                                            class="delete-button">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+
+                    <h2>Manage Comments</h2>
+                    <form action="/admin" method="POST">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Comment ID</th>
+                                    <th>Content</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Comments}}
+                                <tr>
+                                    <td>{{.CommentID}}</td>
+                                    <td>{{.Content}}</td>
+                                    <td>
+                                        <button type="submit" name="delete_comment" value="{{.CommentID}}"
+                                            class="delete-button">Delete</button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <h2>Manage User Logs</h2>
+                    <form action="/admin" method="GET" style="margin-bottom: 20px;">
+                        <select name="user_logs" class="user-logs-select">
+                            {{range .Users}}
+                            <option value="{{.ID}}">{{.Username}}</option>
+                            {{end}}
+                        </select>
+                        <button type="submit" class="view-logs-button">View Logs</button>
+                    </form>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>User ID</th>
+                                <th>Action</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .UserLogs}}
+                            <tr>
+                                <td>{{.ID}}</td>
+                                <td>{{.UserID}}</td>
+                                <td>{{.Action}}</td>
+                                <td>{{.Timestamp}}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+
+                    <h2>Manage User Sessions</h2>
+                    <form action="/admin" method="GET" style="margin-bottom: 20px;">
+                        <select name="user_sessions" class="user-sessions-select">
+                            {{range .Users}}
+                            <option value="{{.ID}}">{{.Username}}</option>
+                            {{end}}
+                        </select>
+                        <button type="submit" class="view-sessions-button">View Sessions</button>
+                    </form>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Session ID</th>
+                                <th>User ID</th>
+                                <th>Start</th>
+                                <th>End</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .UserSessions}}
+                            <tr>
+                                <td>{{.ID}}</td>
+                                <td>{{.UserID}}</td>
+                                <td>{{.Start}}</td>
+                                <td>{{.End}}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
                 </div>
-                <div>
-                    <span>{{.TotalPosts}}</span>
-                    Posts
-                </div>
-                <div>
-                    <span>{{.TotalCategories}}</span>
-                    Categories
-                </div>
-            </div>
-
-            <h2>Manage User Roles</h2>
-            <form action="/admin" method="POST">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Users}}
-                        <tr>
-                            <td>{{.ID}}</td>
-                            <td>{{.Username}}</td>
-                            <td>{{.Email}}</td>
-                            <td>
-                                <select name="role_{{.ID}}" class="role-select">
-                                    <option value="1" {{if eq .RoleID 1}}selected{{end}}>Admin</option>
-                                    <option value="2" {{if eq .RoleID 2}}selected{{end}}>Moderator</option>
-                                    <option value="3" {{if eq .RoleID 3}}selected{{end}}>User</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button type="submit" name="delete_user" value="{{.ID}}"
-                                    class="delete-button">Delete</button>
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-                <button type="submit" class="save-button">Save Changes</button>
-            </form>
-
-            <h2>Manage Posts</h2>
-            <form action="/admin" method="POST">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Post ID</th>
-                            <th>Content</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Posts}}
-                        <tr>
-                            <td>{{.PostID}}</td>
-                            <td>{{.Content}}</td>
-                            <td>
-                                <button type="submit" name="delete_post" value="{{.PostID}}"
-                                    class="delete-button">Delete</button>
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-            </form>
-
-            <h2>Manage Categories</h2>
-            <form action="/admin" method="POST" class="category-form">
-                <input type="text" name="new_category" placeholder="New Category Name" required>
-                <button type="submit" name="add_category" class="add-button">Add Category</button>
-            </form>
-            <form action="/admin" method="POST">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category ID</th>
-                            <th>Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Categories}}
-                        <tr>
-                            <td>{{.ID}}</td>
-                            <td>{{.Name}}</td>
-                            <td>
-                                <button type="submit" name="delete_category" value="{{.ID}}"
-                                    class="delete-button">Delete</button>
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-            </form>
-
-            <h2>Manage Reports</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Report ID</th>
-                        <th>Post ID</th>
-                        <th>Reported By</th>
-                        <th>Reason</th>
-                        <th>Created At</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .Reports}}
-                    <tr>
-                        <td>{{.ID}}</td>
-                        <td>{{.PostID}}</td>
-                        <td>{{.ReportedBy}}</td>
-                        <td>{{.ReportReason}}</td>
-                        <td>{{.CreatedAt}}</td>
-                        <td>
-                            <form action="/admin" method="POST" style="margin:0;">
-                                <button type="submit" name="delete_report" value="{{.ID}}"
-                                    class="delete-button">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-
-            <h2>Manage Comments</h2>
-            <form action="/admin" method="POST">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Comment ID</th>
-                            <th>Content</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Comments}}
-                        <tr>
-                            <td>{{.CommentID}}</td>
-                            <td>{{.Content}}</td>
-                            <td>
-                                <button type="submit" name="delete_comment" value="{{.CommentID}}" class="delete-button">Delete</button>
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-            </form>
-
-            <h2>Manage User Logs</h2>
-            <form action="/admin" method="GET" style="margin-bottom: 20px;">
-                <select name="user_logs" class="user-logs-select">
-                    {{range .Users}}
-                    <option value="{{.ID}}">{{.Username}}</option>
-                    {{end}}
-                </select>
-                <button type="submit" class="view-logs-button">View Logs</button>
-            </form>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Log ID</th>
-                        <th>User ID</th>
-                        <th>Action</th>
-                        <th>Timestamp</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .UserLogs}}
-                    <tr>
-                        <td>{{.ID}}</td>
-                        <td>{{.UserID}}</td>
-                        <td>{{.Action}}</td>
-                        <td>{{.Timestamp}}</td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-
-            <h2>Manage User Sessions</h2>
-            <form action="/admin" method="GET" style="margin-bottom: 20px;">
-                <select name="user_sessions" class="user-sessions-select">
-                    {{range .Users}}
-                    <option value="{{.ID}}">{{.Username}}</option>
-                    {{end}}
-                </select>
-                <button type="submit" class="view-sessions-button">View Sessions</button>
-            </form>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Session ID</th>
-                        <th>User ID</th>
-                        <th>Start</th>
-                        <th>End</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .UserSessions}}
-                    <tr>
-                        <td>{{.ID}}</td>
-                        <td>{{.UserID}}</td>
-                        <td>{{.Start}}</td>
-                        <td>{{.End}}</td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-        </div>
-    </section>
-    </main>
-    <script src="/static/js/dropdown.js"></script>
+            </section>
+        </main>
+        <script src="/static/js/dropdown.js"></script>
 </body>
 
 </html>

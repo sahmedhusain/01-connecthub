@@ -10,131 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/dropdown.css">
+    <link rel="stylesheet" href="/static/css/settings.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
-    <style>
-    main {
-        padding: 20px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin: 20px 20px;
-        max-width: 1500px;
-        border-radius: 8px;
-        margin-bottom: 30px;
-        border: 1px solid #E5E7EB;
-        align-content: center;
-    }
-
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-
-    h1 {
-        margin-bottom: 30px;
-        font-size: 26px;
-        text-align: center;
-        color: #1F2937;
-        font-weight: 700;
-    }
-
-    form label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 600;
-        color: #1F2937;
-        font-size: 14px;
-    }
-
-    form input[type="text"],
-    form input[type="email"],
-    form input[type="password"] {
-        width: 100%;
-        border: 1px solid #E5E7EB;
-        border-radius: 6px;
-        padding: 10px;
-        font-size: 14px;
-        margin-bottom: 15px;
-        outline: none;
-        font-family: inherit;
-        transition: border-color 0.3s ease;
-    }
-
-    form input[type="text"]:hover,
-    form input[type="email"]:hover,
-    form input[type="password"]:hover {
-        border-color: #3B82F6;
-    }
-
-    .image-upload-container {
-        margin-bottom: 15px;
-    }
-
-    .upload-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background-color: #E5E7EB;
-        color: #1F2937;
-        padding: 10px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.3s ease;
-        border: 1px solid #E5E7EB;
-    }
-
-    .upload-button:hover {
-        background-color: #D1D5DB;
-    }
-
-    #avatar {
-        display: none;
-    }
-
-    .save {
-        background-color: #3B82F6;
-        color: #FFFFFF;
-        font-size: 16px;
-        font-weight: 600;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        width: 100%;
-        transition: background-color 0.3s ease;
-    }
-
-    .save:hover {
-        background-color: #2563EB;
-    }
-
-    .container .password-buttons {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-
-    .container .password-buttons button {
-        flex: 1;
-        background-color: #E5E7EB;
-        color: #1F2937;
-        font-size: 14px;
-        font-weight: 600;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .container .password-buttons button:hover {
-        background-color: #3B82F6;
-        color: #D1D5DB;
-    }
-</style>
 </head>
 
 <body>
@@ -161,7 +39,7 @@
                             <button type="submit" class="dropdown-item">
                                 <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
                                 <div class="notification-user-name">
-                                <span >@{{.UserName}}</span><span> Has {{.Message}}</span>
+                                    <span>@{{.UserName}}</span><span> Has {{.Message}}</span>
                                 </div>
                             </button>
                         </form>
@@ -176,18 +54,21 @@
                 </div>
             </div>
             <div class="dropdown">
-                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar dropbtn">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                    class="avatar dropbtn">
                 <div class="dropdown-content">
                     <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
                             <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
-                        {{end}}
-                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="profile-image">
+                            {{end}}
+                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}"
+                                alt="Avatar" class="profile-image">
                             <div class="profile-info">
                                 <span class="username">@{{.UserName}}</span>
-                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}} [{{.TotalPosts}}]</span>
+                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}}
+                                    [{{.TotalPosts}}]</span>
                             </div>
                         </button>
                     </form>
@@ -318,46 +199,49 @@
         </aside>
         <main>
             <section class="feed">
-        <div class="container">
-            <h1>Account Settings</h1>
-            <form action="/settings" method="POST" enctype="multipart/form-data">
-                <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name" value="{{.FirstName}}" required>
+                <div class="container">
+                    <h1>Account Settings</h1>
+                    <form action="/settings" method="POST" enctype="multipart/form-data">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name" value="{{.FirstName}}" required>
 
-                <label for="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="last_name" value="{{.LastName}}" required>
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" value="{{.LastName}}" required>
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{.Email}}" required>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{.Email}}" required>
 
-                <label for="password">Password:</label>
-                <div style="display: flex; align-items: center;">
-                    <input type="password" id="password" name="password" value="{{.Password}}" required readonly>
+                        <label for="password">Password:</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="password" id="password" name="password" value="{{.Password}}" required
+                                readonly>
 
-                    <div class="password-buttons" style="margin-left: 10px;">
-                        <form method="post" action="/togglepassword">
-                            <button type="submit">
-                                <i class="fa-solid {{if .PasswordShown}}fa-eye-low-vision{{else}}fa-eye{{end}}"></i>
-                            </button>
-                        </form>
-                        <button type="button" onclick="window.location.href='/changepassword'">Change Password</button>
-                    </div>
+                            <div class="password-buttons" style="margin-left: 10px;">
+                                <form method="post" action="/togglepassword">
+                                    <button type="submit">
+                                        <i
+                                            class="fa-solid {{if .PasswordShown}}fa-eye-low-vision{{else}}fa-eye{{end}}"></i>
+                                    </button>
+                                </form>
+                                <button type="button" onclick="window.location.href='/changepassword'">Change
+                                    Password</button>
+                            </div>
+                        </div>
+
+                        <label>Avatar:</label>
+                        <div class="image-upload-container">
+                            <label for="avatar" class="upload-button">
+                                <i class="fa-regular fa-image"></i> Upload Avatar
+                            </label>
+                            <input type="file" id="avatar" name="avatar" accept="image/*">
+                        </div>
+
+                        <button type="submit" class="save">Save Changes</button>
+                    </form>
                 </div>
-
-                <label>Avatar:</label>
-                <div class="image-upload-container">
-                    <label for="avatar" class="upload-button">
-                        <i class="fa-regular fa-image"></i> Upload Avatar
-                    </label>
-                    <input type="file" id="avatar" name="avatar" accept="image/*">
-                </div>
-
-                <button type="submit" class="save">Save Changes</button>
-            </form>
-        </div>
-    </section>
-    </main>
-    <script src="/static/js/dropdown.js"></script>
+            </section>
+        </main>
+        <script src="/static/js/dropdown.js"></script>
 </body>
 
 </html>

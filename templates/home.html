@@ -39,7 +39,7 @@
                             <button type="submit" class="dropdown-item">
                                 <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
                                 <div class="notification-user-name">
-                                <span >@{{.UserName}}</span><span> Has {{.Message}}</span>
+                                    <span>@{{.UserName}}</span><span> Has {{.Message}}</span>
                                 </div>
                             </button>
                         </form>
@@ -54,18 +54,21 @@
                 </div>
             </div>
             <div class="dropdown">
-                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="avatar dropbtn">
+                <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
+                    class="avatar dropbtn">
                 <div class="dropdown-content">
                     <form action="/myprofile" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
                             <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
-                        {{end}}
-                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar" class="profile-image">
+                            {{end}}
+                            <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}"
+                                alt="Avatar" class="profile-image">
                             <div class="profile-info">
                                 <span class="username">@{{.UserName}}</span>
-                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}} [{{.TotalPosts}}]</span>
+                                <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}}
+                                    [{{.TotalPosts}}]</span>
                             </div>
                         </button>
                     </form>
@@ -313,20 +316,25 @@
                 <div id="feed-content">
                     {{range .Posts}}
                     <article class="post">
-                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserUserID))}}
+                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v"
+                        $.UserID) (printf "%v" .UserUserID))}}
                         <div class="post-actions">
                             <div class="dropdown" style="position: absolute; right: 0;">
                                 <button class="dropbtn" id="dropdownButton">...</button>
                                 <div class="dropdown-content dot" id="dropdownContent">
                                     {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
-                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete</a>
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
+                                            class="fa-regular fa-trash-can"></i> Delete</a>
                                     {{end}}
                                     {{if eq (printf "%v" $.RoleID) "1"}}
-                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Post</a>
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
+                                            class="fa-regular fa-trash-can"></i> Delete Post</a>
                                     {{end}}
                                     {{if eq (printf "%v" $.RoleID) "2"}}
-                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Post</a>
-                                    <a href="/reportpost?id={{.PostID}}" class="action-link report"><i class="fa-solid fa-ban"></i> Report Post</a>
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
+                                            class="fa-regular fa-trash-can"></i> Delete Post</a>
+                                    <a href="/reportpost?id={{.PostID}}" class="action-link report"><i
+                                            class="fa-solid fa-ban"></i> Report Post</a>
                                     {{end}}
                                 </div>
                             </div>
@@ -395,4 +403,5 @@
     </div>
     <script src="/static/js/dropdown.js"></script>
 </body>
+
 </html>

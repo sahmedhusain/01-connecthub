@@ -1,0 +1,137 @@
+main {
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 20px;
+    max-width: 1500px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #E5E7EB;
+    align-content: center;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h1 {
+    margin-bottom: 30px;
+    font-size: 26px;
+    text-align: center;
+    color: #1F2937;
+    font-weight: 700;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #1F2937;
+    font-size: 14px;
+}
+
+form input[type="text"],
+form textarea {
+    width: 100%;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 15px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:hover,
+form textarea:hover {
+    border-color: #3B82F6;
+}
+
+form textarea {
+    resize: vertical;
+}
+
+.image-upload-container {
+    margin-bottom: 15px;
+}
+
+.upload-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #E5E7EB;
+    color: #1F2937;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    border: 1px solid #E5E7EB;
+}
+
+.upload-button:hover {
+    background-color: #D1D5DB;
+}
+
+.upload-button i {
+    font-size: 16px;
+}
+
+#image {
+    display: none;
+}
+
+.category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+.category-filters label {
+    cursor: pointer;
+    border: 1px solid #E5E7EB;
+    border-radius: 30px;
+    background-color: #F3F4F6;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.category-filters label:hover {
+    background-color: #E5E7EB;
+}
+
+.category-filters input[type="checkbox"] {
+    display: none;
+}
+
+.category-filters input[type="checkbox"]:checked+span {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border-radius: 8px;
+}
+
+.container form button {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.container form button:hover {
+    background-color: #2563EB;
+}
