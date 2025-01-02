@@ -52,11 +52,11 @@ type Post struct {
 type Notification struct {
 	ID        int
 	UserID    int
-	PostID    int // Add this field
+	PostID    int
 	Message   string
 	CreatedAt time.Time
-	UserImage string // Add this field
-	UserName  string // Add this field
+	UserImage string
+	UserName  string // Correct field name
 }
 
 type Report struct {
@@ -84,7 +84,7 @@ type UserSession struct {
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT idcategories, name, description FROM categories")
-	if err != nil {
+	if (err != nil) {
 		return nil, err
 	}
 	defer rows.Close()
@@ -408,9 +408,12 @@ func GetLastNotifications(db *sql.DB, userID string) ([]Notification, error) {
     for rows.Next() {
         var notification Notification
         var avatar sql.NullString
-        if err := rows.Scan(&notification.ID, &notification.UserID, &notification.PostID, &notification.Message, &notification.CreatedAt, &avatar, &notification.UserName); err != nil {
+
+        err := rows.Scan(&notification.ID, &notification.UserID, &notification.PostID, &notification.Message, &notification.CreatedAt, &avatar, &notification.UserName)
+        if err != nil {
             return nil, err
         }
+
         notification.UserImage = avatar.String
         notifications = append(notifications, notification)
     }
@@ -477,30 +480,30 @@ func GetUserPosts(db *sql.DB, userID string) ([]Post, error) {
 }
 
 func GetFollowersCount(db *sql.DB, userID string) (int, error) {
-	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ?", userID).Scan(&count)
-	return count, err
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_userid = ?", userID).Scan(&count)
+    return count, err
 }
 
 func GetFollowingCount(db *sql.DB, userID string) (int, error) {
-	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_id = ?", userID).Scan(&count)
-	return count, err
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_userid = ?", userID).Scan(&count)
+    return count, err
 }
 
 func GetFriendsCount(db *sql.DB, userID string) (int, error) {
-	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_id = ?", userID).Scan(&count)
-	return count, err
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_userid = ?", userID).Scan(&count)
+    return count, err
 }
 
 func IsFollowing(db *sql.DB, userID string, profileUserID string) (bool, error) {
-	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_id = ? AND follower_id = ?", profileUserID, userID).Scan(&count)
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_userid = ? AND follower_userid = ?", profileUserID, userID).Scan(&count)
+    if err != nil {
+        return false, err
+    }
+    return count > 0, nil
 }
 
 func GetTotalUsersCount(db *sql.DB) (int, error) {
@@ -618,8 +621,9 @@ func GetUserLogs(db *sql.DB, userID int) ([]UserLog, error) {
 }
 
 func GetUserSessions(db *sql.DB, userID int) ([]UserSession, error) {
-    rows, err := db.Query("SELECT id, user_id, start, end FROM session WHERE user_id = ?", userID)
+    rows, err := db.Query("SELECT sessionid, userid, start, end FROM sessions WHERE userid = ?", userID)
     if err != nil {
+        log.Println("Failed to fetch user sessions:", err)
         return nil, err
     }
     defer rows.Close()
@@ -627,7 +631,9 @@ func GetUserSessions(db *sql.DB, userID int) ([]UserSession, error) {
     var sessions []UserSession
     for rows.Next() {
         var session UserSession
-        if err := rows.Scan(&session.ID, &session.UserID, &session.Start, &session.End); err != nil {
+        err := rows.Scan(&session.ID, &session.UserID, &session.Start, &session.End)
+        if err != nil {
+            log.Println("Failed to scan user session:", err)
             return nil, err
         }
         sessions = append(sessions, session)
@@ -702,4 +708,16 @@ func GetFriends(db *sql.DB, userID string) ([]User, error) {
         friends = append(friends, user)
     }
     return friends, nil
+}
+
+func GetTotalLikes(db *sql.DB, userID string) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&count)
+    return count, err
+}
+
+func GetTotalPosts(db *sql.DB, userID string) (int, error) {
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&count)
+    return count, err
 }

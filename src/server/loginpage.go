@@ -30,8 +30,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		defer db.Close()
 
 		var userID int
-		var dbPassword string
-		err = db.QueryRow("SELECT userid, password FROM user WHERE email = ?", email).Scan(&userID, &dbPassword)
+		var dbPassword, userName string
+		err = db.QueryRow("SELECT userid, password, username FROM user WHERE email = ?", email).Scan(&userID, &dbPassword, &userName)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				// No user found with the given email
@@ -64,9 +64,10 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Set the userID in the session
+		// Set the userID and userName in the session
 		session, _ := store.Get(r, "session-name")
 		session.Values["userID"] = strconv.Itoa(userID)
+		session.Values["username"] = userName
 		err = session.Save(r, w)
 		if err != nil {
 			log.Println("Error saving session:", err)
