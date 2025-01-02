@@ -1,76 +1,105 @@
+:root {
+    --primary-color: #3B82F6;
+    --secondary-color: #1F2937;
+    --background-color: #fff;
+    --text-color: #1F2937;
+    --border-color: #E5E7EB;
+    --input-border-hover: #3B82F6;
+    --button-hover-color: #D1D5DB;
+    --button-active-color: #2563EB;
+    --font-family: 'Roboto', sans-serif;
+    --radius: 8px;
+    --transition: 0.3s ease;
+}
+
 main {
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     margin: 20px 20px;
     max-width: 1500px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    border: 1px solid #E5E7EB;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
     align-content: center;
+    transition: none; /* No hover effect on main */
 }
 
 .container {
     max-width: 1000px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
 h1 {
     margin-bottom: 30px;
-    font-size: 26px;
+    font-size: 28px;
     text-align: center;
-    color: #1F2937;
+    color: var(--secondary-color);
     font-weight: 700;
+    font-family: var(--font-family);
+    transition: color var(--transition);
+}
+
+h1:hover {
+    color: var(--primary-color);
 }
 
 form label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: 600;
-    color: #1F2937;
-    font-size: 14px;
+    color: var(--secondary-color);
+    font-size: 16px;
+    font-family: var(--font-family);
 }
 
 form input[type="text"],
 form input[type="email"],
 form input[type="password"] {
     width: 100%;
-    border: 1px solid #E5E7EB;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 14px;
-    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 20px;
     outline: none;
     font-family: inherit;
-    transition: border-color 0.3s ease;
+    transition: border-color var(--transition);
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus {
+    border-color: var(--input-border-hover);
 }
 
 form input[type="text"]:hover,
 form input[type="email"]:hover,
 form input[type="password"]:hover {
-    border-color: #3B82F6;
+    border-color: var(--input-border-hover);
 }
 
 .image-upload-container {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .upload-button {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background-color: #E5E7EB;
-    color: #1F2937;
-    padding: 10px 15px;
-    border-radius: 6px;
+    gap: 10px;
+    background-color: var(--border-color);
+    color: var(--secondary-color);
+    padding: 12px 18px;
+    border-radius: var(--radius);
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    border: 1px solid #E5E7EB;
+    font-size: 16px;
+    transition: background-color var(--transition);
+    border: 1px solid var(--border-color);
+    font-family: var(--font-family);
 }
 
 .upload-button:hover {
-    background-color: #D1D5DB;
+    background-color: var(--button-hover-color);
 }
 
 #avatar {
@@ -78,42 +107,71 @@ form input[type="password"]:hover {
 }
 
 .save {
-    background-color: #3B82F6;
+    background-color: var(--primary-color);
     color: #FFFFFF;
     font-size: 16px;
     font-weight: 600;
     padding: 12px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
     width: 100%;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition);
+    font-family: var(--font-family);
 }
 
 .save:hover {
-    background-color: #2563EB;
+    background-color: var(--button-active-color);
 }
 
 .container .password-buttons {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .container .password-buttons button {
     flex: 1;
-    background-color: #E5E7EB;
-    color: #1F2937;
-    font-size: 14px;
+    background-color: var(--border-color);
+    color: var(--secondary-color);
+    font-size: 16px;
     font-weight: 600;
-    padding: 10px 15px;
+    padding: 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition);
+    font-family: var(--font-family);
 }
 
 .container .password-buttons button:hover {
-    background-color: #3B82F6;
-    color: #D1D5DB;
+    background-color: var(--primary-color);
+    color: var(--button-hover-color);
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"] {
+        font-size: 14px;
+    }
+
+    .upload-button,
+    .save,
+    .container .password-buttons button {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    .image-upload-container {
+        margin-bottom: 25px;
+    }
 }
