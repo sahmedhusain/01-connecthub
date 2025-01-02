@@ -34,13 +34,42 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Retrieve UserName from session
+	userName, ok := session.Values["username"].(string)
+	if !ok || userName == "" {
+		log.Println("UserName not found in session, redirecting to login page")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
 	// Check if the user is an admin
 	var roleID int
-	err = db.QueryRow("SELECT role_id FROM user WHERE id = ?", userID).Scan(&roleID)
-	if err != nil || roleID != 1 {
-		log.Println("User is not an admin, redirecting to Home page")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
+	if (err == sql.ErrNoRows) {
+		log.Println("No user found with the given ID:", userID)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+	} else if err != nil || roleID != 1 {
+		log.Println("User is not an admin or error occurred")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	// Retrieve avatar from session
+	avatar, ok := session.Values["avatar"].(string)
+	if (!ok) {
+		// Set a default avatar if not found in session
+		avatar = "/static/assets/default-avatar.png"
+	}
+
+	// Determine role name
+	var roleName string
+	if roleID == 1 {
+		roleName = "Admin"
+	} else if roleID == 2 {
+		roleName = "Moderator"
+	} else {
+		roleName = "User"
 	}
 
 	switch r.Method {
@@ -101,6 +130,14 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		notifications, err := database.GetLastNotifications(db, userID)
+		if err != nil {
+			log.Println("Failed to fetch notifications:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+			return
+		}
+
 		var userLogs []database.UserLog
 		var userSessions []database.UserSession
 		if userID := r.URL.Query().Get("user_logs"); userID != "" {
@@ -121,7 +158,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				userSessions, err = database.GetUserSessions(db, userIDInt)
 				if err != nil {
-					log.Println("Failed to fetch user sessions")
+					log.Println("Failed to fetch user sessions:", err)
 					errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 					errHandler(w, r, &errData)
 					return
@@ -129,21 +166,19 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		data := struct {
-			UserID          string
-			Avatar          string
-			Users           []database.User
-			Posts           []database.Post
-			Categories      []database.Category
-			Reports         []database.Report
-			TotalUsers      int
-			TotalPosts      int
-			TotalCategories int
-			UserLogs        []database.UserLog
-			UserSessions    []database.UserSession
-		}{
+		// Retrieve total likes for the user
+		var totalLikes int
+		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE userid = ?", userID).Scan(&totalLikes)
+		if err != nil {
+			log.Println("Failed to fetch total likes:", err)
+			totalLikes = 0
+		}
+
+		data := PageData{
 			UserID:          userID,
-			Avatar:          session.Values["avatar"].(string),
+			UserName:        userName,
+			Avatar:          avatar,
+			RoleName:        roleName,
 			Users:           users,
 			Posts:           posts,
 			Categories:      categories,
@@ -153,6 +188,9 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			TotalCategories: totalCategories,
 			UserLogs:        userLogs,
 			UserSessions:    userSessions,
+			Notifications:   notifications,
+			TotalLikes:      totalLikes,
+			SelectedTab:    "admin", // Set the default selected tab
 		}
 
 		err = templates.ExecuteTemplate(w, "admin.html", data)
@@ -168,7 +206,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			userID := r.FormValue("delete_user")
 			_, err := db.Exec("DELETE FROM user WHERE id = ?", userID)
 			if err != nil {
-				log.Println("Failed to delete user")
+				log.Println("Failed to delete user:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 				errHandler(w, r, &errData)
 				return
@@ -218,15 +256,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 				errHandler(w, r, &err)
 				return
 			}
-		} else if r.FormValue("delete_comment") != "" {
-			commentID := r.FormValue("delete_comment")
-			_, err := db.Exec("DELETE FROM comment WHERE commentid = ?", commentID)
-			if err != nil {
-				log.Println("Failed to delete comment")
-				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
-				return
-			}
 		} else {
 			for key, values := range r.Form {
 				if len(values) > 0 && key[:5] == "role_" {
@@ -234,7 +263,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 					roleID := values[0]
 					_, err := db.Exec("UPDATE user SET role_id = ? WHERE id = ?", roleID, userID)
 					if err != nil {
-						log.Println("Failed to update user role")
+						log.Println("Failed to update user role:", err)
 						err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 						errHandler(w, r, &err)
 						return

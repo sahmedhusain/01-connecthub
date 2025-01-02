@@ -1,0 +1,209 @@
+:root {
+    --primary-color: #2563EB;
+    --secondary-color: #1E293B;
+    --background-color: #F9FAFB;
+    --foreground-color: #FFFFFF;
+    --text-color: #374151;
+    --text-light-color: #6B7280;
+    --border-color: #E5E7EB;
+    --hover-color: #1D4ED8;
+    --accent-color: #3B82F6;
+    --font-family: 'Roboto', sans-serif;
+    --radius: 8px;
+    --transition: all 0.3s ease-in-out;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+a:hover {
+    color: var(--hover-color);
+}
+
+main {
+    padding: 20px;
+    background-color: var(--foreground-color);
+    box-shadow: var(--box-shadow);
+    margin: 20px 20px;
+    max-width: 1500px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    /* Ensures layout adapts for smaller screens */
+}
+
+.profile-header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: var(--box-shadow);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin: 0;
+    transition: color var(--transition);
+}
+
+.profile-info p {
+    margin: 0.5rem 0 0;
+    color: var(--text-light-color);
+    font-size: 1rem;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.profile-stats div {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+
+.posts-container {
+    margin-top: 2rem;
+    width: 100%;
+    /* Ensures container spans full width */
+}
+
+.posts-container h2 {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    font-weight: bold;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.posts-container .post {
+    background-color: var(--foreground-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+}
+
+.posts-container .post:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.post img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.post-header img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.post-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-light-color);
+}
+
+.post-body p {
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text-color);
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-light-color);
+}
+
+.post-actions button {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color var(--transition);
+}
+
+.post-actions button:hover {
+    color: var(--hover-color);
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 1.5rem;
+        margin: 1.5rem;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-header img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-info h1 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .posts-container .post {
+        padding: 1rem;
+    }
+
+    .post img {
+        max-height: 200px;
+    }
+}

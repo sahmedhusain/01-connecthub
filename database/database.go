@@ -72,12 +72,15 @@ func DataBase() {
 			FOREIGN KEY (categories_idcategories) REFERENCES categories(idcategories)
 		);`
 
-	const CreateSessionTable = `
-		CREATE TABLE IF NOT EXISTS session (
+	const CreateSessionsTable = `
+		CREATE TABLE IF NOT EXISTS sessions (
 			sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
+			userid INTEGER NOT NULL,
 			start DATETIME NOT NULL,
-			end DATETIME NOT NULL
-		);`
+			end DATETIME,
+			FOREIGN KEY (userid) REFERENCES user(userid)
+		);
+	`
 
 	const CreateUserTable = `
 		CREATE TABLE IF NOT EXISTS user (
@@ -157,7 +160,7 @@ func DataBase() {
 		`DROP TABLE IF EXISTS likes;`, CreateLikeTable,
 		`DROP TABLE IF EXISTS post;`, CreatePostTable,
 		`DROP TABLE IF EXISTS post_has_categories;`, CreatePostHasCategoriesTable,
-		`DROP TABLE IF EXISTS session;`, CreateSessionTable,
+		`DROP TABLE IF EXISTS sessions;`, CreateSessionsTable,
 		`DROP TABLE IF EXISTS user;`, CreateUserTable,
 		`DROP TABLE IF EXISTS user_roles;`, CreateUserRolesTable,
 		`DROP TABLE IF EXISTS friends;`, CreateFriendsTable,

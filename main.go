@@ -32,7 +32,7 @@ func main() {
     http.HandleFunc("/deletepost", server.DeletePost)
     http.HandleFunc("/reportpost", server.ReportPost)
     http.HandleFunc("/changepassword", server.ChangePassword)
-    http.HandleFunc("/showpassword", server.ShowPassword)
+    http.HandleFunc("/togglepassword", server.TogglePassword)
 
     fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 

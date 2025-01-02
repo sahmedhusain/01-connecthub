@@ -26,21 +26,26 @@ type ErrorPageData struct {
 }
 
 type PageData struct {
-	UserID         string
-	UserName       string
-	Avatar         string
-	RoleName       string
-	TotalLikes     int
-	TotalPosts     int
-	Categories     []database.Category
-	Users          []database.User
-	Posts          []database.Post
-	SelectedTab    string
-	SelectedFilter string
-	Notifications  []database.Notification
-	RoleID         int
-	Post           database.Post
-	Comments       []database.Comment
+	UserID          string
+	UserName        string
+	Avatar          string
+	RoleName        string
+	TotalLikes      int
+	TotalPosts      int
+	Categories      []database.Category
+	Users           []database.User
+	Posts           []database.Post
+	Reports         []database.Report
+	TotalUsers      int
+	TotalCategories int
+	UserLogs        []database.UserLog
+	UserSessions    []database.UserSession
+	Notifications   []database.Notification
+	RoleID          int
+	Post            database.Post
+	Comments        []database.Comment
+	SelectedTab     string // Add this line
+	SelectedFilter  string // Add this line
 }
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +64,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.FormValue("user_id")
+	userID := r.FormValue("user")
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
@@ -97,7 +102,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.FormValue("user_id")
+	userID := r.FormValue("user")
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {

@@ -31,8 +31,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		defer db.Close()
 
 		var userID int
-		var dbPassword string
-		err = db.QueryRow("SELECT userid, password FROM user WHERE email = ?", email).Scan(&userID, &dbPassword)
+		var dbPassword, userName string
+		err = db.QueryRow("SELECT userid, password, username FROM user WHERE email = ?", email).Scan(&userID, &dbPassword, &userName)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				// No user found with the given email
