@@ -94,7 +94,7 @@
         display: none;
     }
 
-    form button {
+    .save {
         background-color: #3B82F6;
         color: #FFFFFF;
         font-size: 16px;
@@ -107,17 +107,17 @@
         transition: background-color 0.3s ease;
     }
 
-    form button:hover {
+    .save:hover {
         background-color: #2563EB;
     }
 
-    .password-buttons {
+    .container .password-buttons {
         display: flex;
         gap: 10px;
         margin-bottom: 15px;
     }
 
-    .password-buttons button {
+    .container .password-buttons button {
         flex: 1;
         background-color: #E5E7EB;
         color: #1F2937;
@@ -130,8 +130,9 @@
         transition: background-color 0.3s ease;
     }
 
-    .password-buttons button:hover {
-        background-color: #D1D5DB;
+    .container .password-buttons button:hover {
+        background-color: #3B82F6;
+        color: #D1D5DB;
     }
 </style>
 </head>
@@ -330,11 +331,17 @@
                 <input type="email" id="email" name="email" value="{{.Email}}" required>
 
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" value="{{.Password}}" required>
+                <div style="display: flex; align-items: center;">
+                    <input type="password" id="password" name="password" value="{{.Password}}" required readonly>
 
-                <div class="password-buttons">
-                    <button type="submit" formaction="/showpassword">Show Password</button>
-                    <button type="button" onclick="window.location.href='/changepassword'">Change Password</button>
+                    <div class="password-buttons" style="margin-left: 10px;">
+                        <form method="post" action="/togglepassword">
+                            <button type="submit">
+                                <i class="fa-solid {{if .PasswordShown}}fa-eye-low-vision{{else}}fa-eye{{end}}"></i>
+                            </button>
+                        </form>
+                        <button type="button" onclick="window.location.href='/changepassword'">Change Password</button>
+                    </div>
                 </div>
 
                 <label>Avatar:</label>
@@ -345,7 +352,7 @@
                     <input type="file" id="avatar" name="avatar" accept="image/*">
                 </div>
 
-                <button type="submit">Save Changes</button>
+                <button type="submit" class="save">Save Changes</button>
             </form>
         </div>
     </section>

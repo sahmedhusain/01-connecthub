@@ -49,20 +49,26 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		passwordShown, _ := session.Values["passwordShown"].(bool)
+
 		data := struct {
-			UserID    string
-			FirstName string
-			LastName  string
-			Username  string
-			Email     string
-			Avatar    string
+			UserID        string
+			FirstName     string
+			LastName      string
+			Username      string
+			Email         string
+			Avatar        string
+			Password      string
+			PasswordShown bool
 		}{
-			UserID:    userID,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Username:  user.Username,
-			Email:     user.Email,
-			Avatar:    user.Avatar.String,
+			UserID:        userID,
+			FirstName:     user.FirstName,
+			LastName:      user.LastName,
+			Username:      user.Username,
+			Email:         user.Email,
+			Avatar:        user.Avatar.String,
+			Password:      "", // Password should be fetched separately if needed
+			PasswordShown: passwordShown,
 		}
 
 		err = templates.ExecuteTemplate(w, "settings.html", data)
@@ -135,7 +141,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ShowPassword(w http.ResponseWriter, r *http.Request) {
+func TogglePassword(w http.ResponseWriter, r *http.Request) {
     // Retrieve UserID from session
     session, _ := store.Get(r, "session-name")
     userID, ok := session.Values["userID"].(string)
@@ -145,37 +151,10 @@ func ShowPassword(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    db, err := sql.Open("sqlite3", "./database/main.db")
-    if err != nil {
-        log.Println("Database connection failed")
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
-    defer db.Close()
+    // Toggle the password visibility
+    passwordShown, _ := session.Values["passwordShown"].(bool)
+    session.Values["passwordShown"] = !passwordShown
+    session.Save(r, w)
 
-    var password string
-    err = db.QueryRow("SELECT password FROM user WHERE id = ?", userID).Scan(&password)
-    if err != nil {
-        log.Println("Failed to fetch password")
-        errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &errData)
-        return
-    }
-
-    data := struct {
-        UserID   string
-        Password string
-    }{
-        UserID:   userID,
-        Password: password,
-    }
-
-    err = templates.ExecuteTemplate(w, "settings.html", data)
-    if err != nil {
-        log.Println("Error rendering settings page:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+    http.Redirect(w, r, "/settings", http.StatusSeeOther)
 }
