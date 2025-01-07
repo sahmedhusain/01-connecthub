@@ -124,11 +124,11 @@
                                 alt="Avatar">
                             <div class="post-info">
                                 <h3>{{.FirstName}} {{.LastName}}</h3>
-                                <p>@{{.Username}}</p>
+                                <h4>@{{.Username}}</h4>
                             </div>
                         </div>
                         <div class="post-body">
-                            <p>{{.Content}}</p>
+                            <h4>{{.Content}}</h4>
                             <div class="post-categories">
                                 {{range .Categories}}
                                 <form action="/" method="GET">
@@ -146,7 +146,7 @@
                                     {{.Likes}}</span></a>
                             <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up"
                                         style="rotate: 180deg;"></i> {{.Dislikes}}</span></a>
-                            <a href="/login" style="text-decoration: none;"><span><i class="fa-regular fa-message"></i>
+                            <a href="/login" style="text-decoration: none;"><span class="hover-effect"><i class="fa-regular fa-message"></i>
                                     {{.Comments}}</span></a>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
