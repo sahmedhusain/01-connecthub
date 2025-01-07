@@ -594,11 +594,6 @@ func ToggleLike(db *sql.DB, postID int, userID string) error {
     if exists {
         _, err = db.Exec("DELETE FROM likes WHERE post_postid = ? AND user_userid = ?", postID, userID)
     } else {
-        // Remove dislike if it exists
-        _, err = db.Exec("DELETE FROM dislikes WHERE post_postid = ? AND user_userid = ?", postID, userID)
-        if err != nil {
-            return fmt.Errorf("ToggleLike: %v", err)
-        }
         _, err = db.Exec("INSERT INTO likes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
     }
     return err
@@ -614,11 +609,6 @@ func ToggleDislike(db *sql.DB, postID int, userID string) error {
     if exists {
         _, err = db.Exec("DELETE FROM dislikes WHERE post_postid = ? AND user_userid = ?", postID, userID)
     } else {
-        // Remove like if it exists
-        _, err = db.Exec("DELETE FROM likes WHERE post_postid = ? AND user_userid = ?", postID, userID)
-        if err != nil {
-            return fmt.Errorf("ToggleDislike: %v", err)
-        }
         _, err = db.Exec("INSERT INTO dislikes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
     }
     return err
