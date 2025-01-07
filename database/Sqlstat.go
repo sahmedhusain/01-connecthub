@@ -31,6 +31,7 @@ type Comment struct {
 	UserID    int
 	Content   string
 	CreatedAt time.Time
+	Avatar    sql.NullString // Add this field
 }
 
 type Post struct {
@@ -550,7 +551,10 @@ func GetAllReports(db *sql.DB) ([]Report, error) {
 func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
     var comments []Comment
 
-    query := `SELECT commentid, post_postid, user_userid, content, comment_at FROM comment WHERE post_postid = ?`
+    query := `SELECT comment.commentid, comment.post_postid, comment.user_userid, comment.content, comment.comment_at, user.Avatar
+              FROM comment
+              JOIN user ON comment.user_userid = user.userid
+              WHERE comment.post_postid = ?`
     rows, err := db.Query(query, postID)
     if err != nil {
         return nil, fmt.Errorf("GetCommentsForPost: %v", err)
@@ -559,12 +563,20 @@ func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
 
     for rows.Next() {
         var comment Comment
-        if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &comment.CreatedAt); err != nil {
+        var commentAt time.Time // SQLite DATETIME is fetched as a string
+
+        // Scan each row into the Comment struct
+        if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &commentAt, &comment.Avatar); err != nil {
             return nil, fmt.Errorf("GetCommentsForPost: %v", err)
         }
+
+        // Parse comment_at into a time.Time object
+        comment.CreatedAt = commentAt
+
         comments = append(comments, comment)
     }
 
+    // Check for errors after iterating
     if err := rows.Err(); err != nil {
         return nil, fmt.Errorf("GetCommentsForPost: %v", err)
     }

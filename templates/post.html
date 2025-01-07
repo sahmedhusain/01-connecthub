@@ -200,25 +200,20 @@
         <main>
             <section class="feed">
                 <div class="container">
-                    {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v"
-                    $.UserID) (printf "%v" .UserUserID))}}
+                    {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .Post.UserUserID))}}
                     <div class="post-actions">
                         <div class="dropdown" style="position: absolute; right: 0;">
                             <button class="dropbtn" id="dropdownButton">...</button>
                             <div class="dropdown-content dot" id="dropdownContent">
-                                {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
-                                <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
-                                        class="fa-regular fa-trash-can"></i> Delete</a>
+                                {{if eq (printf "%v" $.UserID) (printf "%v" .Post.UserUserID)}}
+                                <a href="/deletepost?id={{.Post.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete</a>
                                 {{end}}
                                 {{if eq (printf "%v" $.RoleID) "1"}}
-                                <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
-                                        class="fa-regular fa-trash-can"></i> Delete Post</a>
+                                <a href="/deletepost?id={{.Post.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Post</a>
                                 {{end}}
                                 {{if eq (printf "%v" $.RoleID) "2"}}
-                                <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
-                                        class="fa-regular fa-trash-can"></i> Delete Post</a>
-                                <a href="/reportpost?id={{.PostID}}" class="action-link report"><i
-                                        class="fa-solid fa-ban"></i> Report Post</a>
+                                <a href="/deletepost?id={{.Post.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Post</a>
+                                <a href="/reportpost?id={{.Post.PostID}}" class="action-link report"><i class="fa-solid fa-ban"></i> Report Post</a>
                                 {{end}}
                             </div>
                         </div>
@@ -254,35 +249,30 @@
                     <div class="comments-section">
                         <h2>Comments</h2>
                         {{range .Comments}}
-                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v"
-                        $.UserID) (printf "%v" .UserUserID))}}
+                        {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserID))}}
                         <div class="post-actions">
                             <div class="dropdown" style="position: absolute; right: 0;">
                                 <button class="dropbtn" id="dropdownButton">...</button>
                                 <div class="dropdown-content dot" id="dropdownContent">
-                                    {{if eq (printf "%v" $.UserID) (printf "%v" .UserUserID)}}
-                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
-                                            class="fa-regular fa-trash-can"></i> Delete</a>
+                                    {{if eq (printf "%v" $.UserID) (printf "%v" .UserID)}}
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete</a>
                                     {{end}}
                                     {{if eq (printf "%v" $.RoleID) "1"}}
-                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
-                                            class="fa-regular fa-trash-can"></i> Delete Comment</a>
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Comment</a>
                                     {{end}}
                                     {{if eq (printf "%v" $.RoleID) "2"}}
-                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i
-                                            class="fa-regular fa-trash-can"></i> Delete Comment</a>
-                                    <a href="/reportpost?id={{.PostID}}" class="action-link report"><i
-                                            class="fa-solid fa-ban"></i> Report Comment</a>
+                                    <a href="/deletepost?id={{.PostID}}" class="action-link delete"><i class="fa-regular fa-trash-can"></i> Delete Comment</a>
+                                    <a href="/reportpost?id={{.PostID}}" class="action-link report"><i class="fa-solid fa-ban"></i> Report Comment</a>
                                     {{end}}
                                 </div>
                             </div>
                         </div>
                         {{end}}
                         <div class="comment">
-                            <img src="{{.Avatar}}" alt="User Avatar">
+                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="User Avatar">
                             <div class="comment-content">
                                 <p>{{.Content}}</p>
-                                <time>{{.CommentAt}}</time>
+                                <time>{{.CreatedAt}}</time>
                             </div>
                         </div>
                         {{else}}
@@ -290,9 +280,9 @@
                         {{end}}
                         <div class="add-comment">
                             <form action="/addcomment" method="POST">
-                                <textarea name="content" rows="3" placeholder="Write your comment..."
-                                    required></textarea>
+                                <textarea name="content" rows="3" placeholder="Write your comment..." required></textarea>
                                 <input type="hidden" name="post_id" value="{{.Post.PostID}}">
+                                <input type="hidden" name="user_id" value="{{.UserID}}">
                                 <button type="submit">Add Comment</button>
                             </form>
                         </div>
