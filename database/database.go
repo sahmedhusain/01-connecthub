@@ -14,6 +14,14 @@ func DataBase() {
 	}
 	defer db.Close()
 
+	// Check if tables already exist
+	var tableName string
+	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='categories'").Scan(&tableName)
+	if err == nil && tableName == "categories" {
+		log.Println("Database already exists. Skipping table creation.")
+		return
+	}
+
 	// CREATE TABLE statements
 	const CreateCategoriesTable = `
 		CREATE TABLE IF NOT EXISTS categories (
@@ -152,29 +160,75 @@ func DataBase() {
 			FOREIGN KEY (reported_by) REFERENCES user(userid)
 		);`
 
-	// Drop and create tables
-	sqlStatements := []string{
-		`DROP TABLE IF EXISTS categories;`, CreateCategoriesTable,
-		`DROP TABLE IF EXISTS comment;`, CreateCommentTable,
-		`DROP TABLE IF EXISTS dislikes;`, CreateDislikeTable,
-		`DROP TABLE IF EXISTS likes;`, CreateLikeTable,
-		`DROP TABLE IF EXISTS post;`, CreatePostTable,
-		`DROP TABLE IF EXISTS post_has_categories;`, CreatePostHasCategoriesTable,
-		`DROP TABLE IF EXISTS sessions;`, CreateSessionsTable,
-		`DROP TABLE IF EXISTS user;`, CreateUserTable,
-		`DROP TABLE IF EXISTS user_roles;`, CreateUserRolesTable,
-		`DROP TABLE IF EXISTS friends;`, CreateFriendsTable,
-		`DROP TABLE IF EXISTS followers;`, CreateFollowersTable,
-		`DROP TABLE IF EXISTS notifications;`, CreateNotificationsTable,
-		`DROP TABLE IF EXISTS following;`, CreateFollowingTable,
-		`DROP TABLE IF EXISTS reports;`, CreateReportsTable,
+	// Execute CREATE TABLE statements
+	_, err = db.Exec(CreateCategoriesTable)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	for _, stmt := range sqlStatements {
-		_, err := db.Exec(stmt)
-		if err != nil {
-			log.Fatal(err)
-		}
+	_, err = db.Exec(CreateCommentTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateDislikeTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateLikeTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreatePostTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreatePostHasCategoriesTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateSessionsTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateUserTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateUserRolesTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateFriendsTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateFollowersTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateNotificationsTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateFollowingTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.Exec(CreateReportsTable)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// Insert sample data
