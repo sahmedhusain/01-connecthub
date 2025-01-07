@@ -721,3 +721,22 @@ func GetTotalPosts(db *sql.DB, userID string) (int, error) {
     err := db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&count)
     return count, err
 }
+
+func GetUserByID(db *sql.DB, userID string) (User, error) {
+    var user User
+    err := db.QueryRow("SELECT userid, F_name, L_name, Username, Email, Avatar, role_id FROM user WHERE userid = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar, &user.RoleID)
+    if err != nil {
+        return user, err
+    }
+    return user, nil
+}
+
+func GetRoleNameByID(db *sql.DB, roleID int) (string, error) {
+    var roleName string
+    err := db.QueryRow("SELECT role_name FROM user_roles WHERE roleid = ?", roleID).Scan(&roleName)
+    if err != nil {
+        log.Printf("Error fetching role name for roleID %d: %v\n", roleID, err) // Add this line for debugging
+        return "", err
+    }
+    return roleName, nil
+}
