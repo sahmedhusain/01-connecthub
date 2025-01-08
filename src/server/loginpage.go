@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +34,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		var dbPassword, userName string
 		err = db.QueryRow("SELECT userid, password, username FROM user WHERE email = ?", email).Scan(&userID, &dbPassword, &userName)
 		if err != nil {
-			if err == sql.ErrNoRows {
+			if (err == sql.ErrNoRows) {
 				// No user found with the given email
 				err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
 					"ErrorMsg": "Invalid email or password",
@@ -64,7 +65,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//create a new session associated with the user
+			//create a new session associated with the user
 		session, _ := store.Get(r, "session")
 		session.Values["userID"] = strconv.Itoa(userID)
 		session.Values["sessionID"] = "fdf" //UUID?
@@ -78,8 +79,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		// Create a new session in the database
 		var sessionID int
 		err = db.QueryRow(
-			"INSERT INTO session (userid) VALUES (?) RETURNING sessionid",
-			userID).Scan(&sessionID)
+			"INSERT INTO session (userid, start) VALUES (?, ?) RETURNING sessionid",
+			userID, time.Now()).Scan(&sessionID)
 		if err != nil {
 			log.Println("Error creating session:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
