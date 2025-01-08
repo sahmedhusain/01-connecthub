@@ -1,11 +1,12 @@
 package main
 
 import (
-    "fmt"
-    db "forum/database"
-    "forum/src/server"
-    "log"
-    "net/http"
+	"github.com/gorilla/context"
+	"fmt"
+	db "forum/database"
+	"forum/src/server"
+	"log"
+	"net/http"
 )
 
 func init() {
@@ -36,5 +37,5 @@ func main() {
 
     fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 
-    log.Fatal(http.ListenAndServe(":8080", nil))
+    log.Fatal(http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux)))
 }

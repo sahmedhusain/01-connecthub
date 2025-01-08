@@ -73,7 +73,7 @@ func DataBase() {
 		);`
 
 	const CreateSessionsTable = `
-		CREATE TABLE IF NOT EXISTS sessions (
+		CREATE TABLE IF NOT EXISTS session (
 			sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
 			userid INTEGER NOT NULL,
 			start DATETIME NOT NULL,
@@ -160,7 +160,7 @@ func DataBase() {
 		`DROP TABLE IF EXISTS likes;`, CreateLikeTable,
 		`DROP TABLE IF EXISTS post;`, CreatePostTable,
 		`DROP TABLE IF EXISTS post_has_categories;`, CreatePostHasCategoriesTable,
-		`DROP TABLE IF EXISTS sessions;`, CreateSessionsTable,
+		`DROP TABLE IF EXISTS session;`, CreateSessionsTable,
 		`DROP TABLE IF EXISTS user;`, CreateUserTable,
 		`DROP TABLE IF EXISTS user_roles;`, CreateUserRolesTable,
 		`DROP TABLE IF EXISTS friends;`, CreateFriendsTable,

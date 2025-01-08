@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -46,6 +47,16 @@ type PageData struct {
 	Comments        []database.Comment
 	SelectedTab     string // Add this line
 	SelectedFilter  string // Add this line
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func VerifyPassword(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
