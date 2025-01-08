@@ -345,7 +345,7 @@
                                 alt="Avatar">
                             <div class="post-info">
                                 <h3>{{.FirstName}} {{.LastName}}</h3>
-                                <p>@{{.Username}}</p>
+                                <span>@{{.Username}}</span>
                             </div>
                         </div>
                         <div class="post-body">
@@ -353,7 +353,7 @@
                                 <input type="hidden" name="id" value="{{.PostID}}">
                                 <button type="submit" class="action-link"
                                     style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
-                                    <p>{{.Content}}</p>
+                                    <p style="font-weight: 500;">{{.Content}}</p>
                                 </button>
                             </form>
                             <div class="post-categories">
@@ -386,7 +386,7 @@
                                 <input type="hidden" name="id" value="{{.PostID}}">
                                 <button type="submit" class="action-link"
                                     style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
-                                    <span><i class="fa-regular fa-message"></i> {{.Comments}}</span>
+                                    <span class="hover-effect"><i class="fa-regular fa-message"></i> {{.Comments}}</span>
                                 </button>
                             </form>
                             <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
