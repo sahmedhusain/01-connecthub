@@ -69,23 +69,23 @@ type Report struct {
 }
 
 type UserLog struct {
-    ID        int
-    UserID    int
-    Action    string
-    Timestamp time.Time
+	ID        int
+	UserID    int
+	Action    string
+	Timestamp time.Time
 }
 
 type UserSession struct {
-    ID     int
-    UserID int
-    Start  time.Time
-    End    time.Time
+	ID     int
+	UserID int
+	Start  time.Time
+	End    time.Time
 }
 
 // GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT idcategories, name, description FROM categories")
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -393,37 +393,37 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 }
 
 func GetLastNotifications(db *sql.DB, userID string) ([]Notification, error) {
-    rows, err := db.Query(`
+	rows, err := db.Query(`
         SELECT n.notificationid, n.user_userid, n.post_id, n.message, n.created_at, u.Avatar, u.Username
         FROM notifications n
         JOIN user u ON n.user_userid = u.userid
         WHERE n.user_userid = ?
         ORDER BY n.created_at DESC
     `, userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var notifications []Notification
-    for rows.Next() {
-        var notification Notification
-        var avatar sql.NullString
+	var notifications []Notification
+	for rows.Next() {
+		var notification Notification
+		var avatar sql.NullString
 
-        err := rows.Scan(&notification.ID, &notification.UserID, &notification.PostID, &notification.Message, &notification.CreatedAt, &avatar, &notification.UserName)
-        if err != nil {
-            return nil, err
-        }
+		err := rows.Scan(&notification.ID, &notification.UserID, &notification.PostID, &notification.Message, &notification.CreatedAt, &avatar, &notification.UserName)
+		if err != nil {
+			return nil, err
+		}
 
-        notification.UserImage = avatar.String
-        notifications = append(notifications, notification)
-    }
+		notification.UserImage = avatar.String
+		notifications = append(notifications, notification)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return notifications, nil
+	return notifications, nil
 }
 
 func InsertPost(db *sql.DB, content string, image sql.NullString, userID string) (int, error) {
@@ -481,30 +481,30 @@ func GetUserPosts(db *sql.DB, userID string) ([]Post, error) {
 }
 
 func GetFollowersCount(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_userid = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_userid = ?", userID).Scan(&count)
+	return count, err
 }
 
 func GetFollowingCount(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_userid = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM following WHERE user_userid = ?", userID).Scan(&count)
+	return count, err
 }
 
 func GetFriendsCount(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_userid = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM friends WHERE user_userid = ?", userID).Scan(&count)
+	return count, err
 }
 
 func IsFollowing(db *sql.DB, userID string, profileUserID string) (bool, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_userid = ? AND follower_userid = ?", profileUserID, userID).Scan(&count)
-    if err != nil {
-        return false, err
-    }
-    return count > 0, nil
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM followers WHERE user_userid = ? AND follower_userid = ?", profileUserID, userID).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func GetTotalUsersCount(db *sql.DB) (int, error) {
@@ -549,206 +549,214 @@ func GetAllReports(db *sql.DB) ([]Report, error) {
 }
 
 func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
-    var comments []Comment
+	var comments []Comment
 
-    query := `SELECT comment.commentid, comment.post_postid, comment.user_userid, comment.content, comment.comment_at, user.Avatar
+	query := `SELECT comment.commentid, comment.post_postid, comment.user_userid, comment.content, comment.comment_at, user.Avatar
               FROM comment
               JOIN user ON comment.user_userid = user.userid
               WHERE comment.post_postid = ?`
-    rows, err := db.Query(query, postID)
-    if err != nil {
-        return nil, fmt.Errorf("GetCommentsForPost: %v", err)
-    }
-    defer rows.Close()
+	rows, err := db.Query(query, postID)
+	if err != nil {
+		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+	}
+	defer rows.Close()
 
-    for rows.Next() {
-        var comment Comment
-        var commentAt time.Time // SQLite DATETIME is fetched as a string
+	for rows.Next() {
+		var comment Comment
+		var commentAt time.Time // SQLite DATETIME is fetched as a string
 
-        // Scan each row into the Comment struct
-        if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &commentAt, &comment.Avatar); err != nil {
-            return nil, fmt.Errorf("GetCommentsForPost: %v", err)
-        }
+		// Scan each row into the Comment struct
+		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &commentAt, &comment.Avatar); err != nil {
+			return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+		}
 
-        // Parse comment_at into a time.Time object
-        comment.CreatedAt = commentAt
+		// Parse comment_at into a time.Time object
+		comment.CreatedAt = commentAt
 
-        comments = append(comments, comment)
-    }
+		comments = append(comments, comment)
+	}
 
-    // Check for errors after iterating
-    if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("GetCommentsForPost: %v", err)
-    }
+	// Check for errors after iterating
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
+	}
 
-    return comments, nil
+	return comments, nil
 }
 
 func ToggleLike(db *sql.DB, postID int, userID string) error {
-    var exists bool
-    err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM likes WHERE post_postid = ? AND user_userid = ?)", postID, userID).Scan(&exists)
-    if err != nil {
-        return fmt.Errorf("ToggleLike: %v", err)
-    }
+	var exists bool
+	err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM likes WHERE post_postid = ? AND user_userid = ?)", postID, userID).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("ToggleLike: %v", err)
+	}
 
-    if exists {
-        _, err = db.Exec("DELETE FROM likes WHERE post_postid = ? AND user_userid = ?", postID, userID)
-    } else {
-        _, err = db.Exec("INSERT INTO likes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
-    }
-    return err
+	if exists {
+		_, err = db.Exec("DELETE FROM likes WHERE post_postid = ? AND user_userid = ?", postID, userID)
+	} else {
+		_, err = db.Exec("DELETE FROM dislikes WHERE post_postid = ? AND user_userid = ?", postID, userID)
+		if err != nil {
+			return fmt.Errorf("ToggleLike: %v", err)
+		}
+		_, err = db.Exec("INSERT INTO likes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
+	}
+	return err
 }
 
 func ToggleDislike(db *sql.DB, postID int, userID string) error {
-    var exists bool
-    err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM dislikes WHERE post_postid = ? AND user_userid = ?)", postID, userID).Scan(&exists)
-    if err != nil {
-        return fmt.Errorf("ToggleDislike: %v", err)
-    }
+	var exists bool
+	err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM dislikes WHERE post_postid = ? AND user_userid = ?)", postID, userID).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("ToggleDislike: %v", err)
+	}
 
-    if exists {
-        _, err = db.Exec("DELETE FROM dislikes WHERE post_postid = ? AND user_userid = ?", postID, userID)
-    } else {
-        _, err = db.Exec("INSERT INTO dislikes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
-    }
-    return err
+	if exists {
+		_, err = db.Exec("DELETE FROM dislikes WHERE post_postid = ? AND user_userid = ?", postID, userID)
+	} else {
+		_, err = db.Exec("DELETE FROM likes WHERE post_postid = ? AND user_userid = ?", postID, userID)
+		if err != nil {
+			return fmt.Errorf("ToggleDislike: %v", err)
+		}
+		_, err = db.Exec("INSERT INTO dislikes (post_postid, user_userid) VALUES (?, ?)", postID, userID)
+	}
+	return err
 }
 
 func GetUserLogs(db *sql.DB, userID int) ([]UserLog, error) {
-    rows, err := db.Query("SELECT id, user_id, action, timestamp FROM user_logs WHERE user_id = ?", userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query("SELECT id, user_id, action, timestamp FROM user_logs WHERE user_id = ?", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var logs []UserLog
-    for rows.Next() {
-        var log UserLog
-        if err := rows.Scan(&log.ID, &log.UserID, &log.Action, &log.Timestamp); err != nil {
-            return nil, err
-        }
-        logs = append(logs, log)
-    }
-    return logs, nil
+	var logs []UserLog
+	for rows.Next() {
+		var log UserLog
+		if err := rows.Scan(&log.ID, &log.UserID, &log.Action, &log.Timestamp); err != nil {
+			return nil, err
+		}
+		logs = append(logs, log)
+	}
+	return logs, nil
 }
 
 func GetUserSessions(db *sql.DB, userID int) ([]UserSession, error) {
-    rows, err := db.Query("SELECT sessionid, userid, start, end FROM sessions WHERE userid = ?", userID)
-    if err != nil {
-        log.Println("Failed to fetch user sessions:", err)
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query("SELECT sessionid, userid, start, end FROM sessions WHERE userid = ?", userID)
+	if err != nil {
+		log.Println("Failed to fetch user sessions:", err)
+		return nil, err
+	}
+	defer rows.Close()
 
-    var sessions []UserSession
-    for rows.Next() {
-        var session UserSession
-        err := rows.Scan(&session.ID, &session.UserID, &session.Start, &session.End)
-        if err != nil {
-            log.Println("Failed to scan user session:", err)
-            return nil, err
-        }
-        sessions = append(sessions, session)
-    }
-    return sessions, nil
+	var sessions []UserSession
+	for rows.Next() {
+		var session UserSession
+		err := rows.Scan(&session.ID, &session.UserID, &session.Start, &session.End)
+		if err != nil {
+			log.Println("Failed to scan user session:", err)
+			return nil, err
+		}
+		sessions = append(sessions, session)
+	}
+	return sessions, nil
 }
 
 func GetFollowers(db *sql.DB, userID string) ([]User, error) {
-    rows, err := db.Query(`
+	rows, err := db.Query(`
         SELECT user.userid, user.F_name, user.L_name, user.Username, user.Avatar
         FROM followers
         JOIN user ON followers.follower_userid = user.userid
         WHERE followers.user_userid = ?
     `, userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var followers []User
-    for rows.Next() {
-        var user User
-        if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
-            return nil, err
-        }
-        followers = append(followers, user)
-    }
-    return followers, nil
+	var followers []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
+			return nil, err
+		}
+		followers = append(followers, user)
+	}
+	return followers, nil
 }
 
 func GetFollowing(db *sql.DB, userID string) ([]User, error) {
-    rows, err := db.Query(`
+	rows, err := db.Query(`
         SELECT user.userid, user.F_name, user.L_name, user.Username, user.Avatar
         FROM following
         JOIN user ON following.following_userid = user.userid
         WHERE following.user_userid = ?
     `, userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var following []User
-    for rows.Next() {
-        var user User
-        if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
-            return nil, err
-        }
-        following = append(following, user)
-    }
-    return following, nil
+	var following []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
+			return nil, err
+		}
+		following = append(following, user)
+	}
+	return following, nil
 }
 
 func GetFriends(db *sql.DB, userID string) ([]User, error) {
-    rows, err := db.Query(`
+	rows, err := db.Query(`
         SELECT user.userid, user.F_name, user.L_name, user.Username, user.Avatar
         FROM friends
         JOIN user ON friends.friend_userid = user.userid
         WHERE friends.user_userid = ?
     `, userID)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    var friends []User
-    for rows.Next() {
-        var user User
-        if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
-            return nil, err
-        }
-        friends = append(friends, user)
-    }
-    return friends, nil
+	var friends []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar); err != nil {
+			return nil, err
+		}
+		friends = append(friends, user)
+	}
+	return friends, nil
 }
 
 func GetTotalLikes(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&count)
+	return count, err
 }
 
 func GetTotalPosts(db *sql.DB, userID string) (int, error) {
-    var count int
-    err := db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&count)
-    return count, err
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&count)
+	return count, err
 }
 
 func GetUserByID(db *sql.DB, userID string) (User, error) {
-    var user User
-    err := db.QueryRow("SELECT userid, F_name, L_name, Username, Email, Avatar, role_id FROM user WHERE userid = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar, &user.RoleID)
-    if err != nil {
-        return user, err
-    }
-    return user, nil
+	var user User
+	err := db.QueryRow("SELECT userid, F_name, L_name, Username, Email, Avatar, role_id FROM user WHERE userid = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar, &user.RoleID)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }
 
 func GetRoleNameByID(db *sql.DB, roleID int) (string, error) {
-    var roleName string
-    err := db.QueryRow("SELECT role_name FROM user_roles WHERE roleid = ?", roleID).Scan(&roleName)
-    if err != nil {
-        log.Printf("Error fetching role name for roleID %d: %v\n", roleID, err) // Add this line for debugging
-        return "", err
-    }
-    return roleName, nil
+	var roleName string
+	err := db.QueryRow("SELECT role_name FROM user_roles WHERE roleid = ?", roleID).Scan(&roleName)
+	if err != nil {
+		log.Printf("Error fetching role name for roleID %d: %v\n", roleID, err) // Add this line for debugging
+		return "", err
+	}
+	return roleName, nil
 }
