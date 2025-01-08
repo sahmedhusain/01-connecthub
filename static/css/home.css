@@ -64,12 +64,12 @@
 }
 
 
-.post-info h4 {
+.post-info p {
     margin: 0;
     font-size: 13px;
 }
 
-.post-body h4 {
+.post-body p {
     font-size: 16px;
     color: #374151;
     margin-top: 15px;

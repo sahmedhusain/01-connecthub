@@ -345,7 +345,7 @@
                                 alt="Avatar">
                             <div class="post-info">
                                 <h3>{{.FirstName}} {{.LastName}}</h3>
-                                <h4>@{{.Username}}</h4>
+                                <div>@{{.Username}}</div>
                             </div>
                         </div>
                         <div class="post-body">
@@ -353,7 +353,7 @@
                                 <input type="hidden" name="id" value="{{.PostID}}">
                                 <button type="submit" class="action-link"
                                     style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
-                                    <h4>{{.Content}}</h4>
+                                    <p>{{.Content}}</p>
                                 </button>
                             </form>
                             <div class="post-categories">
