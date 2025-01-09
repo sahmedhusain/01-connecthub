@@ -103,7 +103,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Redirect to login page or show success message
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 

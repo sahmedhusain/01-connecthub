@@ -24,7 +24,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 
     userID := r.URL.Query().Get("user")
     if userID == "" {
-        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        http.Redirect(w, r, "/", http.StatusSeeOther)
         return
     }
 

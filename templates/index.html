@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectHub | Guest</title>
+    <title>Login | Connect Hub</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/login.css">
 </head>
 
 <body>
@@ -21,148 +21,50 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
-            <a href="/login"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
+            <a href="/"><button class="home"><i class="fas fa-home"></i> Home</button></a>
         </div>
     </header>
-    <div class="feed-container">
-        <div class="sidebar-rights">
-            <img src="/static/assets/logo.png" alt="Connect Hub Logo">
-            <div class="rights">
-                <p>© 2024 | All rights reserved.</p>
+    <main>
+        <div class="login-container">
+            <div class="logo">
+                <div class="logotext">
+                    <span>Welcome Back !</span>
+                </div>
             </div>
+            {{if .ErrorMsg}}
+            <div class="error-message">{{.ErrorMsg}}</div>
+            {{end}}
+            <form action="/" method="POST">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                <div class="form-actions">
+                    <button type="submit" class="login-btn">Login</button>
+                </div>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+            <div class="social-login">
+                <button class="github-btn" onclick="window.location.href='/auth/github'">
+                    <img src="/static/assets/github-icon.png" alt="GitHub Icon">
+                    Log in with GitHub
+                </button>
+                <button class="google-btn" onclick="window.location.href='/auth/google'">
+                    <img src="/static/assets/google-icon.png" alt="Google Icon">
+                    Log in with Google
+                </button>
+            </div>
+            <p class="signup-link">
+                Don't have an account? <a href="/signup">Register</a>
+            </p>
         </div>
-        <aside class="sidebar">
-            <nav>
-                <div class="search-container">
-                    <i class="fas fa-search"></i>
-                    <span>Search</span>
-                    <input type="text" placeholder="Type to search..." class="search-bar">
-                </div>
-                <h3 class="menu-heading">Menu</h3>
-                <ul>
-                    <li>
-                        <form action="/" method="GET">
-                            <input type="hidden" name="tab" value="posts">
-                            <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
-                                <i class="fas fa-newspaper"></i> Posts
-                            </button>
-                        </form>
-                    </li>
-                    <li>
-                        <form action="/" method="GET">
-                            <input type="hidden" name="tab" value="tags">
-                            <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
-                                <i class="fas fa-tags"></i> Tags
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-            <div class="social-icons">
-                <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
-                        class="fab fa-instagram"></i>
-                </a>
-                <a href="https://linkedin.com/school/reboot-coding-institute" target="_blank" class="social-link"><i
-                        class="fab fa-linkedin"></i>
-                </a>
-                <a href="https://reboot01.com" target="_blank" class="social-link"><i class="fa-solid fa-globe"></i>
-                </a>
-            </div>
-        </aside>
-        <main>
-            <section class="feed">
-                <div class="filters">
-                    {{if eq .SelectedTab "posts"}}
-                    <form action="/" method="GET">
-                        <input type="hidden" name="tab" value="posts">
-                        <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}">
-                            <i class="fas fa-th-list"></i> All
-                        </button>
-                    </form>
-                    <form action="/" method="GET">
-                        <input type="hidden" name="tab" value="posts">
-                        <input type="hidden" name="filter" value="top-rated">
-                        <button type="submit" class="{{if eq .SelectedFilter "top-rated"}}selected{{end}}">
-                            <i class="fas fa-star"></i> Top Rated
-                        </button>
-                    </form>
-                    <form action="/" method="GET">
-                        <input type="hidden" name="tab" value="posts">
-                        <input type="hidden" name="filter" value="oldest">
-                        <button type="submit" class="{{if eq .SelectedFilter "oldest"}}selected{{end}}">
-                            <i class="fas fa-sort-amount-up"></i> Oldest to Newest
-                        </button>
-                    </form>
-                    {{else if eq .SelectedTab "tags"}}
-                    <form action="/" method="GET">
-                        <input type="hidden" name="tab" value="tags">
-                        <input type="hidden" name="filter" value="all">
-                        <button type="submit" class="{{if eq .SelectedFilter "all"}}selected{{end}}">
-                            <i class="fas fa-th-list"></i> All
-                        </button>
-                    </form>
-                    {{range .Categories}}
-                    <form action="/" method="GET">
-                        <input type="hidden" name="tab" value="tags">
-                        <input type="hidden" name="filter" value="{{.Name}}">
-                        <button type="submit" class="{{if eq $.SelectedFilter .Name}}selected{{end}}">
-                            <i class="fas fa-tag"></i> {{.Name}}
-                        </button>
-                    </form>
-                    {{end}}
-                    {{end}}
-                </div>
-                <div id="feed-content">
-                    {{range .Posts}}
-                    <article class="post">
-                        <div class="post-header">
-                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
-                                alt="Avatar">
-                            <div class="post-info">
-                                <h3>{{.FirstName}} {{.LastName}}</h3>
-                                <span>@{{.Username}}</span>
-                            </div>
-                        </div>
-                        <div class="post-body">
-                            <form action="/login" method="GET">
-                                <button type="submit" class="action-link" style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
-                                    <p>{{.Content}}</p>
-                                </button>
-                            </form>
-                            <div class="post-categories">
-                                {{range .Categories}}
-                                <form action="/" method="GET">
-                                    <input type="hidden" name="tab" value="tags">
-                                    <input type="hidden" name="filter" value="{{.Name}}">
-                                    <button type="submit">
-                                        <span class="category-box">{{.Name}}</span>
-                                    </button>
-                                </form>
-                                {{end}}
-                            </div>
-                        </div>
-                        <div class="post-actions">
-                            <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up"></i>
-                                    {{.Likes}}</span></a>
-                            <a href="/login" style="text-decoration: none;"><span><i class="fa-solid fa-arrow-up"
-                                        style="rotate: 180deg;"></i> {{.Dislikes}}</span></a>
-                            <a href="/login" style="text-decoration: none;"><span class="hover-effect"><i class="fa-regular fa-message"></i>
-                                    {{.Comments}}</span></a>
-                            <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
-                        </div>
-                    </article>
-                    <br>
-                    {{else}}
-                    <p>No posts available</p>
-                    {{end}}
-                </div>
-            </section>
-        </main>
-    </div>
+    </main>
+    <footer>
+        <p>© 2024 ConnectHub | All rights reserved.</p>
+    </footer>
 </body>
 
 </html>

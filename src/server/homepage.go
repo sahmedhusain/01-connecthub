@@ -1,12 +1,12 @@
 package server
 
 import (
-    "database/sql"
-    "fmt"
-    "forum/database"
-    "log"
-    "net/http"
-    "strconv"
+	"database/sql"
+	"fmt"
+	"forum/database"
+	"log"
+	"net/http"
+	"strconv"
 )
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +29,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
         userID := r.URL.Query().Get("user")
         if userID == "" {
             log.Println("User ID is missing")
-            http.Redirect(w, r, "/login", http.StatusSeeOther)
+            http.Redirect(w, r, "/", http.StatusSeeOther)
             return
         }
         log.Println("Redirecting to Home page with tab=posts&filter=all")
@@ -99,7 +99,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
     userID := r.URL.Query().Get("user")
     if userID == "" {
         log.Println("User ID is missing")
-        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        http.Redirect(w, r, "/", http.StatusSeeOther)
         return
     }
 

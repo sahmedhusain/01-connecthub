@@ -29,7 +29,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {
 		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 

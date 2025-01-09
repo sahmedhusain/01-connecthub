@@ -30,7 +30,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {
 		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -38,7 +38,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	userName, ok := session.Values["username"].(string)
 	if !ok || userName == "" {
 		log.Println("UserName not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -47,11 +47,11 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if (err == sql.ErrNoRows) {
 		log.Println("No user found with the given ID:", userID)
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	} else if err != nil || roleID != 1 {
 		log.Println("User is not an admin or error occurred")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 

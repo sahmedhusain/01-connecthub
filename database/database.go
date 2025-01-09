@@ -2,8 +2,9 @@ package database
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func DataBase() {
@@ -83,9 +84,8 @@ func DataBase() {
 	const CreateSessionsTable = `
 		CREATE TABLE IF NOT EXISTS session (
 			sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
-			userid INTEGER NOT NULL,
+			userid INTEGER NOT NULL UNIQUE,
 			start DATETIME NOT NULL,
-			end DATETIME,
 			FOREIGN KEY (userid) REFERENCES user(userid)
 		);
 	`
@@ -161,74 +161,28 @@ func DataBase() {
 		);`
 
 	// Execute CREATE TABLE statements
-	_, err = db.Exec(CreateCategoriesTable)
-	if err != nil {
-		log.Fatal(err)
+	createTableStatements := []string{
+		CreateCategoriesTable,
+		CreateCommentTable,
+		CreateDislikeTable,
+		CreateLikeTable,
+		CreatePostTable,
+		CreatePostHasCategoriesTable,
+		CreateSessionsTable,
+		CreateUserTable,
+		CreateUserRolesTable,
+		CreateFriendsTable,
+		CreateFollowersTable,
+		CreateNotificationsTable,
+		CreateFollowingTable,
+		CreateReportsTable,
 	}
 
-	_, err = db.Exec(CreateCommentTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateDislikeTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateLikeTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreatePostTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreatePostHasCategoriesTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateSessionsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateUserTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateUserRolesTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateFriendsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateFollowersTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateNotificationsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateFollowingTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateReportsTable)
-	if err != nil {
-		log.Fatal(err)
+	for _, stmt := range createTableStatements {
+		_, err = db.Exec(stmt)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// Insert sample data
@@ -252,21 +206,6 @@ func DataBase() {
 		`INSERT INTO user_roles (role_name) VALUES ('Moderator');`,
 		`INSERT INTO user_roles (role_name) VALUES ('User');`,
 		`INSERT INTO user_roles (role_name) VALUES ('Guest');`,
-	}
-
-	// Insert sessions for each user (just as placeholders)
-	// We'll have 10 sessions, one for each user
-	insertSessions := []string{
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 08:00:00', '2024-12-18 09:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 09:00:00', '2024-12-18 10:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 10:00:00', '2024-12-18 11:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 11:00:00', '2024-12-18 12:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 12:00:00', '2024-12-18 13:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 13:00:00', '2024-12-18 14:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 14:00:00', '2024-12-18 15:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 15:00:00', '2024-12-18 16:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 16:00:00', '2024-12-18 17:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 17:00:00', '2024-12-18 18:00:00');`,
 	}
 
 	// Insert users
@@ -409,7 +348,6 @@ func DataBase() {
 	allInserts := [][]string{
 		insertCategories,
 		insertUserRoles,
-		insertSessions,
 		insertUsers,
 		insertPosts,
 		insertComments,
