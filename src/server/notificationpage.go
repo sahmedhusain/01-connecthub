@@ -24,7 +24,6 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
 	session, _ := store.Get(r, "session-name")
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {

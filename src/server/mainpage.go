@@ -22,7 +22,6 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Redirect to /?tab=posts&filter=all if no tab is specified
 	if r.URL.Query().Get("tab") == "" {
 		log.Println("Redirecting to Home page with tab=posts&filter=all")
 		http.Redirect(w, r, "/?tab=posts&filter=all", http.StatusFound)

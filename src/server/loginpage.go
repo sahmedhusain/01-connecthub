@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -34,7 +33,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		var dbPassword, userName string
 		err = db.QueryRow("SELECT userid, password, username FROM user WHERE email = ?", email).Scan(&userID, &dbPassword, &userName)
 		if err != nil {
-			if (err == sql.ErrNoRows) {
+			if err == sql.ErrNoRows {
 				// No user found with the given email
 				err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
 					"ErrorMsg": "Invalid email or password",
@@ -52,7 +51,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Check if the password is correct
 		if !VerifyPassword(password, dbPassword) {
 			err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
 				"ErrorMsg": "Invalid email or password",
@@ -65,22 +63,29 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-			//create a new session associated with the user
-		session, _ := store.Get(r, "session")
-		session.Values["userID"] = strconv.Itoa(userID)
-		session.Values["sessionID"] = "fdf" //UUID?
+		result, err := db.Exec("DELETE FROM session WHERE userid = ?", userID)
+		if err != nil {
+			log.Println("Error rendering login page:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 1 {
+			session, _ := store.Get(r, "session")
+			delete(session.Values, "userID")
+			delete(session.Values, "sessionID")
+			err = session.Save(r, w)
+			if err != nil {
+				log.Println("Error saving session:", err)
+				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				errHandler(w, r, &errData)
+				return
+			}
+		}
 
-		//validating if session exists for user
-		// session,_ := store.Get(r, "session") //reutrn session every time, create a new session if not exists
-		// _,k :=session.Values["userID"].(string) //check if userID exists in session
-		// if !k{http.Redirect(w, r, "/login", http.StatusFound)
-		//  return }
-
-		// Create a new session in the database
 		var sessionID int
+		startTime := time.Now()
 		err = db.QueryRow(
 			"INSERT INTO session (userid, start) VALUES (?, ?) RETURNING sessionid",
-			userID, time.Now()).Scan(&sessionID)
+			userID, startTime).Scan(&sessionID)
 		if err != nil {
 			log.Println("Error creating session:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -88,14 +93,9 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Update the user's session ID in the database
-		_, err = db.Exec("UPDATE user SET session_sessionid = ? WHERE userid = ?", sessionID, userID)
-		if err != nil {
-			log.Println("Error updating user session ID:", err)
-			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
-			return
-		}
+		session, _ := store.Get(r, "session")
+		session.Values["userID"] = userID
+		session.Values["sessionID"] = sessionID
 
 		err = session.Save(r, w)
 		if err != nil {
@@ -105,9 +105,16 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		_, err = db.Exec("UPDATE user SET session_sessionid = ? WHERE userid = ?", sessionID, userID)
+		if err != nil {
+			log.Println("Error updating user session ID:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+			return
+		}
+
 		log.Println("User logged in with userID:", userID)
 
-		// If login is successful, redirect to the Home page with user ID
 		log.Println("Redirecting to Home page with user ID")
 		http.Redirect(w, r, fmt.Sprintf("/home?user=%d&tab=posts&filter=all", userID), http.StatusSeeOther)
 		return

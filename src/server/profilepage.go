@@ -24,7 +24,6 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
 	session, _ := store.Get(r, "session-name")
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {
@@ -33,7 +32,6 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve ProfileUserID from query parameters
 	profileUserID := r.URL.Query().Get("user")
 	if profileUserID == "" {
 		log.Println("ProfileUserID not found in query parameters")

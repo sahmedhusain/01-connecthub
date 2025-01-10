@@ -27,7 +27,6 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
 	session, _ := store.Get(r, "session-name")
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {
@@ -67,7 +66,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			Username:      user.Username,
 			Email:         user.Email,
 			Avatar:        user.Avatar.String,
-			Password:      "", // Password should be fetched separately if needed
+			Password:      "",
 			PasswordShown: passwordShown,
 		}
 
@@ -100,7 +99,6 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			avatarPath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
 			avatarPath.Valid = true
 
-			// Ensure the directory exists
 			os.MkdirAll("static/uploads", os.ModePerm)
 
 			f, err := os.OpenFile(avatarPath.String, os.O_WRONLY|os.O_CREATE, 0666)
@@ -142,19 +140,17 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func TogglePassword(w http.ResponseWriter, r *http.Request) {
-    // Retrieve UserID from session
-    session, _ := store.Get(r, "session-name")
-    userID, ok := session.Values["userID"].(string)
-    if !ok || userID == "" {
-        log.Println("UserID not found in session, redirecting to login page")
-        http.Redirect(w, r, "/login", http.StatusSeeOther)
-        return
-    }
+	session, _ := store.Get(r, "session-name")
+	userID, ok := session.Values["userID"].(string)
+	if !ok || userID == "" {
+		log.Println("UserID not found in session, redirecting to login page")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 
-    // Toggle the password visibility
-    passwordShown, _ := session.Values["passwordShown"].(bool)
-    session.Values["passwordShown"] = !passwordShown
-    session.Save(r, w)
+	passwordShown, _ := session.Values["passwordShown"].(bool)
+	session.Values["passwordShown"] = !passwordShown
+	session.Save(r, w)
 
-    http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	http.Redirect(w, r, "/settings", http.StatusSeeOther)
 }

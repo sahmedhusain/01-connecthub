@@ -24,7 +24,6 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
 	session, _ := store.Get(r, "session-name")
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {
@@ -33,7 +32,6 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if the user is a moderator
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE id = ?", userID).Scan(&roleID)
 	if err != nil || roleID != 2 {
@@ -62,7 +60,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			Posts:  posts,
 		}
 
-		err = templates.ExecuteTemplate(w, "home.html", data) // Changed from "moderator.html" to "home.html"
+		err = templates.ExecuteTemplate(w, "home.html", data)
 		if err != nil {
 			log.Println("Error rendering home page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

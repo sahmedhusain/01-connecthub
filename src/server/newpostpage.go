@@ -44,13 +44,12 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			errHandler(w, r, &err)
 			return
 		}
-		userAvatar := user.Avatar.String // Assuming Avatar is of type sql.NullString
+		userAvatar := user.Avatar.String
 
-		log.Printf("Fetched user data: %+v\n", user) // Add this line for debugging
+		log.Printf("Fetched user data: %+v\n", user)
 
-		// Handle case where roleID is 0
 		if user.RoleID == 0 {
-			user.RoleID = 3 // Assign default role (User)
+			user.RoleID = 3
 		}
 
 		roleName, err := database.GetRoleNameByID(db, user.RoleID)
@@ -61,7 +60,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Printf("Fetched role name: %s\n", roleName) // Add this line for debugging
+		log.Printf("Fetched role name: %s\n", roleName)
 
 		totalLikes, err := database.GetTotalLikes(db, userID)
 		if err != nil {
@@ -89,7 +88,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			TotalLikes    int
 			TotalPosts    int
 			SelectedTab   string
-			RoleID        int // Add this line
+			RoleID        int
 		}{
 			UserID:        userID,
 			Categories:    categories,
@@ -99,8 +98,8 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			UserName:      user.Username,
 			TotalLikes:    totalLikes,
 			TotalPosts:    totalPosts,
-			SelectedTab:   "posts",     // Default value or set based on your logic
-			RoleID:        user.RoleID, // Add this line
+			SelectedTab:   "posts",
+			RoleID:        user.RoleID,
 		}
 
 		err = templates.ExecuteTemplate(w, "newpost.html", data)
@@ -112,8 +111,8 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case "POST":
-		// Parse the form data
-		err := r.ParseMultipartForm(10 << 20) // 10 MB max memory
+
+		err := r.ParseMultipartForm(10 << 20)
 		if err != nil {
 			log.Println("Failed to parse form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
@@ -121,7 +120,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Get the post content
 		userID := r.FormValue("user")
 		content := r.FormValue("content")
 		if userID == "" || content == "" {
@@ -131,19 +129,17 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Handle file upload
 		file, _, err := r.FormFile("image")
 		var image sql.NullString
 		if err == nil {
 			defer file.Close()
-			// Process the file and save it, then set the image path
-			image.String = "forum/static/uploads" // Update with actual path
+
+			image.String = "forum/static/uploads"
 			image.Valid = true
 		} else {
 			image.Valid = false
 		}
 
-		// Insert the new post into the database
 		db, err := sql.Open("sqlite3", "./database/main.db")
 		if err != nil {
 			log.Println("Database connection failed")
@@ -161,7 +157,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Handle post categories
 		categories := r.Form["categories"]
 		for _, categoryID := range categories {
 			categoryIDInt, err := strconv.Atoi(categoryID)
@@ -175,7 +170,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Redirect to the home page after successful post
 		http.Redirect(w, r, "/home?user="+userID+"&tab=posts&filter=all", http.StatusSeeOther)
 	}
 }

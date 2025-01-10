@@ -2,19 +2,18 @@ package database
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func DataBase() {
-	// Open a connection to the SQLite3 database
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	// Check if tables already exist
 	var tableName string
 	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='categories'").Scan(&tableName)
 	if err == nil && tableName == "categories" {
@@ -22,7 +21,6 @@ func DataBase() {
 		return
 	}
 
-	// CREATE TABLE statements
 	const CreateCategoriesTable = `
 		CREATE TABLE IF NOT EXISTS categories (
 			idcategories INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,9 +81,8 @@ func DataBase() {
 	const CreateSessionsTable = `
 		CREATE TABLE IF NOT EXISTS session (
 			sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
-			userid INTEGER NOT NULL,
+			userid INTEGER NOT NULL UNIQUE,
 			start DATETIME NOT NULL,
-			end DATETIME,
 			FOREIGN KEY (userid) REFERENCES user(userid)
 		);
 	`
@@ -160,79 +157,30 @@ func DataBase() {
 			FOREIGN KEY (reported_by) REFERENCES user(userid)
 		);`
 
-	// Execute CREATE TABLE statements
-	_, err = db.Exec(CreateCategoriesTable)
-	if err != nil {
-		log.Fatal(err)
+	createTableStatements := []string{
+		CreateCategoriesTable,
+		CreateCommentTable,
+		CreateDislikeTable,
+		CreateLikeTable,
+		CreatePostTable,
+		CreatePostHasCategoriesTable,
+		CreateSessionsTable,
+		CreateUserTable,
+		CreateUserRolesTable,
+		CreateFriendsTable,
+		CreateFollowersTable,
+		CreateNotificationsTable,
+		CreateFollowingTable,
+		CreateReportsTable,
 	}
 
-	_, err = db.Exec(CreateCommentTable)
-	if err != nil {
-		log.Fatal(err)
+	for _, stmt := range createTableStatements {
+		_, err = db.Exec(stmt)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	_, err = db.Exec(CreateDislikeTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateLikeTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreatePostTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreatePostHasCategoriesTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateSessionsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateUserTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateUserRolesTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateFriendsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateFollowersTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateNotificationsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateFollowingTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = db.Exec(CreateReportsTable)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Insert sample data
-	// New categories: Each category focuses on a specific modern tech domain
 	insertCategories := []string{
 		`INSERT INTO categories (name, description) VALUES ('AI & ML', 'All about Artificial Intelligence and Machine Learning');`,
 		`INSERT INTO categories (name, description) VALUES ('Cloud & DevOps', 'Cloud infrastructure and DevOps best practices');`,
@@ -246,7 +194,6 @@ func DataBase() {
 		`INSERT INTO categories (name, description) VALUES ('SRE & Observability', 'Site Reliability Engineering and system observability');`,
 	}
 
-	// Insert user roles and sessions
 	insertUserRoles := []string{
 		`INSERT INTO user_roles (role_name) VALUES ('Admin');`,
 		`INSERT INTO user_roles (role_name) VALUES ('Moderator');`,
@@ -254,23 +201,6 @@ func DataBase() {
 		`INSERT INTO user_roles (role_name) VALUES ('Guest');`,
 	}
 
-	// Insert sessions for each user (just as placeholders)
-	// We'll have 10 sessions, one for each user
-	insertSessions := []string{
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 08:00:00', '2024-12-18 09:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 09:00:00', '2024-12-18 10:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 10:00:00', '2024-12-18 11:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 11:00:00', '2024-12-18 12:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 12:00:00', '2024-12-18 13:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 13:00:00', '2024-12-18 14:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 14:00:00', '2024-12-18 15:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 15:00:00', '2024-12-18 16:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 16:00:00', '2024-12-18 17:00:00');`,
-		`INSERT INTO session (start, end) VALUES ('2024-12-18 17:00:00', '2024-12-18 18:00:00');`,
-	}
-
-	// Insert users
-	// Assign all users to role_id=3 (User) for simplicity, except first user as Admin (role_id=1) and second as Moderator (role_id=2)
 	insertUsers := []string{
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, 'https://randomuser.me/api/portraits/women/1.jpg');`,
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, 'https://randomuser.me/api/portraits/men/1.jpg');`,
@@ -284,8 +214,6 @@ func DataBase() {
 		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Jamal', 'Roberts', 'jamalR', 'jamalR@example.com', 'jamalPass', 10, 3, 'https://randomuser.me/api/portraits/men/5.jpg');`,
 	}
 
-	// Insert posts (each linked to a user and posted at a unique time)
-	// Each post content reflects the categories it will be associated with
 	insertPosts := []string{
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ai_ml.jpg', 'Exploring cutting-edge transformer models for NLP tasks.', '2024-12-19 08:30:00', 1);`,
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/cloud_devops.jpg', 'Implementing CI/CD pipelines on AWS for seamless deployments.', '2024-12-19 09:45:00', 2);`,
@@ -299,7 +227,6 @@ func DataBase() {
 		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/sre_observability.jpg', 'Implementing distributed tracing for improved observability.', '2024-12-19 15:30:00', 10);`,
 	}
 
-	// Insert comments (related to posts and users)
 	insertComments := []string{
 		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Fascinating look into NLP!', '2024-12-20 09:00:00', 1, 2);`,
 		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('I love the CI/CD pipeline tips.', '2024-12-20 09:30:00', 2, 1);`,
@@ -313,7 +240,6 @@ func DataBase() {
 		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Traces are essential for debugging.', '2024-12-20 13:30:00', 10, 1);`,
 	}
 
-	// Insert likes
 	insertLikes := []string{
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 08:00:00', 1, 3);`,
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 08:30:00', 2, 4);`,
@@ -327,7 +253,6 @@ func DataBase() {
 		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 12:30:00', 10, 2);`,
 	}
 
-	// Insert dislikes
 	insertDislikes := []string{
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 08:00:00', 1, 4);`,
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 08:30:00', 2, 5);`,
@@ -341,37 +266,24 @@ func DataBase() {
 		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 12:30:00', 10, 3);`,
 	}
 
-	// Posts has categories (linking each post to relevant categories)
 	insertPostHasCategories := []string{
-		// Post 1: AI & ML
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (1, 1);`,
-		// Post 2: Cloud & DevOps
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (2, 2);`,
-		// Post 3: Cybersecurity
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (3, 3);`,
-		// Post 4: Blockchain & Web3
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (4, 4);`,
-		// Post 5: AR/VR & Gaming
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (5, 5);`,
-		// Post 6: UI/UX Design
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (6, 6);`,
-		// Post 7: IoT & Edge Computing
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (7, 7);`,
-		// Post 8: Data Analytics
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (8, 8);`,
-		// Post 9: Quantum Computing
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (9, 9);`,
-		// Post 10: SRE & Observability
 		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (10, 10);`,
 	}
 
-	// Insert notifications as examples
 	insertNotifications := []string{
 		`INSERT INTO notifications (user_userid, post_id, message, created_at) VALUES (1, 1, 'Your post on AI & ML just received a new comment!', '2024-12-20 14:00:00');`,
 		`INSERT INTO notifications (user_userid, post_id, message, created_at) VALUES (2, 2, 'Your Cloud & DevOps post was liked by a user!', '2024-12-20 14:30:00');`,
 	}
 
-	// Insert friends
 	insertFriends := []string{
 		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 3);`,
 		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 4);`,
@@ -383,7 +295,6 @@ func DataBase() {
 		`INSERT INTO friends (user_userid, friend_userid) VALUES (3, 2);`,
 	}
 
-	// Insert followers
 	insertFollowers := []string{
 		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 5);`,
 		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 6);`,
@@ -395,7 +306,6 @@ func DataBase() {
 		`INSERT INTO followers (user_userid, follower_userid) VALUES (3, 2);`,
 	}
 
-	// Insert following
 	insertFollowing := []string{
 		`INSERT INTO following (user_userid, following_userid) VALUES (1, 2);`,
 		`INSERT INTO following (user_userid, following_userid) VALUES (1, 3);`,
@@ -405,11 +315,9 @@ func DataBase() {
 		`INSERT INTO following (user_userid, following_userid) VALUES (3, 2);`,
 	}
 
-	// Combine all insert statements
 	allInserts := [][]string{
 		insertCategories,
 		insertUserRoles,
-		insertSessions,
 		insertUsers,
 		insertPosts,
 		insertComments,

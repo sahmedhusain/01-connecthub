@@ -1,187 +1,186 @@
 package server
 
 import (
-    "database/sql"
-    "fmt"
-    "forum/database"
-    "log"
-    "net/http"
-    "strconv"
+	"database/sql"
+	"fmt"
+	"forum/database"
+	"log"
+	"net/http"
+	"strconv"
 )
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-    if r.URL.Path != "/home" {
-        log.Println("Redirecting to Home page")
-        err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-        errHandler(w, r, &err)
-        return
-    }
+	if r.URL.Path != "/home" {
+		log.Println("Redirecting to Home page")
+		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    if r.Method != "GET" {
-        log.Println("Method not allowed")
-        err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-        errHandler(w, r, &err)
-        return
-    }
+	if r.Method != "GET" {
+		log.Println("Method not allowed")
+		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    // Redirect to /home?tab=posts&filter=all if no tab is specified
-    if r.URL.Query().Get("tab") == "" {
-        userID := r.URL.Query().Get("user")
-        if userID == "" {
-            log.Println("User ID is missing")
-            http.Redirect(w, r, "/login", http.StatusSeeOther)
-            return
-        }
-        log.Println("Redirecting to Home page with tab=posts&filter=all")
-        http.Redirect(w, r, fmt.Sprintf("/home?user=%s&tab=posts&filter=all", userID), http.StatusFound)
-        return
-    }
+	if r.URL.Query().Get("tab") == "" {
+		userID := r.URL.Query().Get("user")
+		if userID == "" {
+			log.Println("User ID is missing")
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		log.Println("Redirecting to Home page with tab=posts&filter=all")
+		http.Redirect(w, r, fmt.Sprintf("/home?user=%s&tab=posts&filter=all", userID), http.StatusFound)
+		return
+	}
 
-    db, err := sql.Open("sqlite3", "./database/main.db")
-    if err != nil {
-        log.Println("Database connection failed:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
-    defer db.Close()
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		log.Println("Database connection failed:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+	defer db.Close()
 
-    categories, err := database.GetAllCategories(db)
-    if err != nil {
-        log.Println("Failed to fetch categories:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	categories, err := database.GetAllCategories(db)
+	if err != nil {
+		log.Println("Failed to fetch categories:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    var posts []database.Post
-    filter := r.URL.Query().Get("filter")
-    selectedTab := r.URL.Query().Get("tab")
+	var posts []database.Post
+	filter := r.URL.Query().Get("filter")
+	selectedTab := r.URL.Query().Get("tab")
 
-    if selectedTab == "" {
-        selectedTab = "posts"
-    }
+	if selectedTab == "" {
+		selectedTab = "posts"
+	}
 
-    if filter == "" {
-        if selectedTab == "your+posts" {
-            filter = "newest"
-        } else if selectedTab == "your+replies" {
-            filter = "newest"
-        } else if selectedTab == "your+reactions" {
-            filter = "likes"
-        } else {
-            filter = "all"
-        }
-    }
+	if filter == "" {
+		if selectedTab == "your+posts" {
+			filter = "newest"
+		} else if selectedTab == "your+replies" {
+			filter = "newest"
+		} else if selectedTab == "your+reactions" {
+			filter = "likes"
+		} else {
+			filter = "all"
+		}
+	}
 
-    if selectedTab == "tags" && filter != "all" {
-        posts, err = database.GetPostsByCategory(db, filter)
-    } else if filter == "all" {
-        posts, err = database.GetAllPosts(db)
-    } else {
-        posts, err = database.GetFilteredPosts(db, filter)
-    }
-    if err != nil {
-        log.Println("Failed to fetch posts:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	if selectedTab == "tags" && filter != "all" {
+		posts, err = database.GetPostsByCategory(db, filter)
+	} else if filter == "all" {
+		posts, err = database.GetAllPosts(db)
+	} else {
+		posts, err = database.GetFilteredPosts(db, filter)
+	}
+	if err != nil {
+		log.Println("Failed to fetch posts:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    users, err := database.GetAllUsers(db)
-    if err != nil {
-        log.Println("Failed to fetch users:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	users, err := database.GetAllUsers(db)
+	if err != nil {
+		log.Println("Failed to fetch users:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    userID := r.URL.Query().Get("user")
-    if userID == "" {
-        log.Println("User ID is missing")
-        http.Redirect(w, r, "/login", http.StatusSeeOther)
-        return
-    }
+	userID := r.URL.Query().Get("user")
+	if userID == "" {
+		log.Println("User ID is missing")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 
-    userIDInt, err := strconv.Atoi(userID)
-    if err != nil {
-        log.Println("Failed to parse user ID:", err)
-        err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-        errHandler(w, r, &err)
-        return
-    }
+	userIDInt, err := strconv.Atoi(userID)
+	if err != nil {
+		log.Println("Failed to parse user ID:", err)
+		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    var userName string
-    var avatar sql.NullString
-    var roleID int
-    err = db.QueryRow("SELECT username, avatar, role_id FROM user WHERE userid = ?", userID).Scan(&userName, &avatar, &roleID)
-    if err == sql.ErrNoRows {
-        log.Println("No user found with the given ID:", userID)
-        err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
-        errHandler(w, r, &err)
-        return
-    } else if err != nil {
-        log.Println("Failed to fetch user data:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	var userName string
+	var avatar sql.NullString
+	var roleID int
+	err = db.QueryRow("SELECT username, avatar, role_id FROM user WHERE userid = ?", userID).Scan(&userName, &avatar, &roleID)
+	if err == sql.ErrNoRows {
+		log.Println("No user found with the given ID:", userID)
+		err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
+		errHandler(w, r, &err)
+		return
+	} else if err != nil {
+		log.Println("Failed to fetch user data:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    var roleName string
-    if roleID == 1 {
-        roleName = "Admin"
-    } else if roleID == 2 {
-        roleName = "Moderator"
-    } else {
-        roleName = "User"
-    }
+	var roleName string
+	if roleID == 1 {
+		roleName = "Admin"
+	} else if roleID == 2 {
+		roleName = "Moderator"
+	} else {
+		roleName = "User"
+	}
 
-    var totalLikes, totalPosts int
-    err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&totalLikes)
-    if err != nil {
-        log.Println("Failed to fetch total likes:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	var totalLikes, totalPosts int
+	err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&totalLikes)
+	if err != nil {
+		log.Println("Failed to fetch total likes:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&totalPosts)
-    if err != nil {
-        log.Println("Failed to fetch total posts:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&totalPosts)
+	if err != nil {
+		log.Println("Failed to fetch total posts:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    notifications, err := database.GetLastNotifications(db, strconv.Itoa(userIDInt))
-    if err != nil {
-        log.Println("Failed to fetch notifications:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	notifications, err := database.GetLastNotifications(db, strconv.Itoa(userIDInt))
+	if err != nil {
+		log.Println("Failed to fetch notifications:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
-    data := PageData{
-        UserID:         userID,
-        UserName:       userName,
-        Avatar:         avatar.String,
-        RoleName:       roleName,
-        TotalLikes:     totalLikes,
-        TotalPosts:     totalPosts,
-        Categories:     categories,
-        Users:          users,
-        Posts:          posts,
-        SelectedTab:    selectedTab,
-        SelectedFilter: filter,
-        Notifications:  notifications,
-        RoleID:         roleID,
-    }
+	data := PageData{
+		UserID:         userID,
+		UserName:       userName,
+		Avatar:         avatar.String,
+		RoleName:       roleName,
+		TotalLikes:     totalLikes,
+		TotalPosts:     totalPosts,
+		Categories:     categories,
+		Users:          users,
+		Posts:          posts,
+		SelectedTab:    selectedTab,
+		SelectedFilter: filter,
+		Notifications:  notifications,
+		RoleID:         roleID,
+	}
 
-    err = templates.ExecuteTemplate(w, "home.html", data)
-    if err != nil {
-        log.Println("Error rendering home page:", err)
-        err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-        errHandler(w, r, &err)
-        return
-    }
+	err = templates.ExecuteTemplate(w, "home.html", data)
+	if err != nil {
+		log.Println("Error rendering home page:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 }

@@ -83,8 +83,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		password,_ = HashPassword(password)
-		// Insert user data into the database
+		password, _ = HashPassword(password)
 		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
 		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
@@ -102,7 +101,6 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Redirect to login page or show success message
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}

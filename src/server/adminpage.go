@@ -25,7 +25,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
 	session, _ := store.Get(r, "session-name")
 	userID, ok := session.Values["userID"].(string)
 	if !ok || userID == "" {
@@ -34,7 +33,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve UserName from session
 	userName, ok := session.Values["username"].(string)
 	if !ok || userName == "" {
 		log.Println("UserName not found in session, redirecting to login page")
@@ -42,10 +40,9 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if the user is an admin
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
-	if (err == sql.ErrNoRows) {
+	if err == sql.ErrNoRows {
 		log.Println("No user found with the given ID:", userID)
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
@@ -55,14 +52,11 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve avatar from session
 	avatar, ok := session.Values["avatar"].(string)
-	if (!ok) {
-		// Set a default avatar if not found in session
+	if !ok {
 		avatar = "/static/assets/default-avatar.png"
 	}
 
-	// Determine role name
 	var roleName string
 	if roleID == 1 {
 		roleName = "Admin"
@@ -166,7 +160,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Retrieve total likes for the user
 		var totalLikes int
 		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE userid = ?", userID).Scan(&totalLikes)
 		if err != nil {
@@ -190,7 +183,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			UserSessions:    userSessions,
 			Notifications:   notifications,
 			TotalLikes:      totalLikes,
-			SelectedTab:    "admin", // Set the default selected tab
+			SelectedTab:     "admin",
 		}
 
 		err = templates.ExecuteTemplate(w, "admin.html", data)
