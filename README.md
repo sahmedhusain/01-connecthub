@@ -213,4 +213,4 @@ Here are some example images of the site:
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE.md](http://_vscodecontentref_/1) file for details.
+This project is licensed under the MIT License. See the [LICENSE.md](https://github.com/sahmedhusain/forum?tab=MIT-1-ov-file) file for details.
