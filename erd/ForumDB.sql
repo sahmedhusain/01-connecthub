@@ -26,11 +26,10 @@ DROP TABLE IF EXISTS `categories` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `categories` (
-  `idcategories` INT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `description` VARCHAR(45) NULL,
-  PRIMARY KEY (`idcategories`))
-ENGINE = InnoDB;
+  `idcategories` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `name` TEXT NOT NULL,
+  `description` TEXT NULL
+);
 
 SHOW WARNINGS;
 
@@ -41,48 +40,48 @@ DROP TABLE IF EXISTS `comment` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `comment` (
-  `commentid` INT NOT NULL,
-  `content` VARCHAR(45) NULL,
-  `comment-at` DATETIME NULL,
-  `post_postid` INT NOT NULL,
-  `user_userid` INT NOT NULL,
-  PRIMARY KEY (`commentid`, `post_postid`, `user_userid`))
-ENGINE = InnoDB;
+  `commentid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `content` TEXT NULL,
+  `comment_at` DATETIME NULL,
+  `post_postid` INTEGER NOT NULL,
+  `user_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`post_postid`) REFERENCES `post`(`postid`),
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- Table `dislike`
+-- Table `dislikes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dislike` ;
+DROP TABLE IF EXISTS `dislikes` ;
 
 SHOW WARNINGS;
-CREATE TABLE IF NOT EXISTS `dislike` (
-  `dislikeid` INT NOT NULL,
-  `dislike-at` DATE NULL,
-  `user_userid` INT NOT NULL,
-  `post_postid` INT NOT NULL,
-  PRIMARY KEY (`dislikeid`, `user_userid`, `post_postid`))
-ENGINE = InnoDB;
-
-SHOW WARNINGS;
-CREATE UNIQUE INDEX `dislikeid_UNIQUE` ON `dislike` (`dislikeid` ASC) VISIBLE;
+CREATE TABLE IF NOT EXISTS `dislikes` (
+  `dislikeid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `dislike_at` DATETIME NULL,
+  `post_postid` INTEGER NOT NULL,
+  `user_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`post_postid`) REFERENCES `post`(`postid`),
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- Table `like`
+-- Table `likes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `like` ;
+DROP TABLE IF EXISTS `likes` ;
 
 SHOW WARNINGS;
-CREATE TABLE IF NOT EXISTS `like` (
-  `likeid` INT NOT NULL,
-  `like-at` DATETIME NULL,
-  `post_postid` INT NOT NULL,
-  `user_userid` INT NOT NULL,
-  PRIMARY KEY (`likeid`, `post_postid`, `user_userid`))
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `likes` (
+  `likeid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `like_at` DATETIME NULL,
+  `post_postid` INTEGER NOT NULL,
+  `user_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`post_postid`) REFERENCES `post`(`postid`),
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
@@ -93,16 +92,13 @@ DROP TABLE IF EXISTS `post` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `post` (
-  `postid` INT NOT NULL,
-  `image` INT NULL,
-  `contant` INT NULL,
-  `post-at` DATETIME NOT NULL,
-  `user_userid` INT NOT NULL,
-  PRIMARY KEY (`postid`, `user_userid`))
-ENGINE = InnoDB;
-
-SHOW WARNINGS;
-CREATE UNIQUE INDEX `postid_UNIQUE` ON `post` (`postid` ASC) VISIBLE;
+  `postid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `image` TEXT NULL,
+  `content` TEXT NULL,
+  `post_at` DATETIME NOT NULL,
+  `user_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
@@ -113,11 +109,12 @@ DROP TABLE IF EXISTS `post_has_categories` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `post_has_categories` (
-  `post_postid` INT NOT NULL,
-  `post_user_userid` INT NOT NULL,
-  `categories_idcategories` INT NOT NULL,
-  PRIMARY KEY (`post_postid`, `post_user_userid`, `categories_idcategories`))
-ENGINE = InnoDB;
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `post_postid` INTEGER NOT NULL,
+  `categories_idcategories` INTEGER NOT NULL,
+  FOREIGN KEY (`post_postid`) REFERENCES `post`(`postid`),
+  FOREIGN KEY (`categories_idcategories`) REFERENCES `categories`(`idcategories`)
+);
 
 SHOW WARNINGS;
 
@@ -128,11 +125,11 @@ DROP TABLE IF EXISTS `session` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `session` (
-  `sessionid` INT NOT NULL,
+  `sessionid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `userid` INTEGER NOT NULL UNIQUE,
   `start` DATETIME NOT NULL,
-  `end` DATETIME NOT NULL,
-  PRIMARY KEY (`sessionid`))
-ENGINE = InnoDB;
+  FOREIGN KEY (`userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
@@ -143,23 +140,18 @@ DROP TABLE IF EXISTS `user` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `user` (
-  `userid` INT NOT NULL,
-  `F-name`  NOT NULL,
-  `L-name` VARCHAR(45) NOT NULL,
-  `Username` VARCHAR(45) NOT NULL,
-  `Email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
-  `session_sessionid` INT NOT NULL,
-  `role_id` INT NOT NULL,
-  PRIMARY KEY (`userid`, `session_sessionid`),
-  FOREIGN KEY (`role_id`) REFERENCES `user_roles`(`roleid`))
-ENGINE = InnoDB;
-
-SHOW WARNINGS;
-CREATE UNIQUE INDEX `Username_UNIQUE` ON `user` (`Username` ASC) VISIBLE;
-
-SHOW WARNINGS;
-CREATE UNIQUE INDEX `userid_UNIQUE` ON `user` (`userid` ASC) VISIBLE;
+  `userid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `F_name` TEXT NOT NULL,
+  `L_name` TEXT NOT NULL,
+  `Username` TEXT NOT NULL,
+  `Email` TEXT NOT NULL,
+  `password` TEXT NOT NULL,
+  `session_sessionid` INTEGER NOT NULL,
+  `role_id` INTEGER NOT NULL,
+  `Avatar` TEXT,
+  FOREIGN KEY (`session_sessionid`) REFERENCES `session`(`sessionid`),
+  FOREIGN KEY (`role_id`) REFERENCES `user_roles`(`roleid`)
+);
 
 SHOW WARNINGS;
 
@@ -170,10 +162,9 @@ DROP TABLE IF EXISTS `user_roles` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `user_roles` (
-  `roleid` INT NOT NULL,
-  `role_name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`roleid`))
-ENGINE = InnoDB;
+  `roleid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `role_name` TEXT NOT NULL
+);
 
 SHOW WARNINGS;
 INSERT INTO `user_roles` (`roleid`, `role_name`) VALUES (1, 'admin'), (2, 'moderator'), (3, 'normal_user');
@@ -187,10 +178,12 @@ DROP TABLE IF EXISTS `friends` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `friends` (
-  `user_userid` INT NOT NULL,
-  `friend_userid` INT NOT NULL,
-  PRIMARY KEY (`user_userid`, `friend_userid`))
-ENGINE = InnoDB;
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `user_userid` INTEGER NOT NULL,
+  `friend_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`),
+  FOREIGN KEY (`friend_userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
@@ -201,10 +194,12 @@ DROP TABLE IF EXISTS `followers` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `followers` (
-  `user_userid` INT NOT NULL,
-  `follower_userid` INT NOT NULL,
-  PRIMARY KEY (`user_userid`, `follower_userid`))
-ENGINE = InnoDB;
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `user_userid` INTEGER NOT NULL,
+  `follower_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`),
+  FOREIGN KEY (`follower_userid`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 
@@ -215,12 +210,48 @@ DROP TABLE IF EXISTS `notifications` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `notifications` (
-  `notificationid` INT NOT NULL,
-  `user_userid` INT NOT NULL,
-  `message` VARCHAR(255) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  PRIMARY KEY (`notificationid`))
-ENGINE = InnoDB;
+  `notificationid` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `user_userid` INTEGER NOT NULL,
+  `post_id` INTEGER NOT NULL,
+  `message` TEXT NOT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`),
+  FOREIGN KEY (`post_id`) REFERENCES `post`(`postid`)
+);
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `following`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `following` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `following` (
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `user_userid` INTEGER NOT NULL,
+  `following_userid` INTEGER NOT NULL,
+  FOREIGN KEY (`user_userid`) REFERENCES `user`(`userid`),
+  FOREIGN KEY (`following_userid`) REFERENCES `user`(`userid`)
+);
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `reports`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `reports` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `post_id` INTEGER NOT NULL,
+  `reported_by` INTEGER NOT NULL,
+  `report_reason` TEXT,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`post_id`) REFERENCES `post`(`postid`),
+  FOREIGN KEY (`reported_by`) REFERENCES `user`(`userid`)
+);
 
 SHOW WARNINGS;
 

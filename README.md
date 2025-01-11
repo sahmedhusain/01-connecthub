@@ -97,7 +97,7 @@ docker-compose up --build
 
 ### Database Entity Relationship Diagram (ERD)
 
-![ERD](./erd/erd.jpeg)
+![ERD](./erd/ERD.png)
 
 ### Project Structure
 
