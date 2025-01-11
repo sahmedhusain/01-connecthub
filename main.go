@@ -1,12 +1,14 @@
 package main
 
 import (
-	"github.com/gorilla/context"
 	"fmt"
 	db "forum/database"
 	"forum/src/server"
 	"log"
 	"net/http"
+	authentication "forum/src/authentication"
+
+	"github.com/gorilla/context"
 )
 
 func init() {
@@ -36,8 +38,12 @@ func main() {
 	http.HandleFunc("/togglepassword", server.AuthMiddleware(server.TogglePassword))
 	http.HandleFunc("/addcomment", server.AuthMiddleware(server.AddComment))
 	http.HandleFunc("/logout", server.Logout)
+	http.HandleFunc("/auth/google", authentication.HandleAuth0Login)
+	http.HandleFunc("/auth/google/callback", authentication.HandleAuth0Callback)
+	http.HandleFunc("/auth/github", authentication.HandleAuth0Login)
+	http.HandleFunc("/auth/github/callback", authentication.HandleAuth0Callback)
 
-    fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
+	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 
-    log.Fatal(http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux)))
+	log.Fatal(http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux)))
 }
