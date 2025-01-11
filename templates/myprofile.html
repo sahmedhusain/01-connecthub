@@ -39,7 +39,7 @@
                             <button type="submit" class="dropdown-item">
                                 <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
                                 <div class="notification-user-name">
-                                    <span>@{{.UserName}}</span><span> Has {{.Message}}</span>
+                                    <span>@{{.Username}}</span><span> Has {{.Message}}</span>
                                 </div>
                             </button>
                         </form>
@@ -66,7 +66,7 @@
                             <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}"
                                 alt="Avatar" class="profile-image">
                             <div class="profile-info">
-                                <span class="username">@{{.UserName}}</span>
+                                <span class="username">@{{.Username}}</span>
                                 <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}}
                                     [{{.TotalPosts}}]</span>
                             </div>
