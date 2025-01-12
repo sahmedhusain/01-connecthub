@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	db "forum/database"
 	"forum/src/server"
 	"log"
 	"net/http"
@@ -11,7 +10,8 @@ import (
 )
 
 func init() {
-	db.DataBase()
+	// db.DataBase()
+	// db.DropDataBase()
 }
 
 func main() {

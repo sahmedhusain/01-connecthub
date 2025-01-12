@@ -15,14 +15,6 @@ func DataBase() {
 	}
 	defer db.Close()
 
-	// Check if tables already exist
-	var tableName string
-	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='categories'").Scan(&tableName)
-	if err == nil && tableName == "categories" {
-		log.Println("Database already exists. Skipping table creation.")
-		return
-	}
-
 	// CREATE TABLE statements
 	const CreateCategoriesTable = `
 		CREATE TABLE IF NOT EXISTS categories (
