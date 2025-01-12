@@ -64,26 +64,15 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//End session when user already has a session
-		result, err := db.Exec("DELETE FROM session WHERE userid = ?", userID)
+		// Delete any existing session for the user
+		_, err = db.Exec("DELETE FROM session WHERE userid = ?", userID)
 		if err != nil {
-			log.Println("Error rendering login page:", err)
+			log.Println("Error deleting existing session:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &errData)
-		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 1 {
-			session, _ := store.Get(r, "session")
-			delete(session.Values, "userID")
-			delete(session.Values, "sessionID")
-			err = session.Save(r, w)
-			if err != nil {
-				log.Println("Error saving session:", err)
-				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
-				return
-			}
+			return
 		}
 
-		// Create a new session in the database
 		var sessionID int
 		startTime := time.Now()
 		err = db.QueryRow(

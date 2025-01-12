@@ -20,12 +20,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	delete(session.Values, "userID")
-	err = session.Save(r, w)
-	if err != nil {
-		log.Println("Error saving session:", err)
-		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
-		return
-	}
+	session.Save(r, w)
+
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
