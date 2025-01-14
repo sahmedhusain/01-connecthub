@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	// db "forum/database"
 	"forum/src/server"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/context"
 )
 
 func init() {
@@ -19,7 +18,7 @@ func main() {
 
 	// http.HandleFunc("/", server.MainPage)
 	http.HandleFunc("/", server.LoginPage)
-	http.HandleFunc("/logout", server.Logout)
+	http.HandleFunc("/logout", server.AuthMiddleware(server.Logout))
 	http.HandleFunc("/signup", server.SignupPage)
 	http.HandleFunc("/home", server.HomePage)
 	http.HandleFunc("/newpost", server.AuthMiddleware(server.NewPostPage))
@@ -35,10 +34,10 @@ func main() {
 	http.HandleFunc("/deletepost", server.AuthMiddleware(server.DeletePost))
 	http.HandleFunc("/reportpost", server.AuthMiddleware(server.ReportPost))
 	http.HandleFunc("/changepassword", server.AuthMiddleware(server.ChangePassword))
-	http.HandleFunc("/togglepassword", server.AuthMiddleware(server.TogglePassword))
+	// http.HandleFunc("/togglepassword", server.AuthMiddleware(server.TogglePassword))
 	http.HandleFunc("/addcomment", server.AuthMiddleware(server.AddComment))
 
 	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 
-	log.Fatal(http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux)))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

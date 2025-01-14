@@ -24,14 +24,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
+	userID := r.URL.Query().Get("userID")
 
 	notifications, err := database.GetLastNotifications(db, userID)
 	if err != nil {
@@ -46,8 +39,8 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 		Avatar        string
 		Notifications []database.Notification
 	}{
-		UserID:        userID,
-		Avatar:        session.Values["avatar"].(string),
+		UserID: userID,
+		// Avatar:        session.Values["avatar"].(string),
 		Notifications: notifications,
 	}
 

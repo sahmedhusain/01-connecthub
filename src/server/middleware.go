@@ -16,36 +16,31 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			errHandler(w, r, &err)
 			return
 		}
-
 		defer db.Close()
-		session, err := store.Get(r, "session")
+
+		// Retrieve username cookie
+		usrCok, err := r.Cookie("dotcom_user")
 		if err != nil {
-			log.Println("Error getting session:", err)
+			http.Redirect(w, r, "/", http.StatusFound)
+			fmt.Println("Error fetching username from cookie")
+			return
+		}
+
+		//Set username from cookie value
+		userName := usrCok.Value
+
+		var sessionID string
+		err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&sessionID)
+		if err != nil {
+			log.Println("Error fetching session ID from user table:", err)
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
 
-		_, userOk := session.Values["userID"]
-		_, sessionOk := session.Values["sessionID"]
-		if !userOk || !sessionOk {
+		seshCok, err := r.Cookie("session_token")
+		if err != nil || seshCok.Value == "" || seshCok.Value != sessionID {
 			http.Redirect(w, r, "/", http.StatusFound)
-			fmt.Println("no session, redirected to login")
-			return
-		}
-
-		userID := session.Values["userID"]
-		var sessionID int
-		err = db.QueryRow("SELECT session_sessionid FROM user WHERE userid = ?", userID).Scan(&sessionID)
-		if err != nil {
-			log.Println("Error fetching session ID:", err)
-			http.Redirect(w, r, "/", http.StatusFound)
-			return
-		}
-		fmt.Print("gorilla sessionID: ", session.Values["sessionID"])
-		fmt.Print("sessionID: ", sessionID)
-		if session.Values["sessionID"] != sessionID {
-			http.Redirect(w, r, "/", http.StatusFound)
-			fmt.Println("gorilla session id does not not match db session id")
+			fmt.Println("Invalid session")
 			return
 		}
 

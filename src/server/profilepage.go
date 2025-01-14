@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
@@ -24,16 +25,22 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	usrCok, err := r.Cookie("dotcom_user")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		fmt.Println("Error fetching username from cookie")
 		return
 	}
 
-	// Retrieve ProfileUserID from query parameters
+	var userID string
+	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", usrCok.Value).Scan(&userID)
+	if err != nil {
+		log.Println("Error fetching session ID:", err)
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
+	// Retrieve ProfileUserID from url parameters
 	profileUserID := r.URL.Query().Get("user")
 	if profileUserID == "" {
 		log.Println("ProfileUserID not found in query parameters")
@@ -126,8 +133,8 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		Followers             []database.User
 		Following             []database.User
 	}{
-		UserID:                userID,
-		Avatar:                session.Values["avatar"].(string),
+		UserID: userID,
+		// Avatar:                session.Values["avatar"].(string),
 		ProfileUserID:         profileUserID,
 		ProfileFirstName:      user.FirstName,
 		ProfileLastName:       user.LastName,

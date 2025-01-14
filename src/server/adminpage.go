@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
@@ -25,28 +26,30 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	// Retrieve username cookie
+	usrCok, err := r.Cookie("dotcom_user")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		fmt.Println("Error fetching username from cookie")
 		return
 	}
 
-	// Retrieve UserName from session
-	userName, ok := session.Values["username"].(string)
-	if !ok || userName == "" {
-		log.Println("UserName not found in session, redirecting to login page")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	//set username from cookie value
+	userName := usrCok.Value
+
+	var userID string
+	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userID)
+	if err != nil {
+		log.Println("Error fetching user ID:", err)
+		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
-	// Check if the user is an admin
+	//check if user is an admin
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
-	if (err == sql.ErrNoRows) {
-		log.Println("No user found with the given ID:", userID)
+	if err == sql.ErrNoRows {
+		log.Println("No user found with the given user ID:", userID)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	} else if err != nil || roleID != 1 {
@@ -56,11 +59,11 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve avatar from session
-	avatar, ok := session.Values["avatar"].(string)
-	if (!ok) {
-		// Set a default avatar if not found in session
-		avatar = "/static/assets/default-avatar.png"
-	}
+	// avatar, ok := session.Values["avatar"].(string)
+	// if !ok {
+	// 	// Set a default avatar if not found in session
+	// 	avatar = "/static/assets/default-avatar.png"
+	// }
 
 	// Determine role name
 	var roleName string
@@ -175,9 +178,9 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := PageData{
-			UserID:          userID,
-			UserName:        userName,
-			Avatar:          avatar,
+			UserID:   userID,
+			UserName: userName,
+			// Avatar:          avatar,
 			RoleName:        roleName,
 			Users:           users,
 			Posts:           posts,
@@ -190,7 +193,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			UserSessions:    userSessions,
 			Notifications:   notifications,
 			TotalLikes:      totalLikes,
-			SelectedTab:    "admin", // Set the default selected tab
+			SelectedTab:     "admin", // Set the default selected tab
 		}
 
 		err = templates.ExecuteTemplate(w, "admin.html", data)

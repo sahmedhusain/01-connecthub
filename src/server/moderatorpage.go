@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
@@ -24,21 +25,29 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve UserID from session
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	// Check if the user is a moderator
+	usrCok, err := r.Cookie("dotcom_user")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		fmt.Println("Error fetching username from cookie")
 		return
 	}
 
-	// Check if the user is a moderator
-	var roleID int
-	err = db.QueryRow("SELECT role_id FROM user WHERE id = ?", userID).Scan(&roleID)
-	if err != nil || roleID != 2 {
-		log.Println("User is not a moderator, redirecting to Home page")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	userName := usrCok.Value
+
+	var roleID string
+	err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&roleID)
+	if err != nil {
+		log.Println("Error fetching session ID:", err)
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
+	var userID string
+	err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&userID)
+	if err != nil {
+		log.Println("Error fetching session ID:", err)
+		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
@@ -54,12 +63,12 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 
 		data := struct {
 			UserID string
-			Avatar string
-			Posts  []database.Post
+			// Avatar string
+			Posts []database.Post
 		}{
 			UserID: userID,
-			Avatar: session.Values["avatar"].(string),
-			Posts:  posts,
+			// Avatar: session.Values["avatar"].(string),
+			Posts: posts,
 		}
 
 		err = templates.ExecuteTemplate(w, "home.html", data) // Changed from "moderator.html" to "home.html"

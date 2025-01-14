@@ -14,7 +14,7 @@ type User struct {
 	Username         string         `json:"username"`
 	Email            string         `json:"email"`
 	Password         string         `json:"password"`
-	SessionSessionID int            `json:"session_sessionid"`
+	SessionSessionID int            `json:"current_session"`
 	RoleID           int            `json:"role_id"`
 	Avatar           sql.NullString `json:"avatar"` // Use sql.NullString to handle NULL values
 }

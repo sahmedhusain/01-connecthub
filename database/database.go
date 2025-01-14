@@ -75,9 +75,9 @@ func DataBase() {
 
 	const CreateSessionsTable = `
 		CREATE TABLE IF NOT EXISTS session (
-			sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
+			sessionid TEXT PRIMARY KEY,
 			userid INTEGER NOT NULL UNIQUE,
-			start DATETIME NOT NULL,
+			endtime DATETIME NOT NULL,
 			FOREIGN KEY (userid) REFERENCES user(userid)
 		);
 	`
@@ -90,10 +90,10 @@ func DataBase() {
 			Username TEXT NOT NULL,
 			Email TEXT NOT NULL,
 			password TEXT NOT NULL,
-			session_sessionid INTEGER NOT NULL,
+			current_session TEXT,
 			role_id INTEGER NOT NULL,
 			Avatar TEXT,
-			FOREIGN KEY (session_sessionid) REFERENCES session(sessionid),
+			FOREIGN KEY (current_session) REFERENCES session(sessionid),
 			FOREIGN KEY (role_id) REFERENCES user_roles(roleid)
 		);`
 
@@ -203,16 +203,16 @@ func DataBase() {
 	// Insert users
 	// Assign all users to role_id=3 (User) for simplicity, except first user as Admin (role_id=1) and second as Moderator (role_id=2)
 	insertUsers := []string{
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, 'https://randomuser.me/api/portraits/women/1.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, 'https://randomuser.me/api/portraits/men/1.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Caroline', 'Smith', 'caroS', 'carolineS@example.com', 'carolinePass', 3, 3, 'https://randomuser.me/api/portraits/women/2.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Daniel', 'Foster', 'danF', 'danF@example.com', 'danielPass', 4, 3, 'https://randomuser.me/api/portraits/men/2.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Elena', 'Garcia', 'elenaG', 'elenaG@example.com', 'elenaPass', 5, 3, 'https://randomuser.me/api/portraits/women/3.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Farhan', 'Khan', 'farhanK', 'farhanK@example.com', 'farhanPass', 6, 3, 'https://randomuser.me/api/portraits/men/3.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Grace', 'Li', 'graceL', 'graceL@example.com', 'gracePass', 7, 3, 'https://randomuser.me/api/portraits/women/4.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Hiroshi', 'Tanaka', 'hiroshiT', 'hiroshiT@example.com', 'hiroshiPass', 8, 3, 'https://randomuser.me/api/portraits/men/4.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Irene', 'Santos', 'ireneS', 'ireneS@example.com', 'irenePass', 9, 3, 'https://randomuser.me/api/portraits/women/5.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES ('Jamal', 'Roberts', 'jamalR', 'jamalR@example.com', 'jamalPass', 10, 3, 'https://randomuser.me/api/portraits/men/5.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, 'https://randomuser.me/api/portraits/women/1.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, 'https://randomuser.me/api/portraits/men/1.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Caroline', 'Smith', 'caroS', 'carolineS@example.com', 'carolinePass', 3, 3, 'https://randomuser.me/api/portraits/women/2.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Daniel', 'Foster', 'danF', 'danF@example.com', 'danielPass', 4, 3, 'https://randomuser.me/api/portraits/men/2.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Elena', 'Garcia', 'elenaG', 'elenaG@example.com', 'elenaPass', 5, 3, 'https://randomuser.me/api/portraits/women/3.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Farhan', 'Khan', 'farhanK', 'farhanK@example.com', 'farhanPass', 6, 3, 'https://randomuser.me/api/portraits/men/3.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Grace', 'Li', 'graceL', 'graceL@example.com', 'gracePass', 7, 3, 'https://randomuser.me/api/portraits/women/4.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Hiroshi', 'Tanaka', 'hiroshiT', 'hiroshiT@example.com', 'hiroshiPass', 8, 3, 'https://randomuser.me/api/portraits/men/4.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Irene', 'Santos', 'ireneS', 'ireneS@example.com', 'irenePass', 9, 3, 'https://randomuser.me/api/portraits/women/5.jpg');`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Jamal', 'Roberts', 'jamalR', 'jamalR@example.com', 'jamalPass', 10, 3, 'https://randomuser.me/api/portraits/men/5.jpg');`,
 	}
 
 	// Insert posts (each linked to a user and posted at a unique time)

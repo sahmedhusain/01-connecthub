@@ -4,23 +4,41 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"time"
 )
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session")
+	userID := r.URL.Query().Get("userID")
+
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	_, err = db.Exec("DELETE FROM session WHERE userid = ?", session.Values["userID"])
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Hour),
+		HttpOnly: true,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "dotcom_user",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Hour),
+		HttpOnly: true,
+	})
+
+	_, err = db.Exec("DELETE FROM session WHERE userid = ?", userID)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	delete(session.Values, "userID")
-	session.Save(r, w)
+	_, err = db.Exec("UPDATE user SET current_session = '' WHERE userid = ?", userID)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

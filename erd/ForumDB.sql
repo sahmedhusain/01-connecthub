@@ -149,9 +149,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `Username` VARCHAR(45) NOT NULL,
   `Email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `session_sessionid` INT NOT NULL,
+  `current_session` INT NOT NULL,
   `role_id` INT NOT NULL,
-  PRIMARY KEY (`userid`, `session_sessionid`),
+  PRIMARY KEY (`userid`, `current_session`),
   FOREIGN KEY (`role_id`) REFERENCES `user_roles`(`roleid`))
 ENGINE = InnoDB;
 
