@@ -19,14 +19,14 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
 		Value:    "",
-		Expires:  time.Now().Add(-1 * time.Hour),
+		Expires:  time.Now().Add(-time.Hour),
 		HttpOnly: true,
 	})
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "dotcom_user",
 		Value:    "",
-		Expires:  time.Now().Add(-1 * time.Hour),
+		Expires:  time.Now().Add(-time.Hour),
 		HttpOnly: true,
 	})
 
@@ -35,7 +35,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	_, err = db.Exec("UPDATE user SET current_session = '' WHERE userid = ?", userID)
+	_, err = db.Exec("UPDATE user SET current_session = NULL WHERE userid = ?", userID)
 	if err != nil {
 		log.Fatal(err)
 	}

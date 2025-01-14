@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -38,9 +39,22 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		seshCok, err := r.Cookie("session_token")
+		fmt.Println("Invalid session")
 		if err != nil || seshCok.Value == "" || seshCok.Value != sessionID {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "session_token",
+				Value:    "",
+				Expires:  time.Now().Add(-time.Hour),
+				HttpOnly: true,
+			})
+
+			http.SetCookie(w, &http.Cookie{
+				Name:     "dotcom_user",
+				Value:    "",
+				Expires:  time.Now().Add(-time.Hour),
+				HttpOnly: true,
+			})
 			http.Redirect(w, r, "/", http.StatusFound)
-			fmt.Println("Invalid session")
 			return
 		}
 

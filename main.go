@@ -17,7 +17,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
 	// http.HandleFunc("/", server.MainPage)
-	http.HandleFunc("/", server.LoginPage)
+	http.HandleFunc("/", server.ReverseMiddleware(server.LoginPage))
 	http.HandleFunc("/logout", server.AuthMiddleware(server.Logout))
 	http.HandleFunc("/signup", server.SignupPage)
 	http.HandleFunc("/home", server.HomePage)

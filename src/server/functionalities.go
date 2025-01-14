@@ -27,6 +27,7 @@ type ErrorPageData struct {
 }
 
 type PageData struct {
+	HasSession      bool
 	UserID          string
 	UserName        string
 	Avatar          string

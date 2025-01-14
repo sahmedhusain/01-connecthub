@@ -91,14 +91,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 		})
 
-		// Retrieve session cookie
-		seshCok, err := r.Cookie("session_token")
-		if err != nil {
-			http.Redirect(w, r, "/", http.StatusFound)
-			fmt.Println("Error fetching session cookie")
-			return
-		}
-
 		// Update the user's session ID in the session table
 		result, err := db.Exec("UPDATE session SET sessionid = ? WHERE userid = ?", stringToken, userID)
 		if err != nil {
@@ -108,7 +100,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 0 { //only insert a new row if no record is updated (i.e., no session is found)
 			_, err := db.Exec("INSERT INTO session (sessionid, userid, endtime) VALUES (?, ?, ?) RETURNING sessionid",
-				stringToken, userID, seshCok.Expires)
+				stringToken, userID, time.Now().Add(1 * time.Hour))
 			if err != nil {
 				log.Println("Error creating new session:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

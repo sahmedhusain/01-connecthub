@@ -17,11 +17,12 @@
 
 <body>
     <header>
-        <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
+        <a href="/home?tab=posts&filter=all" class="logo-container">
             <img src="/static/assets/logo.png" alt="ConnectHub Logo">
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
+            {{if .HasSession}}
             <form action="/newpost" method="GET">
                 <input type="hidden" name="user" value="{{.UserID}}">
                 <button type="submit" class="register">
@@ -87,6 +88,12 @@
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
+            {{else}}
+            <div class="user-actions">
+                <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
+                <a href="/"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
+            </div>
+            {{end}}
         </div>
     </header>
     <div class="feed-container">
