@@ -222,12 +222,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 				errHandler(w, r, &err)
 				return
 			}
-
-		default:
-			log.Println("Invalid tab selected")
-			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
-			return
 		}
 
 		data := PageData{
