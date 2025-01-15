@@ -40,7 +40,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    posts, err := database.GetUserPosts(db, userID)
+    posts, err := database.GetUserPosts(db, userID, "newest")
     if err != nil {
         log.Println("Error fetching user posts:", err)
         err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

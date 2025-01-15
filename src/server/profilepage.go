@@ -58,7 +58,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := database.GetUserPosts(db, profileUserID)
+	posts, err := database.GetUserPosts(db, profileUserID,"newest")
 	if err != nil {
 		log.Println("Failed to fetch user posts")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

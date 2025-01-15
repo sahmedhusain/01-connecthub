@@ -81,19 +81,113 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if selectedTab == "tags" && filter != "all" {
-		posts, err = database.GetPostsByCategory(db, filter)
-	} else if filter == "all" {
-		posts, err = database.GetAllPosts(db)
-	} else {
-		posts, err = database.GetFilteredPosts(db, filter)
-	}
+	usrCok, err := r.Cookie("dotcom_user")
 	if err != nil {
-		log.Println("Failed to fetch posts:", err)
-		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		http.Redirect(w, r, "/", http.StatusFound)
+		fmt.Println("Error fetching session cookie")
+		return
+	}
+
+	usrName := usrCok.Value
+
+	var userid string
+	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", usrName).Scan(&userid)
+	if err != nil {
+		log.Println("Error fetching session ID from user table:", err)
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
+	switch selectedTab {
+
+	case "posts":
+		{
+			if filter == "all" {
+				posts, err = database.GetAllPosts(db)
+				if err != nil {
+					log.Println("Failed to fetch posts:", err)
+					err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+					errHandler(w, r, &err)
+					return
+				}
+			} else {
+				posts, err = database.GetFilteredPosts(db, filter)
+				if err != nil {
+					log.Println("Failed to fetch posts:", err)
+					err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+					errHandler(w, r, &err)
+					return
+				}
+			}
+		}
+	case "tags":
+		{
+			if filter != "all" {
+				posts, err = database.GetPostsByCategory(db, filter)
+				if err != nil {
+					log.Println("Failed to fetch posts:", err)
+					err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+					errHandler(w, r, &err)
+					return
+				}
+			} else {
+				posts, err = database.GetAllPosts(db)
+				if err != nil {
+					log.Println("Failed to fetch posts:", err)
+					err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+					errHandler(w, r, &err)
+					return
+				}
+			}
+		}
+	case "your+posts":
+		{
+			posts, err = database.GetUserPosts(db, userid, filter)
+			if err != nil {
+				log.Println("Failed to fetch posts:", err)
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				errHandler(w, r, &err)
+				return
+			}
+		}
+	case "your+replies":
+		posts, err = database.GetUserCommentedPosts(db, userid, filter)
+		if err != nil {
+			log.Println("Failed to fetch posts:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &err)
+			return
+		}
+
+	case "your+reactions":
+		posts, err = database.GetUserReaction(db, userid, filter)
+		if err != nil {
+			log.Println("Failed to fetch posts:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &err)
+			return
+		}
+
+	default:
+		log.Println("Invalid tab selected")
+		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
 		errHandler(w, r, &err)
 		return
 	}
+
+	// if selectedTab == "tags" && filter != "all" {
+	//     posts, err = database.GetPostsByCategory(db, filter)
+	// } else if filter == "all" {
+	//     posts, err = database.GetAllPosts(db)
+	// } else {
+	//     posts, err = database.GetFilteredPosts(db, filter)
+	// }
+	// if err != nil {
+	//     log.Println("Failed to fetch posts:", err)
+	//     err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+	//     errHandler(w, r, &err)
+	//     return
+	// }
 
 	users, err := database.GetAllUsers(db)
 	if err != nil {
