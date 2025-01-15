@@ -29,6 +29,9 @@ type Comment struct {
 	ID        int
 	PostID    int
 	UserID    int
+	FirstName string
+	LastName  string
+	Username  string
 	Content   string
 	CreatedAt time.Time
 	Avatar    sql.NullString // Add this field
@@ -698,7 +701,7 @@ func GetAllReports(db *sql.DB) ([]Report, error) {
 func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
 	var comments []Comment
 
-	query := `SELECT comment.commentid, comment.post_postid, comment.user_userid, comment.content, comment.comment_at, user.Avatar
+	query := `SELECT comment.commentid, comment.post_postid, comment.user_userid, user.F_name, user.L_name, user.Username, comment.content, comment.comment_at, user.Avatar
               FROM comment
               JOIN user ON comment.user_userid = user.userid
               WHERE comment.post_postid = ?`
@@ -713,7 +716,7 @@ func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
 		var commentAt time.Time // SQLite DATETIME is fetched as a string
 
 		// Scan each row into the Comment struct
-		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.Content, &commentAt, &comment.Avatar); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.FirstName, &comment.LastName, &comment.Username, &comment.Content, &commentAt, &comment.Avatar); err != nil {
 			return nil, fmt.Errorf("GetCommentsForPost: %v", err)
 		}
 

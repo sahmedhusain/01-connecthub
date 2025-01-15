@@ -17,7 +17,7 @@
 
 <body>
     <header>
-        <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
+        <a href="/home?tab=posts&filter=all" class="logo-container">
             <img src="/static/assets/logo.png" alt="ConnectHub Logo">
             <span>Connect</span><span>Hub</span>
         </a>
@@ -222,7 +222,8 @@
                     <div class="post-header">
                         <img src="{{.Post.Avatar}}" alt="User Avatar">
                         <div class="post-info">
-                            <h1>{{.Post.Username}}</h1>
+                            <h3>{{.Post.FirstName}} {{.Post.LastName}}</h3>
+                            <span>@{{.Post.Username}}</span>
                             <p>{{.Post.PostAt}}</p>
                         </div>
                     </div>
@@ -270,6 +271,10 @@
                         {{end}}
                         <div class="comment">
                             <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="User Avatar">
+                            <div class="comment-info">
+                                <h1 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--secondary-color); font-family: var(--font-family);">{{.FirstName}} {{.LastName}}</h1>
+                                <span style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted-color);">@{{.Username}}</span>
+                            </div>
                             <div class="comment-content">
                                 <p>{{.Content}}</p>
                                 <time>{{.CreatedAt}}</time>
