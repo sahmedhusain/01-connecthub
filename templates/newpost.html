@@ -204,6 +204,8 @@
                     <form action="/newpost" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <textarea id="content" name="content" rows="5" required></textarea>
+                        <div id="char-counter">0/500</div>
+                        <div id="error-message" style="color: red; display: none;">Character limit exceeded!</div>
                         <div class="image-upload-container">
                             <label for="image" class="upload-button">
                                 <i class="fa-regular fa-image"></i> Upload Image
@@ -219,12 +221,45 @@
                             </label>
                             {{end}}
                         </div>
-                        <button type="submit">Post</button>
+                        <button type="submit" id="submit-button">Post</button>
                     </form>
                 </div>
             </section>
         </main>
         <script src="/static/js/dropdown.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const textarea = document.getElementById('content');
+                const charCounter = document.getElementById('char-counter');
+                const errorMessage = document.getElementById('error-message');
+                const submitButton = document.getElementById('submit-button');
+                const charLimit = 500;
+
+                textarea.addEventListener('input', function () {
+                    const textLength = textarea.value.length;
+                    charCounter.textContent = `${textLength}/${charLimit}`;
+
+                    if (textLength > charLimit) {
+                        errorMessage.style.display = 'block';
+                        submitButton.disabled = true;
+                    } else {
+                        errorMessage.style.display = 'none';
+                        submitButton.disabled = false;
+                    }
+                });
+
+                submitButton.addEventListener('click', function (event) {
+                    const trimmedContent = textarea.value.trim();
+                    if (trimmedContent === "") {
+                        errorMessage.textContent = "Post content cannot be empty or only spaces!";
+                        errorMessage.style.display = 'block';
+                        event.preventDefault();
+                    } else {
+                        textarea.value = trimmedContent;
+                    }
+                });
+            });
+        </script>
 </body>
 
 </html>

@@ -36,6 +36,8 @@
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    
 }
 
 .post:hover {
@@ -74,6 +76,8 @@
     color: #374151;
     margin-top: 15px;
     margin-bottom: 15px;
+    overflow-wrap: break-word;
+    word-break: break-word; 
 }
 
 .post-categories {
