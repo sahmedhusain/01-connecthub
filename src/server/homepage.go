@@ -23,14 +23,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var hasSession bool
-	seshCok, err := r.Cookie("session_token")
-	if err != nil || seshCok.Value == "" {
-		hasSession = false
-	} else {
-		hasSession = true
-	}
-
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Println("Database connection failed:", err)
@@ -39,6 +31,33 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer db.Close()
+
+	var hasSession bool
+	var userID int
+	var userName string
+	seshCok, err := r.Cookie("session_token")
+	if err != nil || seshCok.Value == "" {
+		hasSession = false
+	} else {
+		hasSession = true
+
+		// Retrieve username cookie
+		usrCok, err := r.Cookie("dotcom_user")
+		if err != nil {
+			http.Redirect(w, r, "/", http.StatusFound)
+			fmt.Println("Error fetching username from cookie")
+			return
+		}
+
+		//Set username from cookie value
+		userName = usrCok.Value
+		err = db.QueryRow("SELECT userID FROM user WHERE Username = ?", userName).Scan(&userID)
+		if err != nil {
+			log.Println("Error fetching session ID from user table:", err)
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+	}
 
 	users, err := database.GetAllUsers(db)
 	if err != nil {
@@ -117,28 +136,10 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 				filter = "all"
 			}
 		}
-		// Retrieve username cookie
-		usrCok, err := r.Cookie("dotcom_user")
-		if err != nil {
-			http.Redirect(w, r, "/", http.StatusFound)
-			fmt.Println("Error fetching username from cookie")
-			return
-		}
-
-		//Set username from cookie value
-		userName := usrCok.Value
-
-		var userID string
-		err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userID)
-		if err != nil {
-			log.Println("Error fetching session ID from user table:", err)
-			http.Redirect(w, r, "/", http.StatusFound)
-			return
-		}
 
 		var avatar sql.NullString
 		var roleID int
-		err = db.QueryRow("SELECT avatar, role_id FROM user WHERE userid = ?", userID).Scan(&avatar, &roleID)
+		err = db.QueryRow("SELECT avatar, role_id FROM user WHERE userID = ?", userID).Scan(&avatar, &roleID)
 		if err == sql.ErrNoRows {
 			log.Println("No user found with the given ID:", userID)
 			err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
@@ -161,7 +162,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var totalLikes, totalPosts int
-		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userid = ?", userID).Scan(&totalLikes)
+		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userID = ?", userID).Scan(&totalLikes)
 		if err != nil {
 			log.Println("Failed to fetch total likes:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -169,7 +170,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userid = ?", userID).Scan(&totalPosts)
+		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
 		if err != nil {
 			log.Println("Failed to fetch total posts:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -185,19 +186,11 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var userid string
-		err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userid)
-		if err != nil {
-			log.Println("Error fetching session ID from user table:", err)
-			http.Redirect(w, r, "/", http.StatusFound)
-			return
-		}
-
 		switch selectedTab {
 
 		case "your+posts":
 			{
-				posts, err = database.GetUserPosts(db, userid, filter)
+				posts, err = database.GetUserPosts(db, userID, filter)
 				if err != nil {
 					log.Println("Failed to fetch posts:", err)
 					err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -206,7 +199,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		case "your+replies":
-			posts, err = database.GetUserCommentedPosts(db, userid, filter)
+			posts, err = database.GetUserCommentedPosts(db, userID, filter)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -215,7 +208,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			}
 
 		case "your+reactions":
-			posts, err = database.GetUserReaction(db, userid, filter)
+			posts, err = database.GetUserReaction(db, userID, filter)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

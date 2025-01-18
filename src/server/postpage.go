@@ -22,17 +22,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve username cookie
-	usrCok, err := r.Cookie("dotcom_user")
-	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
-		fmt.Println("Error fetching username from cookie")
-		return
-	}
-
-	//Set username from cookie value
-	userName := usrCok.Value
-
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Println("Error opening database:", err)
@@ -41,7 +30,18 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	var userID string
+	// Retrieve username cookie
+	usrCok, err := r.Cookie("dotcom_user")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		fmt.Println("Error fetching username from cookie")
+		return
+	}
+
+	// Set username from cookie value
+	userName := usrCok.Value
+
+	var userID int
 	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userID)
 	if err != nil {
 		log.Println("Error fetching session ID from user table:", err)
@@ -85,7 +85,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userID == "" {
+	if userID < 0 {
 		log.Println("User ID not found in query parameters")
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
@@ -97,6 +97,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		Post:     post,
 		Comments: comments,
 		UserID:   userID, // Ensure UserID is set
+		UserName: userName,
 	}
 
 	err = templates.ExecuteTemplate(w, "post.html", data)

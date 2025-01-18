@@ -37,7 +37,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	//set username from cookie value
 	userName := usrCok.Value
 
-	var userID string
+	var userID int
 	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userID)
 	if err != nil {
 		log.Println("Error fetching user ID:", err)

@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
@@ -28,15 +29,25 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		notifications, err := database.GetLastNotifications(db, r.FormValue("user"))
+		// Retrieve username cookie
+		usrCok, err := r.Cookie("dotcom_user")
 		if err != nil {
-			log.Println("Failed to fetch notifications")
-			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			http.Redirect(w, r, "/", http.StatusFound)
+			fmt.Println("Error fetching username from cookie")
 			return
 		}
 
-		userID := r.FormValue("user")
+		//Set username from cookie value
+		userName := usrCok.Value
+
+		var userID int
+		err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userID)
+		if err != nil {
+			log.Println("Error fetching session ID from user table:", err)
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+
 		user, err := database.GetUserByID(db, userID)
 		if err != nil {
 			log.Println("Failed to fetch user data")
@@ -44,6 +55,15 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			errHandler(w, r, &err)
 			return
 		}
+
+		notifications, err := database.GetLastNotifications(db, userID)
+		if err != nil {
+			log.Println("Failed to fetch notifications")
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &err)
+			return
+		}
+
 		userAvatar := user.Avatar.String // Assuming Avatar is of type sql.NullString
 
 		log.Printf("Fetched user data: %+v\n", user) // Add this line for debugging
@@ -80,7 +100,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := struct {
-			UserID        string
+			UserID        int
 			Categories    []database.Category
 			Notifications []database.Notification
 			Avatar        string
@@ -176,6 +196,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Redirect to the home page after successful post
-		http.Redirect(w, r, "/home?user="+userID+"&tab=posts&filter=all", http.StatusSeeOther)
+		http.Redirect(w, r, "/home?tab=posts&filter=all", http.StatusSeeOther)
 	}
 }
