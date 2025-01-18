@@ -23,12 +23,14 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
+            {{if .HasSession}}
             <form action="/newpost" method="GET">
                 <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
+            <!-- 
             <div class="dropdown">
                 <a class="dropdown-toggle dropbtn" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -49,11 +51,10 @@
                     <p>No notifications yet</p>
                     {{end}}
                     <form action="/notifications" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
-            </div>
+            </div> -->
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar dropbtn">
@@ -72,22 +73,26 @@
                                     [{{.TotalPosts}}]</span>
                             </div>
                         </button>
-                    </form>
+                    </form><!-- 
                     <form action="/myprofile" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
                     </form>
                     <form action="/settings" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
-                    </form>
-                    <a href="/"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </form> -->
+                    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
+            {{else}}
+            <div class="user-actions">
+                <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
+                <a href="/"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
+            </div>
+            {{end}}
         </div>
     </header>
     <div class="feed-container">
@@ -127,6 +132,7 @@
                         </form>
                     </li>
                 </ul>
+                {{if .HasSession}}
                 <h3 class="menu-heading">Activity centre</h3>
                 <ul>
                     <li>
@@ -139,16 +145,15 @@
                             </button>
                         </form>
                     </li>
-                    <li>
+<!--                     <li>
                         <form action="/home" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
                                 <i class="fa-solid fa-reply"></i> Your replies
                             </button>
                         </form>
-                    </li>
+                    </li> -->
                     <li>
                         <form action="/home" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
@@ -185,6 +190,7 @@
                     </li>
                     {{end}}
                 </ul>
+                {{end}}
                 {{end}}
             </nav>
             <div class="social-icons">

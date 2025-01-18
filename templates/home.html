@@ -29,6 +29,7 @@
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
+            <!-- 
             <div class="dropdown">
                 <a class="dropdown-toggle dropbtn" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -49,11 +50,10 @@
                     <p>No notifications yet</p>
                     {{end}}
                     <form action="/notifications" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
-            </div>
+            </div> -->
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar dropbtn">
@@ -72,19 +72,17 @@
                                     [{{.TotalPosts}}]</span>
                             </div>
                         </button>
-                    </form>
+                    </form><!-- 
                     <form action="/myprofile" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
                     </form>
                     <form action="/settings" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
-                    </form>
+                    </form> -->
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -133,6 +131,7 @@
                         </form>
                     </li>
                 </ul>
+                {{if .HasSession}}
                 <h3 class="menu-heading">Activity centre</h3>
                 <ul>
                     <li>
@@ -145,16 +144,15 @@
                             </button>
                         </form>
                     </li>
-                    <li>
+<!--                     <li>
                         <form action="/home" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
                                 <i class="fa-solid fa-reply"></i> Your replies
                             </button>
                         </form>
-                    </li>
+                    </li> -->
                     <li>
                         <form action="/home" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
@@ -192,6 +190,7 @@
                     {{end}}
                 </ul>
                 {{end}}
+                {{end}}
             </nav>
             <div class="social-icons">
                 <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
@@ -216,8 +215,10 @@
                             <i class="fas fa-th-list"></i> All
                         </button>
                     </form>
+                    <!--
+                    {{if .HasSession}}
                     <form action="/home" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                        <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="following">
                         <button type="submit" class="{{if eq .SelectedFilter "following"}}selected{{end}}">
@@ -225,13 +226,15 @@
                         </button>
                     </form>
                     <form action="/home" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                        <input type="hidden" name="user" value="{{.UserID}}">
                         <input type="hidden" name="tab" value="posts">
                         <input type="hidden" name="filter" value="friends">
                         <button type="submit" class="{{if eq .SelectedFilter "friends"}}selected{{end}}">
                             <i class="fas fa-users"></i> Friends
                         </button>
                     </form>
+                    {{end}}
+                -->
                     <form action="/home" method="GET">
                         <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <input type="hidden" name="tab" value="posts">

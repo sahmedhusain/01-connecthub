@@ -2,7 +2,6 @@ package server
 
 import (
 	"database/sql"
-	"fmt"
 	UUID "forum/src/security"
 	"log"
 	"net/http"
@@ -100,7 +99,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 0 { //only insert a new row if no record is updated (i.e., no session is found)
 			_, err := db.Exec("INSERT INTO session (sessionid, userid, endtime) VALUES (?, ?, ?) RETURNING sessionid",
-				stringToken, userID, time.Now().Add(1 * time.Hour))
+				stringToken, userID, time.Now().Add(1*time.Hour))
 			if err != nil {
 				log.Println("Error creating new session:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -122,7 +121,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 
 		// If login is successful, redirect to the Home page with user ID
 		log.Println("Redirecting to Home page with user ID")
-		http.Redirect(w, r, fmt.Sprintf("/home?tab=posts&filter=all", userID), http.StatusSeeOther)
+		http.Redirect(w, r, "/home?tab=posts&filter=all", http.StatusSeeOther)
 	}
 
 	err = templates.ExecuteTemplate(w, "index.html", nil)
