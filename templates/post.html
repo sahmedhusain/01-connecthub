@@ -274,20 +274,20 @@
                             </div>
                             <div class="comment-content">
                                 <p>{{.Content}}</p>
-                                <time>{{.CreatedAt}}</time>
+                                <time><i class="fa fa-clock"></i> {{.CreatedAt.Format "02/01/2006 - 15:04"}}</time>
+                                <div class="post-actions">
+                                    <form action="/commentlike" method="POST" style="display:inline;">
+                                        <input type="hidden" name="comment_id" value="{{.ID}}">
+                                        <input type="hidden" name="user" value="{{.UserID}}">
+                                        <button type="submit"><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</button>
+                                    </form>
+                                    <form action="/commentdislike" method="POST" style="display:inline;">
+                                        <input type="hidden" name="comment_id" value="{{.ID}}">
+                                        <input type="hidden" name="user" value="{{.UserID}}">
+                                        <button type="submit"><i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i>
+                                            {{.Dislikes}}</button>
+                                    </form>
                             </div>
-                            <div class="post-actions">
-                                <form action="/commentlike" method="POST" style="display:inline;">
-                                    <input type="hidden" name="comment_id" value="{{.ID}}">
-                                    <input type="hidden" name="user" value="{{.UserID}}">
-                                    <button type="submit"><i class="fa-solid fa-arrow-up"></i> {{.Likes}}</button>
-                                </form>
-                                <form action="/commentdislike" method="POST" style="display:inline;">
-                                    <input type="hidden" name="comment_id" value="{{.ID}}">
-                                    <input type="hidden" name="user" value="{{.UserID}}">
-                                    <button type="submit"><i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i>
-                                        {{.Dislikes}}</button>
-                                </form>
                             </div>
                         </div>
                         {{else}}
@@ -307,31 +307,7 @@
             </section>
         </main>
         <script src="/static/js/dropdown.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const textarea = document.querySelector('.add-comment textarea');
-                const errorSpan = document.getElementById('char-limit-error');
-
-                textarea.addEventListener('input', function () {
-                    if (textarea.value.length > 200) {
-                        errorSpan.style.display = 'block';
-                    } else {
-                        errorSpan.style.display = 'none';
-                    }
-                });
-
-                textarea.closest('form').addEventListener('submit', function (event) {
-                    const trimmedContent = textarea.value.trim();
-                    if (trimmedContent === "") {
-                        errorSpan.textContent = "Comment content cannot be empty or only spaces!";
-                        errorSpan.style.display = 'block';
-                        event.preventDefault();
-                    } else {
-                        textarea.value = trimmedContent;
-                    }
-                });
-            });
-        </script>
+<script src="/static/js/postpage.js"></script>
 </body>
 
 </html>
