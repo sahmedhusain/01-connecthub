@@ -24,7 +24,6 @@ main {
     border-radius: var(--radius);
     margin-bottom: 30px;
     border: 1px solid var(--border-color);
-    transition: none;
 }
 
 .container {
@@ -48,7 +47,7 @@ main {
     box-shadow: 0 2px 5px var(--shadow-light);
 }
 
-.post-info h1 {
+.post-info h3 {
     margin: 0;
     font-size: 22px;
     font-weight: 700;
@@ -56,7 +55,7 @@ main {
     font-family: var(--font-family);
 }
 
-.post-info p {
+.post-info span {
     margin: 5px 0 0;
     font-size: 14px;
     color: var(--text-muted-color);
@@ -67,16 +66,16 @@ main {
     font-size: 16px;
     line-height: 1.6;
     color: var(--text-color);
-    
-    
+    text-align: left;
 }
 
+
+
 .post-content p {
-   
     margin-bottom: 15px;
     overflow-wrap: break-word;
-    word-break: break-word; 
-    
+    word-break: break-word;
+    text-align: left;
 }
 
 .post-content img {
@@ -151,7 +150,7 @@ main {
     color: var(--text-color);
     line-height: 1.4;
     overflow-wrap: break-word;
-    word-break: break-word; 
+    word-break: break-word;
 }
 
 .comment-content time {
@@ -233,4 +232,16 @@ main {
 .feed-item p {
     margin: 0;
     color: #666;
+}
+
+textarea {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    outline: none;
+    resize: none;
+    transition: border-color var(--transition);
 }

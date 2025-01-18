@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/dropdown.css">
     <link rel="stylesheet" href="/static/css/post.css">
+    <link rel="stylesheet" href="/static/css/home.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
 </head>
@@ -108,7 +109,7 @@
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="posts">
                             <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
+                            <button type="submit" class="{{if eq .SelectedTab " posts"}}selected{{end}}">
                                 <i class="fas fa-newspaper"></i> Posts
                             </button>
                         </form>
@@ -118,7 +119,7 @@
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="tags">
                             <input type="hidden" name="filter" value="all">
-                            <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
+                            <button type="submit" class="{{if eq .SelectedTab " tags"}}selected{{end}}">
                                 <i class="fas fa-tags"></i> Tags
                             </button>
                         </form>
@@ -131,12 +132,12 @@
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+posts">
                             <input type="hidden" name="filter" value="newest">
-                            <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}">
+                            <button type="submit" class="{{if eq .SelectedTab " your+posts"}}selected{{end}}">
                                 <i class="fa-solid fa-grip-lines"></i> Your posts
                             </button>
                         </form>
                     </li>
-<!--                     <li>
+                    <!--                     <li>
                         <form action="/home" method="GET">
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
@@ -150,7 +151,7 @@
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+reactions">
                             <input type="hidden" name="filter" value="likes">
-                            <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}">
+                            <button type="submit" class="{{if eq .SelectedTab " your+reactions"}}selected{{end}}">
                                 <i class="fa-regular fa-heart"></i> Your reactions
                             </button>
                         </form>
@@ -164,7 +165,7 @@
                         <form action="/admin" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="admin">
-                            <button type="submit" class="{{if eq .SelectedTab "admin"}}selected{{end}}">
+                            <button type="submit" class="{{if eq .SelectedTab " admin"}}selected{{end}}">
                                 <i class="fas fa-user-shield"></i> Admin Dashboard
                             </button>
                         </form>
@@ -174,7 +175,7 @@
                         <form action="/moderator" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="moderator">
-                            <button type="submit" class="{{if eq .SelectedTab "moderator"}}selected{{end}}">
+                            <button type="submit" class="{{if eq .SelectedTab " moderator"}}selected{{end}}">
                                 <i class="fas fa-user-cog"></i> Moderator Panel
                             </button>
                         </form>
@@ -197,7 +198,7 @@
         <main>
             <section class="feed">
                 <div class="container">
-<!--                     {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .Post.UserUserID))}}
+                    <!--                     {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .Post.UserUserID))}}
                     <div class="post-actions">
                         <div class="dropdown" style="position: absolute; right: 0;">
                             <button class="dropbtn" id="dropdownButton">...</button>
@@ -217,7 +218,8 @@
                     </div>
                     {{end}} -->
                     <div class="post-header">
-                        <img src="{{.Post.Avatar}}" alt="User Avatar">
+                        <img src="{{if .Post.Avatar.Valid}}{{.Post.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
+                            alt="Avatar">
                         <div class="post-info">
                             <h3>{{.Post.FirstName}} {{.Post.LastName}}</h3>
                             <span>@{{.Post.Username}}</span>
@@ -226,9 +228,21 @@
                     </div>
                     <div class="post-content">
                         <p>{{.Post.Content}}</p>
-<!--                         {{if .Post.Image.Valid}}
+                        <!--                         {{if .Post.Image.Valid}}
                         <img src="{{.Post.Image.String}}" alt="Post Image">
                         {{end}} -->
+                        <div class="post-categories">
+                            {{range .Categories}}
+                            <form action="/home" method="GET">
+                                <input type="hidden" name="user" value="{{$.UserID}}">
+                                <input type="hidden" name="tab" value="tags">
+                                <input type="hidden" name="filter" value="{{.Name}}">
+                                <button type="submit">
+                                    <span class="category-box">{{.Name}}</span>
+                                </button>
+                            </form>
+                            {{end}}
+                        </div>
                     </div>
                     <div class="post-actions">
                         <form action="/like" method="POST" style="display:inline;">
@@ -268,10 +282,14 @@
                         {{end}} -->
                         <div class="comment">
                             <div class="comment-content">
-                                <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="User Avatar">
+                                <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
+                                    alt="User Avatar">
                                 <div class="comment-info">
-                                    <h1 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--secondary-color); font-family: var(--font-family);">{{.FirstName}} {{.LastName}}</h1>
-                                    <span style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted-color);">@{{.Username}}</span>
+                                    <h1
+                                        style="margin: 0; font-size: 15px; font-weight: 700; color: var(--secondary-color); font-family: var(--font-family);">
+                                        {{.FirstName}} {{.LastName}}</h1>
+                                    <span
+                                        style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted-color);">@{{.Username}}</span>
                                 </div>
                                 <p>{{.Content}}</p>
                                 <time><i class="fa fa-clock"></i> {{.CreatedAt.Format "02/01/2006 - 15:04"}}</time>
@@ -284,10 +302,11 @@
                                     <form action="/commentdislike" method="POST" style="display:inline;">
                                         <input type="hidden" name="comment_id" value="{{.ID}}">
                                         <input type="hidden" name="user" value="{{.UserID}}">
-                                        <button type="submit"><i class="fa-solid fa-arrow-up" style="rotate: 180deg;"></i>
+                                        <button type="submit"><i class="fa-solid fa-arrow-up"
+                                                style="rotate: 180deg;"></i>
                                             {{.Dislikes}}</button>
                                     </form>
-                            </div>
+                                </div>
                             </div>
                         </div>
                         {{else}}
@@ -295,8 +314,10 @@
                         {{end}}
                         <div class="add-comment">
                             <form action="/addcomment" method="POST">
-                                <textarea name="content" rows="3" placeholder="Write your comment..." required maxlength="200"></textarea>
-                                <span id="char-limit-error" style="color: red; display: none;">Comment cannot exceed 200 characters.</span>
+                                <textarea name="content" rows="3" placeholder="Write your comment..." required
+                                    maxlength="200"></textarea>
+                                <span id="char-limit-error" style="color: red; display: none;">Comment cannot exceed 200
+                                    characters.</span>
                                 <input type="hidden" name="post_id" value="{{.Post.PostID}}">
                                 <input type="hidden" name="user_id" value="{{.UserID}}">
                                 <button type="submit">Add Comment</button>
@@ -307,7 +328,7 @@
             </section>
         </main>
         <script src="/static/js/dropdown.js"></script>
-<script src="/static/js/postpage.js"></script>
+        <script src="/static/js/postpage.js"></script>
 </body>
 
 </html>

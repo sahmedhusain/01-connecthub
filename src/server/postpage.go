@@ -91,6 +91,14 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Fetch categories for the post
+	categories, err := database.GetCategoriesForPost(db, post.PostID)
+	if err != nil {
+		log.Println("Error fetching categories for post:", err)
+		return 
+	}
+	
+
 	log.Println("User ID:", userID) // Log the UserID to ensure it is being retrieved
 
 	data := PageData{
@@ -98,6 +106,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		Comments: comments,
 		UserID:   userID, // Ensure UserID is set
 		UserName: userName,
+		Categories: categories,
 	}
 
 	err = templates.ExecuteTemplate(w, "post.html", data)

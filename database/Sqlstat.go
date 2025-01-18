@@ -330,7 +330,7 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 		}
 
 		// Fetch categories for the post
-		categories, err := getCategoriesForPost(db, post.PostID)
+		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)
 			return nil, err
@@ -347,7 +347,7 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 	return posts, nil
 }
 
-func getCategoriesForPost(db *sql.DB, postID int) ([]Category, error) {
+func GetCategoriesForPost(db *sql.DB, postID int) ([]Category, error) {
 	rows, err := db.Query(`
         SELECT c.idcategories, c.name, c.description
         FROM categories c
@@ -482,7 +482,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 		}
 
 		// Fetch categories for the post
-		categories, err := getCategoriesForPost(db, post.PostID)
+		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)
 			return nil, err
@@ -535,7 +535,7 @@ func GetPostsByMultiCategory(db *sql.DB, categoryName string) ([]Post, error) {
 		}
 
 		// Fetch categories for the post
-		categories, err := getCategoriesForPost(db, post.PostID)
+		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)
 			return nil, err
@@ -588,7 +588,7 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 		}
 
 		// Fetch categories for the post
-		categories, err := getCategoriesForPost(db, post.PostID)
+		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)
 			return nil, err
