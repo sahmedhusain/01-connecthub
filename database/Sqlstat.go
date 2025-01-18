@@ -658,12 +658,17 @@ func InsertPostCategory(db *sql.DB, postID int, categoryID int) error {
 func GetUserPosts(db *sql.DB, userID int, filter string) ([]Post, error) {
 	var x string
 	if filter == "oldest" {
-		x = "post_at DESC"
+		x = "post.post_at ASC"
 	} else {
-		x = "post_at ASC"
+		x = "post.post_at DESC"
 	}
 
-	rows, err := db.Query("SELECT postid, image, content, post_at FROM post WHERE user_userid = ? ORDER BY ?", userID, x)
+	rows, err := db.Query(`SELECT 
+		post.postid, post.content, post.post_at, post.user_userid, 
+		user.avatar, user.F_name, user.L_name, user.Username 
+	FROM post 
+	JOIN user ON post.user_userid = user.userid 
+	WHERE post.user_userid = ? ORDER BY `+x, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -672,7 +677,7 @@ func GetUserPosts(db *sql.DB, userID int, filter string) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Content, &post.PostAt, &post.UserUserID, &post.Avatar, &post.FirstName, &post.LastName, &post.Username); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
