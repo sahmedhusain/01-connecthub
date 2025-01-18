@@ -221,14 +221,14 @@
                         <div class="post-info">
                             <h3>{{.Post.FirstName}} {{.Post.LastName}}</h3>
                             <span>@{{.Post.Username}}</span>
-                            <p>{{.Post.PostAt}}</p>
+                            <time><i class="fa fa-clock"></i> {{.Post.PostAt.Format "02/01/2006 - 15:04"}}</time>
                         </div>
                     </div>
                     <div class="post-content">
                         <p>{{.Post.Content}}</p>
-                        {{if .Post.Image.Valid}}
+<!--                         {{if .Post.Image.Valid}}
                         <img src="{{.Post.Image.String}}" alt="Post Image">
-                        {{end}}
+                        {{end}} -->
                     </div>
                     <div class="post-actions">
                         <form action="/like" method="POST" style="display:inline;">
@@ -267,12 +267,12 @@
                         </div>
                         {{end}}
                         <div class="comment">
-                            <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="User Avatar">
-                            <div class="comment-info">
-                                <h1 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--secondary-color); font-family: var(--font-family);">{{.FirstName}} {{.LastName}}</h1>
-                                <span style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted-color);">@{{.Username}}</span>
-                            </div>
                             <div class="comment-content">
+                                <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="User Avatar">
+                                <div class="comment-info">
+                                    <h1 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--secondary-color); font-family: var(--font-family);">{{.FirstName}} {{.LastName}}</h1>
+                                    <span style="margin: 5px 0 0; font-size: 12px; color: var(--text-muted-color);">@{{.Username}}</span>
+                                </div>
                                 <p>{{.Content}}</p>
                                 <time><i class="fa fa-clock"></i> {{.CreatedAt.Format "02/01/2006 - 15:04"}}</time>
                                 <div class="post-actions">
