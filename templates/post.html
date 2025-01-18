@@ -197,7 +197,7 @@
         <main>
             <section class="feed">
                 <div class="container">
-                    {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .Post.UserUserID))}}
+<!--                     {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .Post.UserUserID))}}
                     <div class="post-actions">
                         <div class="dropdown" style="position: absolute; right: 0;">
                             <button class="dropbtn" id="dropdownButton">...</button>
@@ -215,7 +215,7 @@
                             </div>
                         </div>
                     </div>
-                    {{end}}
+                    {{end}} -->
                     <div class="post-header">
                         <img src="{{.Post.Avatar}}" alt="User Avatar">
                         <div class="post-info">
@@ -246,7 +246,7 @@
                     </div>
                     <div class="comments-section">
                         <h2>Comments</h2>
-                        {{range .Comments}}
+                        {{range .Comments}}<!-- 
                         {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserID))}}
                         <div class="post-actions">
                             <div class="dropdown" style="position: absolute; right: 0;">
@@ -265,7 +265,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{end}}
+                        {{end}} -->
                         <div class="comment">
                             <div class="comment-content">
                                 <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}" alt="User Avatar">
