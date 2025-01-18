@@ -202,7 +202,7 @@
                 <div class="container">
                     <h1>Create a New Post</h1>
                     <form action="/newpost" method="POST" enctype="multipart/form-data">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                        <input type="hidden" name="user" value="{{.UserID}}">
                         <textarea id="content" name="content" rows="5" required></textarea>
                         <div id="char-counter">0/500</div>
                         <div id="error-message" style="color: red; display: none;">Character limit exceeded!</div>

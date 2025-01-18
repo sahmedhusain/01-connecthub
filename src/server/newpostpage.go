@@ -147,6 +147,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		// Get the post content
 		userID := r.FormValue("user")
 		content := strings.TrimSpace(r.FormValue("content"))
+		fmt.Println(userID, content)
 		if (userID == "" || content == "") {
 			log.Println("Invalid form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
