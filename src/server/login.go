@@ -122,7 +122,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 
 		// If login is successful, redirect to the Home page with user ID
 		log.Println("Redirecting to Home page with user ID")
-		http.Redirect(w, r, fmt.Sprintf("/home?user=%d&tab=posts&filter=all", userID), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/home?tab=posts&filter=all", userID), http.StatusSeeOther)
 	}
 
 	err = templates.ExecuteTemplate(w, "index.html", nil)

@@ -28,7 +28,7 @@ type ErrorPageData struct {
 
 type PageData struct {
 	HasSession      bool
-	UserID          string
+	UserID          int
 	UserName        string
 	Avatar          string
 	RoleName        string
@@ -76,7 +76,13 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.FormValue("user")
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
@@ -114,7 +120,13 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.FormValue("user")
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
@@ -126,6 +138,94 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	err = database.ToggleDislike(db, postID, userID)
+	if err != nil {
+		log.Println("Error toggling dislike:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+	log.Println("Dislike toggled")
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func LikeComment(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		log.Println("Method not allowed")
+		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	commentID, err := strconv.Atoi(r.FormValue("comment_id"))
+	if err != nil {
+		log.Println("Invalid comment ID")
+		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		log.Println("Error opening database:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+	defer db.Close()
+
+	err = database.ToggleCommentLike(db, commentID, userID)
+	if err != nil {
+		log.Println("Error toggling like:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+	log.Println("Like toggled")
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+}
+
+func DislikeComment(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		log.Println("Method not allowed")
+		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	commentID, err := strconv.Atoi(r.FormValue("comment_id"))
+	if err != nil {
+		log.Println("Invalid comment ID")
+		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		log.Println("Error opening database:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+	defer db.Close()
+
+	err = database.ToggleCommentDislike(db, commentID, userID)
 	if err != nil {
 		log.Println("Error toggling dislike:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -169,7 +269,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/home?user="+r.URL.Query().Get("user"), http.StatusSeeOther)
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
 
 func ReportPost(w http.ResponseWriter, r *http.Request) {
@@ -205,5 +305,5 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/home?user="+r.URL.Query().Get("user"), http.StatusSeeOther)
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }

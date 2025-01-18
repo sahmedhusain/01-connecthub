@@ -11,6 +11,7 @@ import (
 func init() {
 	// db.DataBase()
 	// db.DropDataBase()
+	// db.CommentReactions()
 }
 
 func main() {
@@ -31,6 +32,8 @@ func main() {
 	http.HandleFunc("/post", server.AuthMiddleware(server.PostPage))
 	http.HandleFunc("/like", server.AuthMiddleware(server.LikePost))
 	http.HandleFunc("/dislike", server.AuthMiddleware(server.DislikePost))
+	http.HandleFunc("/commentlike", server.AuthMiddleware(server.LikeComment))
+	http.HandleFunc("/commentdislike", server.AuthMiddleware(server.DislikeComment))
 	http.HandleFunc("/deletepost", server.AuthMiddleware(server.DeletePost))
 	http.HandleFunc("/reportpost", server.AuthMiddleware(server.ReportPost))
 	http.HandleFunc("/changepassword", server.AuthMiddleware(server.ChangePassword))

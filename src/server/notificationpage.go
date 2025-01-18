@@ -5,6 +5,7 @@ import (
 	"forum/database"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func NotificationsPage(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +25,13 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	userID := r.URL.Query().Get("userID")
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 
 	notifications, err := database.GetLastNotifications(db, userID)
 	if err != nil {
@@ -35,7 +42,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		UserID        string
+		UserID        int
 		Avatar        string
 		Notifications []database.Notification
 	}{

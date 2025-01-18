@@ -35,7 +35,7 @@ func ReverseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 			seshCok, _ := r.Cookie("session_token")
 			if seshCok.Value == sessionID {
-				fmt.Println("Valid cookie, redirected to home")
+				fmt.Println("Valid cookie")
 				http.Redirect(w, r, "/home", http.StatusFound)
 				return
 			}
