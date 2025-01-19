@@ -5,6 +5,7 @@ import (
 	"forum/database"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func NotificationsPage(w http.ResponseWriter, r *http.Request) {
@@ -24,11 +25,11 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 
@@ -41,12 +42,12 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		UserID        string
+		UserID        int
 		Avatar        string
 		Notifications []database.Notification
 	}{
-		UserID:        userID,
-		Avatar:        session.Values["avatar"].(string),
+		UserID: userID,
+		// Avatar:        session.Values["avatar"].(string),
 		Notifications: notifications,
 	}
 

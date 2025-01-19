@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	db "forum/database"
+	// db "forum/database"
 	"forum/src/server"
 	"log"
 	"net/http"
@@ -12,14 +12,17 @@ import (
 )
 
 func init() {
-	db.DataBase()
+	// db.DataBase()
+	// db.DropDataBase()
+	// db.CommentReactions()
 }
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
-	http.HandleFunc("/", server.MainPage)
-	http.HandleFunc("/login", server.LoginPage)
+	// http.HandleFunc("/", server.MainPage)
+	http.HandleFunc("/", server.ReverseMiddleware(server.LoginPage))
+	http.HandleFunc("/logout", server.AuthMiddleware(server.Logout))
 	http.HandleFunc("/signup", server.SignupPage)
 	http.HandleFunc("/home", server.HomePage)
 	http.HandleFunc("/newpost", server.AuthMiddleware(server.NewPostPage))
@@ -27,23 +30,20 @@ func main() {
 	http.HandleFunc("/notifications", server.AuthMiddleware(server.NotificationsPage))
 	http.HandleFunc("/myprofile", server.AuthMiddleware(server.MyProfilePage))
 	http.HandleFunc("/profile", server.AuthMiddleware(server.ProfilePage))
-	http.HandleFunc("/admin", server.AuthMiddleware(server.AdminPage))
-	http.HandleFunc("/moderator", server.AuthMiddleware(server.ModeratorPage))
+	http.HandleFunc("/admin", server.AdminPage)
+	http.HandleFunc("/moderator", server.ModeratorPage)
 	http.HandleFunc("/post", server.AuthMiddleware(server.PostPage))
 	http.HandleFunc("/like", server.AuthMiddleware(server.LikePost))
 	http.HandleFunc("/dislike", server.AuthMiddleware(server.DislikePost))
+	http.HandleFunc("/commentlike", server.AuthMiddleware(server.LikeComment))
+	http.HandleFunc("/commentdislike", server.AuthMiddleware(server.DislikeComment))
 	http.HandleFunc("/deletepost", server.AuthMiddleware(server.DeletePost))
 	http.HandleFunc("/reportpost", server.AuthMiddleware(server.ReportPost))
 	http.HandleFunc("/changepassword", server.AuthMiddleware(server.ChangePassword))
-	http.HandleFunc("/togglepassword", server.AuthMiddleware(server.TogglePassword))
+	// http.HandleFunc("/togglepassword", server.AuthMiddleware(server.TogglePassword))
 	http.HandleFunc("/addcomment", server.AuthMiddleware(server.AddComment))
-	http.HandleFunc("/logout", server.Logout)
-	http.HandleFunc("/auth/google", authentication.HandleAuth0Login)
-	http.HandleFunc("/auth/google/callback", authentication.HandleAuth0Callback)
-	http.HandleFunc("/auth/github", authentication.HandleAuth0Login)
-	http.HandleFunc("/auth/github/callback", authentication.HandleAuth0Callback)
 
 	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 
-	log.Fatal(http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux)))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

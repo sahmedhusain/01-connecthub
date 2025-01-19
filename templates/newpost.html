@@ -17,17 +17,18 @@
 
 <body>
     <header>
-        <a href="/home?user={{.UserID}}&tab=posts&filter=all" class="logo-container">
+        <a href="/home?tab=posts&filter=all" class="logo-container">
             <img src="/static/assets/logo.png" alt="ConnectHub Logo">
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
             <form action="/newpost" method="GET">
-                <input type="hidden" name="user" value="{{.UserID}}">
+                <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
+            <!-- 
             <div class="dropdown">
                 <a class="dropdown-toggle dropbtn" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -48,17 +49,16 @@
                     <p>No notifications yet</p>
                     {{end}}
                     <form action="/notifications" method="GET">
-                        <input type="hidden" name="user" value="{{.UserID}}">
                         <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
-            </div>
+            </div> -->
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar dropbtn">
                 <div class="dropdown-content">
-                    <form action="/myprofile" method="GET">
-                        <input type="hidden" name="user" value="{{.UserID}}">
+                    <form action="/home" method="GET">
+                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
                             <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
@@ -71,19 +71,17 @@
                                     [{{.TotalPosts}}]</span>
                             </div>
                         </button>
-                    </form>
+                    </form><!-- 
                     <form action="/myprofile" method="GET">
-                        <input type="hidden" name="user" value="{{.UserID}}">
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
                         </button>
                     </form>
                     <form action="/settings" method="GET">
-                        <input type="hidden" name="user" value="{{.UserID}}">
                         <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
-                    </form>
+                    </form> -->
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -107,7 +105,7 @@
                 <ul>
                     <li>
                         <form action="/home" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="posts">
                             <input type="hidden" name="filter" value="all">
                             <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
@@ -117,7 +115,7 @@
                     </li>
                     <li>
                         <form action="/home" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="tags">
                             <input type="hidden" name="filter" value="all">
                             <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
@@ -130,7 +128,7 @@
                 <ul>
                     <li>
                         <form action="/home" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+posts">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}">
@@ -138,19 +136,18 @@
                             </button>
                         </form>
                     </li>
-                    <li>
+<!--                     <li>
                         <form action="/home" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
                                 <i class="fa-solid fa-reply"></i> Your replies
                             </button>
                         </form>
-                    </li>
+                    </li> -->
                     <li>
                         <form action="/home" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+reactions">
                             <input type="hidden" name="filter" value="likes">
                             <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}">
@@ -165,7 +162,7 @@
                     {{if eq .RoleID 1}}
                     <li>
                         <form action="/admin" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="admin">
                             <button type="submit" class="{{if eq .SelectedTab "admin"}}selected{{end}}">
                                 <i class="fas fa-user-shield"></i> Admin Dashboard
@@ -175,7 +172,7 @@
                     {{else if eq .RoleID 2}}
                     <li>
                         <form action="/moderator" method="GET">
-                            <input type="hidden" name="user" value="{{.UserID}}">
+                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="moderator">
                             <button type="submit" class="{{if eq .SelectedTab "moderator"}}selected{{end}}">
                                 <i class="fas fa-user-cog"></i> Moderator Panel
@@ -204,12 +201,14 @@
                     <form action="/newpost" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="user" value="{{.UserID}}">
                         <textarea id="content" name="content" rows="5" required></textarea>
-                        <div class="image-upload-container">
+                        <div id="char-counter">0/500</div>
+                        <div id="error-message" style="color: red; display: none;">Character limit exceeded!</div>
+                       <!--  <div class="image-upload-container">
                             <label for="image" class="upload-button">
                                 <i class="fa-regular fa-image"></i> Upload Image
                             </label>
                             <input type="file" id="image" name="image" accept="image/*">
-                        </div>
+                        </div> -->
                         <label>Post categories</label>
                         <div class="category-filters">
                             {{range .Categories}}
@@ -219,12 +218,13 @@
                             </label>
                             {{end}}
                         </div>
-                        <button type="submit">Post</button>
+                        <button type="submit" id="submit-button">Post</button>
                     </form>
                 </div>
             </section>
         </main>
         <script src="/static/js/dropdown.js"></script>
+        <script src="/static/js/postlimit.js"></script>
 </body>
 
 </html>

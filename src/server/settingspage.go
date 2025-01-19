@@ -27,20 +27,31 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// Fetch session cookie
+	seshCok, err := r.Cookie("session_token")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		fmt.Println("Error fetching session cookie")
 		return
 	}
 
+	// Set session token from cookie value
+	seshVal := seshCok.Value
+
+	var userID int
+	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID)
+	if err != nil {
+		log.Println("Error fetching userid and username from user table:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
 	log.Println("UserID retrieved from session:", userID)
 
 	switch r.Method {
 	case "GET":
 		var user database.User
-		err := db.QueryRow("SELECT id, first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
+		err := db.QueryRow("SELECT first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
 		if err != nil {
 			log.Println("Failed to fetch user data")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -48,10 +59,11 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		passwordShown, _ := session.Values["passwordShown"].(bool)
+		//password should never be stored in session!!!
+		// passwordShown, _ := session.Values["passwordShown"].(bool)
 
 		data := struct {
-			UserID        string
+			UserID        int
 			FirstName     string
 			LastName      string
 			Username      string
@@ -60,14 +72,14 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			Password      string
 			PasswordShown bool
 		}{
-			UserID:        userID,
-			FirstName:     user.FirstName,
-			LastName:      user.LastName,
-			Username:      user.Username,
-			Email:         user.Email,
-			Avatar:        user.Avatar.String,
-			Password:      "",
-			PasswordShown: passwordShown,
+			UserID:    userID,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Username:  user.Username,
+			Email:     user.Email,
+			Avatar:    user.Avatar.String,
+			Password:  "", // Password should be fetched separately if needed
+			// PasswordShown: passwordShown,
 		}
 
 		err = templates.ExecuteTemplate(w, "settings.html", data)
@@ -139,18 +151,20 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func TogglePassword(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+// func TogglePassword(w http.ResponseWriter, r *http.Request) {
+//     // Retrieve UserID from session
+//     session, _ := store.Get(r, "session-name")
+//     userID, ok := session.Values["userID"].(string)
+//     if !ok || userID == "" {
+//         log.Println("UserID not found in session, redirecting to login page")
+//         http.Redirect(w, r, "/", http.StatusSeeOther)
+//         return
+//     }
 
-	passwordShown, _ := session.Values["passwordShown"].(bool)
-	session.Values["passwordShown"] = !passwordShown
-	session.Save(r, w)
+//     // Toggle the password visibility
+//     passwordShown, _ := session.Values["passwordShown"].(bool)
+//     session.Values["passwordShown"] = !passwordShown
+//     session.Save(r, w)
 
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
-}
+//     http.Redirect(w, r, "/settings", http.StatusSeeOther)
+// }

@@ -140,6 +140,25 @@ DROP TABLE IF EXISTS `user` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `user` (
+<<<<<<< HEAD
+  `userid` INT NOT NULL,
+  `F-name`  NOT NULL,
+  `L-name` VARCHAR(45) NOT NULL,
+  `Username` VARCHAR(45) NOT NULL,
+  `Email` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `current_session` INT NOT NULL,
+  `role_id` INT NOT NULL,
+  PRIMARY KEY (`userid`, `current_session`),
+  FOREIGN KEY (`role_id`) REFERENCES `user_roles`(`roleid`))
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+CREATE UNIQUE INDEX `Username_UNIQUE` ON `user` (`Username` ASC) VISIBLE;
+
+SHOW WARNINGS;
+CREATE UNIQUE INDEX `userid_UNIQUE` ON `user` (`userid` ASC) VISIBLE;
+=======
   `userid` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `F_name` TEXT NOT NULL,
   `L_name` TEXT NOT NULL,
@@ -152,6 +171,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   FOREIGN KEY (`session_sessionid`) REFERENCES `session`(`sessionid`),
   FOREIGN KEY (`role_id`) REFERENCES `user_roles`(`roleid`)
 );
+>>>>>>> main
 
 SHOW WARNINGS;
 

@@ -2,11 +2,15 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
+
+const maxPostLength = 500
 
 func NewPostPage(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -28,15 +32,27 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		notifications, err := database.GetLastNotifications(db, r.FormValue("user"))
+		// Fetch session cookie
+		seshCok, err := r.Cookie("session_token")
 		if err != nil {
-			log.Println("Failed to fetch notifications")
+			http.Redirect(w, r, "/", http.StatusBadRequest)
+			fmt.Println("Error fetching session cookie")
+			return
+		}
+
+		// Set session token from cookie value
+		seshVal := seshCok.Value
+
+		var userID int
+		var userName string
+		err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+		if err != nil {
+			log.Println("Error fetching userid and username from user table:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &err)
 			return
 		}
 
-		userID := r.FormValue("user")
 		user, err := database.GetUserByID(db, userID)
 		if err != nil {
 			log.Println("Failed to fetch user data")
@@ -44,7 +60,16 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			errHandler(w, r, &err)
 			return
 		}
-		userAvatar := user.Avatar.String
+
+		notifications, err := database.GetLastNotifications(db, userID)
+		if err != nil {
+			log.Println("Failed to fetch notifications")
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &err)
+			return
+		}
+
+		userAvatar := user.Avatar.String // Assuming Avatar is of type sql.NullString
 
 		log.Printf("Fetched user data: %+v\n", user)
 
@@ -79,7 +104,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := struct {
-			UserID        string
+			UserID        int
 			Categories    []database.Category
 			Notifications []database.Notification
 			Avatar        string
@@ -89,15 +114,18 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			TotalPosts    int
 			SelectedTab   string
 			RoleID        int
+			RoleID        int
 		}{
 			UserID:        userID,
 			Categories:    categories,
 			Notifications: notifications,
 			Avatar:        userAvatar,
 			RoleName:      roleName,
-			UserName:      user.Username,
+			UserName:      userName,
 			TotalLikes:    totalLikes,
 			TotalPosts:    totalPosts,
+			SelectedTab:   "posts",
+			RoleID:        user.RoleID,
 			SelectedTab:   "posts",
 			RoleID:        user.RoleID,
 		}
@@ -121,11 +149,22 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		userID := r.FormValue("user")
-		content := r.FormValue("content")
+		content := strings.TrimSpace(r.FormValue("content"))
+		fmt.Println(userID, content)
 		if userID == "" || content == "" {
 			log.Println("Invalid form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
 			errHandler(w, r, &err)
+			return
+		}
+
+		if len(content) > maxPostLength {
+			http.Error(w, "Post content exceeds the character limit", http.StatusBadRequest)
+			return
+		}
+
+		if len(content) > maxPostLength {
+			http.Error(w, "Post content exceeds the character limit", http.StatusBadRequest)
 			return
 		}
 
@@ -170,6 +209,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		http.Redirect(w, r, "/home?user="+userID+"&tab=posts&filter=all", http.StatusSeeOther)
+		// Redirect to the home page after successful post
+		http.Redirect(w, r, "/home?tab=posts&filter=all", http.StatusSeeOther)
 	}
 }

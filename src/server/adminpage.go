@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
@@ -25,37 +26,46 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// Fetch session cookie
+	seshCok, err := r.Cookie("session_token")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		fmt.Println("Error fetching session from cookie")
 		return
 	}
 
-	userName, ok := session.Values["username"].(string)
-	if !ok || userName == "" {
-		log.Println("UserName not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// Set session token from cookie value
+	seshVal := seshCok.Value
+
+	var userName string
+	var userID int
+	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+	if err != nil {
+		log.Println("Error fetching session ID from user table:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 
+	//check if user is an admin
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err == sql.ErrNoRows {
-		log.Println("No user found with the given ID:", userID)
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		log.Println("No user found with the given user ID:", userID)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	} else if err != nil || roleID != 1 {
 		log.Println("User is not an admin or error occurred")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
-	avatar, ok := session.Values["avatar"].(string)
-	if !ok {
-		avatar = "/static/assets/default-avatar.png"
-	}
+	// Retrieve avatar from session
+	// avatar, ok := session.Values["avatar"].(string)
+	// if !ok {
+	// 	// Set a default avatar if not found in session
+	// 	avatar = "/static/assets/default-avatar.png"
+	// }
 
 	var roleName string
 	if roleID == 1 {
@@ -168,9 +178,9 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := PageData{
-			UserID:          userID,
-			UserName:        userName,
-			Avatar:          avatar,
+			UserID:   userID,
+			UserName: userName,
+			// Avatar:          avatar,
 			RoleName:        roleName,
 			Users:           users,
 			Posts:           posts,
@@ -183,7 +193,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			UserSessions:    userSessions,
 			Notifications:   notifications,
 			TotalLikes:      totalLikes,
-			SelectedTab:     "admin",
+			SelectedTab:     "admin", // Set the default selected tab
 		}
 
 		err = templates.ExecuteTemplate(w, "admin.html", data)

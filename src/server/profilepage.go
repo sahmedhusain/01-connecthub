@@ -5,6 +5,7 @@ import (
 	"forum/database"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func ProfilePage(w http.ResponseWriter, r *http.Request) {
@@ -24,24 +25,31 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+	// usrCok, err := r.Cookie("dotcom_user")
+	// if err != nil {
+	// 	http.Redirect(w, r, "/", http.StatusFound)
+	// 	fmt.Println("Error fetching username from cookie")
+	// 	return
+	// }
 
-	profileUserID := r.URL.Query().Get("user")
-	if profileUserID == "" {
-		log.Println("ProfileUserID not found in query parameters")
-		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+	// var userID string
+	// err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", usrCok.Value).Scan(&userID)
+	// if err != nil {
+	// 	log.Println("Error fetching session ID:", err)
+	// 	http.Redirect(w, r, "/", http.StatusFound)
+	// 	return
+	// }
+
+	// Retrieve userID from url parameters
+	userID, err := strconv.Atoi(r.FormValue("user"))
+	if err != nil {
+		log.Println("Error converting userID to int:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		errHandler(w, r, &err)
 		return
 	}
-
 	var user database.User
-	err = db.QueryRow("SELECT userid, F_name, L_name, Username, Avatar FROM user WHERE userid = ?", profileUserID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar)
+	err = db.QueryRow("SELECT userid, F_name, L_name, Username, Avatar FROM user WHERE userid = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Avatar)
 	if err != nil {
 		log.Println("Failed to fetch user data")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -49,7 +57,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := database.GetUserPosts(db, profileUserID)
+	posts, err := database.GetUserPosts(db, userID, "newest")
 	if err != nil {
 		log.Println("Failed to fetch user posts")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -57,7 +65,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	followersCount, err := database.GetFollowersCount(db, profileUserID)
+	followersCount, err := database.GetFollowersCount(db, userID)
 	if err != nil {
 		log.Println("Failed to fetch followers count")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -65,7 +73,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	followingCount, err := database.GetFollowingCount(db, profileUserID)
+	followingCount, err := database.GetFollowingCount(db, userID)
 	if err != nil {
 		log.Println("Failed to fetch following count")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -73,7 +81,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	friendsCount, err := database.GetFriendsCount(db, profileUserID)
+	friendsCount, err := database.GetFriendsCount(db, userID)
 	if err != nil {
 		log.Println("Failed to fetch friends count")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -81,7 +89,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isFollowing, err := database.IsFollowing(db, userID, profileUserID)
+	isFollowing, err := database.IsFollowing(db, userID, userID)
 	if err != nil {
 		log.Println("Failed to check if user is following")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -93,13 +101,13 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	var followers, following []database.User
 
 	if view == "followers" {
-		followers, err = database.GetFollowers(db, profileUserID)
+		followers, err = database.GetFollowers(db, userID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	} else if view == "following" {
-		following, err = database.GetFollowing(db, profileUserID)
+		following, err = database.GetFollowing(db, userID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -107,9 +115,9 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		UserID                string
-		Avatar                string
-		ProfileUserID         string
+		UserID int
+		// Avatar                string
+		// userID                int
 		ProfileFirstName      string
 		ProfileLastName       string
 		ProfileUsername       string
@@ -124,9 +132,9 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		Followers             []database.User
 		Following             []database.User
 	}{
-		UserID:                userID,
-		Avatar:                session.Values["avatar"].(string),
-		ProfileUserID:         profileUserID,
+		UserID: userID,
+		// Avatar:                session.Values["avatar"].(string),
+		// userID:                userID,
 		ProfileFirstName:      user.FirstName,
 		ProfileLastName:       user.LastName,
 		ProfileUsername:       user.Username,

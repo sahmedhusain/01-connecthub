@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/database"
 	"log"
 	"net/http"
@@ -24,19 +25,32 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	session, _ := store.Get(r, "session-name")
-	userID, ok := session.Values["userID"].(string)
-	if !ok || userID == "" {
-		log.Println("UserID not found in session, redirecting to login page")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// Fetch session cookie
+	seshCok, err := r.Cookie("session_token")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		fmt.Println("Error fetching session cookie")
 		return
 	}
 
-	var roleID int
-	err = db.QueryRow("SELECT role_id FROM user WHERE id = ?", userID).Scan(&roleID)
-	if err != nil || roleID != 2 {
-		log.Println("User is not a moderator, redirecting to Home page")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	// Set session token from cookie value
+	seshVal := seshCok.Value
+
+	var userID int
+	err = db.QueryRow("SELECT userid FROM user WHERE current_session = ?", seshVal).Scan(&userID)
+	if err != nil {
+		log.Println("Error userid session ID from user table:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	//must check if user is a moderator!
+	var roleID string
+	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
+	if err != nil {
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 
@@ -51,13 +65,13 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := struct {
-			UserID string
-			Avatar string
-			Posts  []database.Post
+			UserID int
+			// Avatar string
+			Posts []database.Post
 		}{
 			UserID: userID,
-			Avatar: session.Values["avatar"].(string),
-			Posts:  posts,
+			// Avatar: session.Values["avatar"].(string),
+			Posts: posts,
 		}
 
 		err = templates.ExecuteTemplate(w, "home.html", data)

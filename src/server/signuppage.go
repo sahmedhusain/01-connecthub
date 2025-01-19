@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"regexp"
 )
 
 func SignupPage(w http.ResponseWriter, r *http.Request) {
@@ -21,6 +22,19 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 		confirmPassword := r.FormValue("confirm-password")
+
+		emailRegex := regexp.MustCompile(`^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$`)
+		if !emailRegex.MatchString(email) {
+			err := templates.ExecuteTemplate(w, "signup.html", map[string]string{
+				"ErrorMessage": "Invalid email format",
+			})
+			if err != nil {
+				log.Println("Error rendering signup page:", err)
+				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				errHandler(w, r, &errData)
+			}
+			return
+		}
 
 		if password != confirmPassword {
 			err := templates.ExecuteTemplate(w, "signup.html", map[string]string{
@@ -84,7 +98,9 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		password, _ = HashPassword(password)
-		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, session_sessionid, role_id, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+		defaultAvatar := "static/assets/default-avatar.png"
+		// Insert user data into the database
+		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
 		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -93,7 +109,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(F_name, L_name, username, email, password, "", 0, "")
+		_, err = stmt.Exec(F_name, L_name, username, email, password, "", 0, defaultAvatar)
 		if err != nil {
 			log.Println("Failed to insert user data:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -101,7 +117,8 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		// Redirect to login page or show success message
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 

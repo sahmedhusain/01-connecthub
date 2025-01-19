@@ -2,40 +2,40 @@ package server
 
 import (
 	"database/sql"
-	"fmt"
+	UUID "forum/src/security"
 	"log"
 	"net/http"
 	"time"
 )
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/login" {
+	if r.URL.Path != "/" {
 		log.Println("Redirecting to Home page")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return
 	}
 
+	db, err := sql.Open("sqlite3", "./database/main.db")
+	if err != nil {
+		log.Println("Database connection failed")
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+	defer db.Close()
+
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+
 	if r.Method == "POST" {
-		email := r.FormValue("email")
-		password := r.FormValue("password")
-
-		db, err := sql.Open("sqlite3", "./database/main.db")
-		if err != nil {
-			log.Println("Database connection failed")
-			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
-			return
-		}
-		defer db.Close()
-
 		var userID int
 		var dbPassword, userName string
 		err = db.QueryRow("SELECT userid, password, username FROM user WHERE email = ?", email).Scan(&userID, &dbPassword, &userName)
 		if err != nil {
 			if err == sql.ErrNoRows {
-				// No user found with the given email
-				err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
+				// No credentials found with the given email
+				err = templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
 					"ErrorMsg": "Invalid email or password",
 				})
 				if err != nil {
@@ -52,7 +52,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if !VerifyPassword(password, dbPassword) {
-			err = templates.ExecuteTemplate(w, "login.html", map[string]interface{}{
+			err := templates.ExecuteTemplate(w, "index.html", map[string]interface{}{
 				"ErrorMsg": "Invalid email or password",
 			})
 			if err != nil {
@@ -63,43 +63,46 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		result, err := db.Exec("DELETE FROM session WHERE userid = ?", userID)
+		// Generate a new session token
+		sessionToken, err := UUID.GenerateToken()
 		if err != nil {
-			log.Println("Error rendering login page:", err)
+			log.Println("Error generating UUID:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &errData)
-		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 1 {
-			session, _ := store.Get(r, "session")
-			delete(session.Values, "userID")
-			delete(session.Values, "sessionID")
-			err = session.Save(r, w)
+		}
+
+		stringToken := sessionToken.String()
+
+		//Set session cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:     "session_token",
+			Value:    stringToken,
+			Expires:  time.Now().Add(1 * time.Hour), //1 hour lifetime
+			HttpOnly: true,
+		})
+
+		// Update the user's session ID in the session table
+		result, err := db.Exec("UPDATE session SET sessionid = ? WHERE userid = ?", stringToken, userID)
+		if err != nil {
+			log.Println("Error updating session ID in session table:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &errData)
+			return
+		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 0 { //only insert a new row if no record is updated (i.e., no session is found)
+			_, err := db.Exec("INSERT INTO session (sessionid, userid, endtime) VALUES (?, ?, ?) RETURNING sessionid",
+				stringToken, userID, time.Now().Add(1*time.Hour))
 			if err != nil {
-				log.Println("Error saving session:", err)
+				log.Println("Error creating new session:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 				errHandler(w, r, &errData)
 				return
 			}
 		}
 
-		var sessionID int
-		startTime := time.Now()
-		err = db.QueryRow(
-			"INSERT INTO session (userid, start) VALUES (?, ?) RETURNING sessionid",
-			userID, startTime).Scan(&sessionID)
+		// Update the user's session ID in the database
+		_, err = db.Exec("UPDATE user SET current_session = ? WHERE userid = ?", stringToken, userID)
 		if err != nil {
-			log.Println("Error creating session:", err)
-			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
-			return
-		}
-
-		session, _ := store.Get(r, "session")
-		session.Values["userID"] = userID
-		session.Values["sessionID"] = sessionID
-
-		err = session.Save(r, w)
-		if err != nil {
-			log.Println("Error saving session:", err)
+			log.Println("Error updating session ID in user table:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &errData)
 			return
@@ -116,11 +119,10 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		log.Println("User logged in with userID:", userID)
 
 		log.Println("Redirecting to Home page with user ID")
-		http.Redirect(w, r, fmt.Sprintf("/home?user=%d&tab=posts&filter=all", userID), http.StatusSeeOther)
-		return
+		http.Redirect(w, r, "/home?tab=posts&filter=all", http.StatusSeeOther)
 	}
 
-	err := templates.ExecuteTemplate(w, "login.html", nil)
+	err = templates.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		log.Println("Error rendering login page:", err)
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

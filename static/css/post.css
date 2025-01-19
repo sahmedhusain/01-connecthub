@@ -24,7 +24,6 @@ main {
     border-radius: var(--radius);
     margin-bottom: 30px;
     border: 1px solid var(--border-color);
-    transition: none;
 }
 
 .container {
@@ -48,7 +47,7 @@ main {
     box-shadow: 0 2px 5px var(--shadow-light);
 }
 
-.post-info h1 {
+.post-info h3 {
     margin: 0;
     font-size: 22px;
     font-weight: 700;
@@ -56,7 +55,7 @@ main {
     font-family: var(--font-family);
 }
 
-.post-info p {
+.post-info span {
     margin: 5px 0 0;
     font-size: 14px;
     color: var(--text-muted-color);
@@ -67,10 +66,16 @@ main {
     font-size: 16px;
     line-height: 1.6;
     color: var(--text-color);
+    text-align-last: left;
 }
+
+
 
 .post-content p {
     margin-bottom: 15px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align-last: left;
 }
 
 .post-content img {
@@ -137,6 +142,7 @@ main {
     border-radius: var(--radius);
     padding: 15px;
     box-shadow: 0 2px 4px var(--shadow-light);
+    text-align-last: left;
 }
 
 .comment-content p {
@@ -144,6 +150,9 @@ main {
     font-size: 14px;
     color: var(--text-color);
     line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align-last: left;
 }
 
 .comment-content time {
@@ -225,4 +234,83 @@ main {
 .feed-item p {
     margin: 0;
     color: #666;
+}
+
+textarea {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    outline: none;
+    resize: none;
+    transition: border-color var(--transition);
+}
+.comment-content time {
+    display: flex;
+    font-size: 12px;
+    color: #9CA3AF;
+    margin-top: 5px;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.comment-header img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 1px 3px var(--shadow-light);
+}
+
+.comment-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    font-family: var(--font-family);
+}
+
+.comment-header span {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: var(--text-muted-color);
+}
+
+.comment-actions {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    font-size: 14px;
+    color: var(--text-muted-color);
+    align-items: center;
+}
+
+.comment-actions button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.comment-actions time {
+    display: block;
+    font-size: 12px;
+    color: #9CA3AF;
+    margin-left: 5px;
+}
+
+.comment-actions button:hover {
+    color: var(--primary-color);
 }
