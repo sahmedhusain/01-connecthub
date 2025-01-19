@@ -43,5 +43,5 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/post?id="+postID+"&user="+userID, http.StatusSeeOther)
+	http.Redirect(w, r, "/post?id="+postID, http.StatusSeeOther)
 }

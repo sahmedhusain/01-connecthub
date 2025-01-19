@@ -7,7 +7,6 @@ import (
 )
 
 func Select(colToReturn string, table string, where string, input string) (string, error) {
-	// Open a connection to the SQLite3 database
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Fatal(err)

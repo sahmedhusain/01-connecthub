@@ -6,11 +6,12 @@ import (
 	"forum/database"
 	"log"
 	"net/http"
+	"time"
 )
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/home" {
-		log.Println("Incorrect path")
+		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return
@@ -46,11 +47,21 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		seshVal := seshCok.Value
 
 		err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
-		if err != nil {
+		if err == sql.ErrNoRows {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "session_token",
+				Value:    "",
+				Expires:  time.Now().Add(-time.Hour),
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		} else if err != nil {
 			log.Println("Error fetching userid ID from user table:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &err)
 			return
+		} else {
+			log.Println("User is logged in:", userName)
 		}
 	}
 
@@ -88,9 +99,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	filter := r.URL.Query().Get("filter")
 	selectedTab := r.URL.Query().Get("tab")
 
-	if selectedTab == "" {
-		selectedTab = "posts"
-	}
 	if selectedTab == "" {
 		selectedTab = "posts"
 	}
@@ -149,6 +157,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 		if filter == "all" {
 			posts = allPosts
+			
 		} else if CheckFilter(filter, categoryNames) {
 			posts, err = database.GetFilteredPosts(db, filter)
 			if err != nil {
@@ -271,13 +280,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
-		if err != nil {
-			log.Println("Failed to fetch total posts:", err)
-			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
-			return
-		}
+		
 
 		notifications, err := database.GetLastNotifications(db, userID)
 		if err != nil {

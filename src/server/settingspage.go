@@ -12,7 +12,7 @@ import (
 
 func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/settings" {
-		log.Println("Redirecting to Home page")
+		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return

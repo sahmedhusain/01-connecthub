@@ -11,13 +11,9 @@ import (
 
 func PostPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/post" {
-		log.Println("Redirecting to Home page")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-		return
-	}
-	if r.URL.Path != "/post" {
-		log.Println("Redirecting to Home page")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		log.Println("Invalid URL path")
+		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+		errHandler(w, r, &err)
 		return
 	}
 
@@ -26,12 +22,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	if r.Method != "GET" {
-		log.Println("Method not allowed")
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Println("Error opening database:", err)
@@ -67,15 +57,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
-	postID := r.URL.Query().Get("id")
-	if postID == "" {
-		log.Println("Post ID not found in query parameters")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-		return
-	}
 
-	var post database.Post
-	err = db.QueryRow(`
 	var post database.Post
 	err = db.QueryRow(`
         SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
@@ -85,30 +67,14 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
         FROM post
         JOIN user ON post.user_userid = user.userid
         WHERE post.postid = ?
-    `, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
+		`, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
 	if err != nil {
-		log.Println("Error querying post:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	if err != nil {
-		log.Println("Error querying post:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		log.Println("Failed to fetch posts")
+		errData := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+		errHandler(w, r, &errData)
 		return
 	}
 
-	postIDInt, err := strconv.Atoi(postID)
-	if err != nil {
-		log.Println("Error converting post ID to integer:", err)
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
-	}
-	comments, err := database.GetCommentsForPost(db, postIDInt)
-	if err != nil {
-		log.Println("Error getting comments for post:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
 	postIDInt, err := strconv.Atoi(postID)
 	if err != nil {
 		log.Println("Error converting post ID to integer:", err)
@@ -132,26 +98,19 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	categories, err := database.GetCategoriesForPost(db, post.PostID)
 	if err != nil {
 		log.Println("Error fetching categories for post:", err)
-		return 
+		return
 	}
-	
 
 	log.Println("User ID:", userID) // Log the UserID to ensure it is being retrieved
 
 	data := PageData{
-		Post:     post,
-		Comments: comments,
-		UserID:   userID, // Ensure UserID is set
-		UserName: userName,
+		Post:       post,
+		Comments:   comments,
+		UserID:     userID, // Ensure UserID is set
+		UserName:   userName,
 		Categories: categories,
 	}
 
-	err = templates.ExecuteTemplate(w, "post.html", data)
-	if err != nil {
-		log.Println("Error executing template:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
 	err = templates.ExecuteTemplate(w, "post.html", data)
 	if err != nil {
 		log.Println("Error executing template:", err)

@@ -10,7 +10,7 @@ import (
 
 func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/moderator" {
-		log.Println("Redirecting to Home page")
+		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return

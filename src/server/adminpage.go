@@ -11,7 +11,7 @@ import (
 
 func AdminPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin" {
-		log.Println("Redirecting to Home page")
+		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return

@@ -10,7 +10,7 @@ import (
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		log.Println("Redirecting to Home page")
+		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
 		errHandler(w, r, &err)
 		return
@@ -103,14 +103,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		_, err = db.Exec("UPDATE user SET current_session = ? WHERE userid = ?", stringToken, userID)
 		if err != nil {
 			log.Println("Error updating session ID in user table:", err)
-			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
-			return
-		}
-
-		_, err = db.Exec("UPDATE user SET session_sessionid = ? WHERE userid = ?", sessionID, userID)
-		if err != nil {
-			log.Println("Error updating user session ID:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			errHandler(w, r, &errData)
 			return
