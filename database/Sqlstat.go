@@ -16,7 +16,7 @@ type User struct {
 	Password         string         `json:"password"`
 	SessionSessionID int            `json:"current_session"`
 	RoleID           int            `json:"role_id"`
-	Avatar           sql.NullString `json:"avatar"` // Use sql.NullString to handle NULL values
+	Avatar           sql.NullString `json:"avatar"`
 }
 
 type Category struct {
@@ -62,7 +62,7 @@ type Notification struct {
 	Message   string
 	CreatedAt time.Time
 	UserImage string
-	UserName  string // Correct field name
+	UserName  string
 }
 
 type Report struct {
@@ -87,7 +87,6 @@ type UserSession struct {
 	End    time.Time
 }
 
-// GetAllCategories retrieves all categories from the database
 func GetAllCategories(db *sql.DB) ([]Category, error) {
 	rows, err := db.Query("SELECT idcategories, name, description FROM categories")
 	if err != nil {
@@ -111,7 +110,6 @@ func GetAllCategories(db *sql.DB) ([]Category, error) {
 }
 
 func GetComments(db *sql.DB) ([]Comment, error) {
-	// Query to retrieve all comments
 	rows, err := db.Query("SELECT commentid, content, comment_at, post_postid, user_userid FROM comment")
 	if err != nil {
 		return nil, err
@@ -127,13 +125,11 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 			return nil, err
 		}
 
-		// Parse comment_at into a time.Time object
 		comment.CreatedAt = commentAt
 
 		comments = append(comments, comment)
 	}
 
-	// Check for errors after iterating
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -322,7 +318,6 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 			return nil, err
 		}
 
-		// Parse the postAt string into a time.Time object
 		post.PostAt, err = time.Parse(time.RFC3339, postAt)
 		if err != nil {
 			log.Println("Error parsing post_at:", err)
@@ -474,7 +469,6 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 			return nil, err
 		}
 
-		// Parse the postAt string into a time.Time object
 		post.PostAt, err = time.Parse(time.RFC3339, postAt)
 		if err != nil {
 			log.Println("Error parsing post_at:", err)
@@ -580,7 +574,6 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 			return nil, err
 		}
 
-		// Parse the postAt string into a time.Time object
 		post.PostAt, err = time.Parse(time.RFC3339, postAt)
 		if err != nil {
 			log.Println("Error parsing post_at:", err)
@@ -793,20 +786,18 @@ func GetCommentsForPost(db *sql.DB, postID int) ([]Comment, error) {
 
 	for rows.Next() {
 		var comment Comment
-		var commentAt time.Time // SQLite DATETIME is fetched as a string
+		var commentAt time.Time
 
 		// Scan each row into the Comment struct
 		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.UserID, &comment.FirstName, &comment.LastName, &comment.Username, &comment.Content, &commentAt, &comment.Avatar, &comment.Dislikes, &comment.Likes); err != nil {
 			return nil, fmt.Errorf("GetCommentsForPost: %v", err)
 		}
 
-		// Parse comment_at into a time.Time object
 		comment.CreatedAt = commentAt
 
 		comments = append(comments, comment)
 	}
 
-	// Check for errors after iterating
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("GetCommentsForPost: %v", err)
 	}

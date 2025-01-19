@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2024 Sayed Ahmed Husain, Qasim Aljaffer, Mohammed AlAlawi, Abdulla Alasmawi
+Copyright (c) 2024 Sayed Ahmed Husain, Qasim Al-Jaffer, Mohammed Al-Alawi, Abdulla Al-Asmawi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

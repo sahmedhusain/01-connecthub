@@ -6,6 +6,9 @@ import (
 	"forum/src/server"
 	"log"
 	"net/http"
+	authentication "forum/src/authentication"
+
+	"github.com/gorilla/context"
 )
 
 func init() {

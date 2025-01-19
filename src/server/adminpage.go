@@ -67,7 +67,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	// 	avatar = "/static/assets/default-avatar.png"
 	// }
 
-	// Determine role name
 	var roleName string
 	if roleID == 1 {
 		roleName = "Admin"
@@ -171,7 +170,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Retrieve total likes for the user
 		var totalLikes int
 		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE userid = ?", userID).Scan(&totalLikes)
 		if err != nil {

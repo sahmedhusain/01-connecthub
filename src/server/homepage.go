@@ -91,7 +91,21 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if selectedTab == "" {
 		selectedTab = "posts"
 	}
+	if selectedTab == "" {
+		selectedTab = "posts"
+	}
 
+	if filter == "" {
+		if selectedTab == "your+posts" {
+			filter = "newest"
+		} else if selectedTab == "your+replies" {
+			filter = "newest"
+		} else if selectedTab == "your+reactions" {
+			filter = "likes"
+		} else {
+			filter = "all"
+		}
+	}
 	if filter == "" {
 		if selectedTab == "your+posts" {
 			filter = "newest"

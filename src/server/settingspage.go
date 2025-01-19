@@ -111,7 +111,6 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			avatarPath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
 			avatarPath.Valid = true
 
-			// Ensure the directory exists
 			os.MkdirAll("static/uploads", os.ModePerm)
 
 			f, err := os.OpenFile(avatarPath.String, os.O_WRONLY|os.O_CREATE, 0666)

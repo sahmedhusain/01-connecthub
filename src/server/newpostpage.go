@@ -71,11 +71,10 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 
 		userAvatar := user.Avatar.String // Assuming Avatar is of type sql.NullString
 
-		log.Printf("Fetched user data: %+v\n", user) // Add this line for debugging
+		log.Printf("Fetched user data: %+v\n", user)
 
-		// Handle case where roleID is 0
 		if user.RoleID == 0 {
-			user.RoleID = 3 // Assign default role (User)
+			user.RoleID = 3
 		}
 
 		roleName, err := database.GetRoleNameByID(db, user.RoleID)
@@ -86,7 +85,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Printf("Fetched role name: %s\n", roleName) // Add this line for debugging
+		log.Printf("Fetched role name: %s\n", roleName)
 
 		totalLikes, err := database.GetTotalLikes(db, userID)
 		if err != nil {
@@ -115,6 +114,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			TotalPosts    int
 			SelectedTab   string
 			RoleID        int
+			RoleID        int
 		}{
 			UserID:        userID,
 			Categories:    categories,
@@ -124,6 +124,8 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			UserName:      userName,
 			TotalLikes:    totalLikes,
 			TotalPosts:    totalPosts,
+			SelectedTab:   "posts",
+			RoleID:        user.RoleID,
 			SelectedTab:   "posts",
 			RoleID:        user.RoleID,
 		}
@@ -137,8 +139,8 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case "POST":
-		// Parse the form data
-		err := r.ParseMultipartForm(10 << 20) // 10 MB max memory
+
+		err := r.ParseMultipartForm(10 << 20)
 		if err != nil {
 			log.Println("Failed to parse form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
@@ -146,7 +148,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Get the post content
 		userID := r.FormValue("user")
 		content := strings.TrimSpace(r.FormValue("content"))
 		fmt.Println(userID, content)
@@ -162,19 +163,22 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Handle file upload
+		if len(content) > maxPostLength {
+			http.Error(w, "Post content exceeds the character limit", http.StatusBadRequest)
+			return
+		}
+
 		file, _, err := r.FormFile("image")
 		var image sql.NullString
 		if err == nil {
 			defer file.Close()
-			// Process the file and save it, then set the image path
-			image.String = "forum/static/uploads" // Update with actual path
+
+			image.String = "forum/static/uploads"
 			image.Valid = true
 		} else {
 			image.Valid = false
 		}
 
-		// Insert the new post into the database
 		db, err := sql.Open("sqlite3", "./database/main.db")
 		if err != nil {
 			log.Println("Database connection failed")
@@ -192,7 +196,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Handle post categories
 		categories := r.Form["categories"]
 		for _, categoryID := range categories {
 			categoryIDInt, err := strconv.Atoi(categoryID)

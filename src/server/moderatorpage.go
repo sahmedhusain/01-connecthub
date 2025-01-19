@@ -74,7 +74,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			Posts: posts,
 		}
 
-		err = templates.ExecuteTemplate(w, "home.html", data) // Changed from "moderator.html" to "home.html"
+		err = templates.ExecuteTemplate(w, "home.html", data)
 		if err != nil {
 			log.Println("Error rendering home page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
