@@ -59,6 +59,26 @@ func DataBase() {
 			FOREIGN KEY (user_userid) REFERENCES user(userid)
 		);`
 
+	const CreateCommentDislikeTable = `
+		CREATE TABLE IF NOT EXISTS comment_dislikes (
+			dislikeid INTEGER PRIMARY KEY AUTOINCREMENT,
+			dislike_at DATETIME NULL,
+			commentid INTEGER NOT NULL,
+			userid INTEGER NOT NULL,
+			FOREIGN KEY (commentid) REFERENCES comment(commentid)
+			FOREIGN KEY (userid) REFERENCES user(userid)
+		);`
+
+	const CreateCommentLikeTable = `
+		CREATE TABLE IF NOT EXISTS comment_likes (
+			likeid INTEGER PRIMARY KEY AUTOINCREMENT,
+			like_at DATETIME NULL,
+			commentid INTEGER NOT NULL,
+			userid INTEGER NOT NULL,
+			FOREIGN KEY (commentid) REFERENCES comment(commentid)
+			FOREIGN KEY (userid) REFERENCES user(userid)
+		);`
+
 	const CreatePostTable = `
 		CREATE TABLE IF NOT EXISTS post (
 			postid INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,13 +120,17 @@ func DataBase() {
 			Avatar TEXT,
 			FOREIGN KEY (current_session) REFERENCES session(sessionid),
 			FOREIGN KEY (role_id) REFERENCES user_roles(roleid)
-		);`
+		);
+		`
 
 	const CreateUserRolesTable = `
 		CREATE TABLE IF NOT EXISTS user_roles (
 			roleid INTEGER PRIMARY KEY AUTOINCREMENT,
 			role_name TEXT NOT NULL
-		);`
+		);
+		
+
+		`
 
 	const CreateFriendsTable = `
 		CREATE TABLE IF NOT EXISTS friends (
@@ -162,6 +186,8 @@ func DataBase() {
 		CreateCommentTable,
 		CreateDislikeTable,
 		CreateLikeTable,
+		CreateCommentDislikeTable,
+		CreateCommentLikeTable,
 		CreatePostTable,
 		CreatePostHasCategoriesTable,
 		CreateSessionsTable,
@@ -192,6 +218,46 @@ func DataBase() {
 		`INSERT INTO categories (name, description) VALUES ('Data Analytics', 'Extracting insights from big data');`,
 		`INSERT INTO categories (name, description) VALUES ('Quantum Computing', 'Next-gen computing paradigms and qubits');`,
 		`INSERT INTO categories (name, description) VALUES ('SRE & Observability', 'Site Reliability Engineering and system observability');`,
+		`INSERT INTO categories (name, description) VALUES ('Programming', 'Coding tips, tricks, and best practices');`,
+		`INSERT INTO categories (name, description) VALUES ('Open Source', 'Contributing to and building open-source projects');`,
+		`INSERT INTO categories (name, description) VALUES ('Tech News', 'The latest in tech news and trends');`,
+		`INSERT INTO categories (name, description) VALUES ('Product Management', 'Building and managing tech products');`,
+		`INSERT INTO categories (name, description) VALUES ('Career & Skills', 'Guidance on career growth and skill development');`,
+		`INSERT INTO categories (name, description) VALUES ('Startup & VC', 'Startup stories and venture capital insights');`,
+		`INSERT INTO categories (name, description) VALUES ('Remote Work', 'Tips and tools for remote work success');`,
+		`INSERT INTO categories (name, description) VALUES ('Diversity & Inclusion', 'Promoting diversity and inclusion in tech');`,
+		`INSERT INTO categories (name, description) VALUES ('Tech Policy', 'Insights on tech policy and regulation');`,
+		`INSERT INTO categories (name, description) VALUES ('Gadgets & Gear', 'Reviews and recommendations on tech gadgets');`,
+		`INSERT INTO categories (name, description) VALUES ('Science & Space', 'Exploring the frontiers of science and space');`,
+		`INSERT INTO categories (name, description) VALUES ('Health & Wellness', 'Tech solutions for health and wellness');`,
+		`INSERT INTO categories (name, description) VALUES ('Climate & Environment', 'Tech solutions for climate and environmental issues');`,
+		`INSERT INTO categories (name, description) VALUES ('Education & EdTech', 'Innovations in education and educational technology');`,
+		`INSERT INTO categories (name, description) VALUES ('Entertainment', 'Tech in entertainment and media');`,
+		`INSERT INTO categories (name, description) VALUES ('Social Media', 'Insights on social media platforms and trends');`,
+		`INSERT INTO categories (name, description) VALUES ('Marketing & SEO', 'Marketing strategies and search engine optimization');`,
+		`INSERT INTO categories (name, description) VALUES ('Finance & Fintech', 'Fintech innovations and financial services');`,
+		`INSERT INTO categories (name, description) VALUES ('Legal Tech', 'Legal technology and law practice');`,
+		`INSERT INTO categories (name, description) VALUES ('Design & Creativity', 'Design inspiration and creative tools');`,
+		`INSERT INTO categories (name, description) VALUES ('Writing & Content', 'Writing tips and content creation strategies');`,
+		`INSERT INTO categories (name, description) VALUES ('Audio & Podcasts', 'Podcasting and audio content creation');`,
+		`INSERT INTO categories (name, description) VALUES ('Video & Film', 'Video production and filmmaking');`,
+		`INSERT INTO categories (name, description) VALUES ('Photography', 'Photography tips and techniques');`,
+		`INSERT INTO categories (name, description) VALUES ('Art & Illustration', 'Art and illustration techniques and tools');`,
+		`INSERT INTO categories (name, description) VALUES ('Crafts & DIY', 'Crafting and do-it-yourself projects');`,
+		`INSERT INTO categories (name, description) VALUES ('Food & Cooking', 'Food and cooking recipes and techniques');`,
+		`INSERT INTO categories (name, description) VALUES ('Travel & Adventure', 'Travel stories and adventure experiences');`,
+		`INSERT INTO categories (name, description) VALUES ('Sports & Fitness', 'Sports and fitness tips and techniques');`,
+		`INSERT INTO categories (name, description) VALUES ('Gaming', 'Gaming news and reviews');`,
+		`INSERT INTO categories (name, description) VALUES ('Books & Literature', 'Book reviews and literary discussions');`,
+		`INSERT INTO categories (name, description) VALUES ('Music & Audio', 'Music news and audio production');`,
+		`INSERT INTO categories (name, description) VALUES ('Film & TV', 'Film and television news and reviews');`,
+		`INSERT INTO categories (name, description) VALUES ('Fashion & Beauty', 'Fashion and beauty trends and tips');`,
+		`INSERT INTO categories (name, description) VALUES ('Home & Garden', 'Home improvement and gardening tips');`,
+		`INSERT INTO categories (name, description) VALUES ('Parenting & Family', 'Parenting advice and family life discussions');`,
+		`INSERT INTO categories (name, description) VALUES ('Weddings & Events', 'Wedding planning and event management');`,
+		`INSERT INTO categories (name, description) VALUES ('Science Fiction', 'Sci-fi books, movies, and TV shows');`,
+		`INSERT INTO categories (name, description) VALUES ('Fantasy', 'Fantasy books, movies, and TV shows');`,
+		`INSERT INTO categories (name, description) VALUES ('Horror', 'Horror books, movies, and TV shows');`,
 	}
 
 	insertUserRoles := []string{
@@ -202,133 +268,15 @@ func DataBase() {
 	}
 
 	insertUsers := []string{
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', 'alicePass', 1, 1, 'https://randomuser.me/api/portraits/women/1.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Brian', 'Lee', 'brianL', 'brianL@example.com', 'brianPass', 2, 2, 'https://randomuser.me/api/portraits/men/1.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Caroline', 'Smith', 'caroS', 'carolineS@example.com', 'carolinePass', 3, 3, 'https://randomuser.me/api/portraits/women/2.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Daniel', 'Foster', 'danF', 'danF@example.com', 'danielPass', 4, 3, 'https://randomuser.me/api/portraits/men/2.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Elena', 'Garcia', 'elenaG', 'elenaG@example.com', 'elenaPass', 5, 3, 'https://randomuser.me/api/portraits/women/3.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Farhan', 'Khan', 'farhanK', 'farhanK@example.com', 'farhanPass', 6, 3, 'https://randomuser.me/api/portraits/men/3.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Grace', 'Li', 'graceL', 'graceL@example.com', 'gracePass', 7, 3, 'https://randomuser.me/api/portraits/women/4.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Hiroshi', 'Tanaka', 'hiroshiT', 'hiroshiT@example.com', 'hiroshiPass', 8, 3, 'https://randomuser.me/api/portraits/men/4.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Irene', 'Santos', 'ireneS', 'ireneS@example.com', 'irenePass', 9, 3, 'https://randomuser.me/api/portraits/women/5.jpg');`,
-		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Jamal', 'Roberts', 'jamalR', 'jamalR@example.com', 'jamalPass', 10, 3, 'https://randomuser.me/api/portraits/men/5.jpg');`,
-	}
-
-	insertPosts := []string{
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ai_ml.jpg', 'Exploring cutting-edge transformer models for NLP tasks.', '2024-12-19 08:30:00', 1);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/cloud_devops.jpg', 'Implementing CI/CD pipelines on AWS for seamless deployments.', '2024-12-19 09:45:00', 2);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/cybersec.jpg', 'Top strategies for ransomware protection in modern enterprises.', '2024-12-19 10:15:00', 3);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/blockchain_web3.jpg', 'Understanding Ethereum Layer-2 scaling solutions.', '2024-12-19 11:00:00', 4);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ar_vr_gaming.jpg', 'Building immersive AR experiences with Unity.', '2024-12-19 11:45:00', 5);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/ui_ux.jpg', 'Enhancing user engagement through micro-interactions.', '2024-12-19 12:30:00', 6);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/iot_edge.jpg', 'Optimizing sensor networks with edge computing analytics.', '2024-12-19 13:15:00', 7);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/data_analytics.jpg', 'Leveraging big data frameworks for predictive analytics.', '2024-12-19 14:00:00', 8);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/quantum.jpg', 'Quantum error correction: The next frontier.', '2024-12-19 14:45:00', 9);`,
-		`INSERT INTO post (image, content, post_at, user_userid) VALUES ('/database/images/sre_observability.jpg', 'Implementing distributed tracing for improved observability.', '2024-12-19 15:30:00', 10);`,
-	}
-
-	insertComments := []string{
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Fascinating look into NLP!', '2024-12-20 09:00:00', 1, 2);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('I love the CI/CD pipeline tips.', '2024-12-20 09:30:00', 2, 1);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Great cyber defense strategies.', '2024-12-20 10:00:00', 3, 4);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Layer-2 solutions are game-changers!', '2024-12-20 10:30:00', 4, 3);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Unity AR examples are spot-on.', '2024-12-20 11:00:00', 5, 6);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Micro-interactions improve UX a lot.', '2024-12-20 11:30:00', 6, 7);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Edge analytics are the future.', '2024-12-20 12:00:00', 7, 8);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Big data insights FTW!', '2024-12-20 12:30:00', 8, 9);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Quantum is mind-blowing!', '2024-12-20 13:00:00', 9, 10);`,
-		`INSERT INTO comment (content, comment_at, post_postid, user_userid) VALUES ('Traces are essential for debugging.', '2024-12-20 13:30:00', 10, 1);`,
-	}
-
-	insertLikes := []string{
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 08:00:00', 1, 3);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 08:30:00', 2, 4);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 09:00:00', 3, 5);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 09:30:00', 4, 6);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 10:00:00', 5, 7);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 10:30:00', 6, 8);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 11:00:00', 7, 9);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 11:30:00', 8, 10);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 12:00:00', 9, 1);`,
-		`INSERT INTO likes (like_at, post_postid, user_userid) VALUES ('2024-12-21 12:30:00', 10, 2);`,
-	}
-
-	insertDislikes := []string{
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 08:00:00', 1, 4);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 08:30:00', 2, 5);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 09:00:00', 3, 6);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 09:30:00', 4, 7);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 10:00:00', 5, 8);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 10:30:00', 6, 9);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 11:00:00', 7, 10);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 11:30:00', 8, 1);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 12:00:00', 9, 2);`,
-		`INSERT INTO dislikes (dislike_at, post_postid, user_userid) VALUES ('2024-12-22 12:30:00', 10, 3);`,
-	}
-
-	insertPostHasCategories := []string{
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (1, 1);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (2, 2);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (3, 3);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (4, 4);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (5, 5);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (6, 6);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (7, 7);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (8, 8);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (9, 9);`,
-		`INSERT INTO post_has_categories (post_postid, categories_idcategories) VALUES (10, 10);`,
-	}
-
-	insertNotifications := []string{
-		`INSERT INTO notifications (user_userid, post_id, message, created_at) VALUES (1, 1, 'Your post on AI & ML just received a new comment!', '2024-12-20 14:00:00');`,
-		`INSERT INTO notifications (user_userid, post_id, message, created_at) VALUES (2, 2, 'Your Cloud & DevOps post was liked by a user!', '2024-12-20 14:30:00');`,
-	}
-
-	insertFriends := []string{
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 3);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 4);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 2);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (1, 3);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 1);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (2, 3);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (3, 1);`,
-		`INSERT INTO friends (user_userid, friend_userid) VALUES (3, 2);`,
-	}
-
-	insertFollowers := []string{
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 5);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 6);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 2);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (1, 3);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 1);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (2, 3);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (3, 1);`,
-		`INSERT INTO followers (user_userid, follower_userid) VALUES (3, 2);`,
-	}
-
-	insertFollowing := []string{
-		`INSERT INTO following (user_userid, following_userid) VALUES (1, 2);`,
-		`INSERT INTO following (user_userid, following_userid) VALUES (1, 3);`,
-		`INSERT INTO following (user_userid, following_userid) VALUES (2, 1);`,
-		`INSERT INTO following (user_userid, following_userid) VALUES (2, 3);`,
-		`INSERT INTO following (user_userid, following_userid) VALUES (3, 1);`,
-		`INSERT INTO following (user_userid, following_userid) VALUES (3, 2);`,
+		`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', '123', 1, 1, 'https://randomuser.me/api/portraits/women/1.jpg');`,
 	}
 
 	allInserts := [][]string{
 		insertCategories,
 		insertUserRoles,
 		insertUsers,
-		insertPosts,
-		insertComments,
-		insertLikes,
-		insertDislikes,
-		insertPostHasCategories,
-		insertNotifications,
-		insertFriends,
-		insertFollowers,
-		insertFollowing,
 	}
+
 
 	for _, group := range allInserts {
 		for _, stmt := range group {

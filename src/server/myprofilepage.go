@@ -10,11 +10,9 @@ import (
 
 func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/myprofile" {
-		http.NotFound(w, r)
-		return
-	}
-	if r.URL.Path != "/myprofile" {
-		http.NotFound(w, r)
+		log.Println("Invalid URL path")
+		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
+		errHandler(w, r, &err)
 		return
 	}
 
@@ -224,13 +222,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		SelectedFilter: "newest",     // Set the default selected filter
 		RoleID:         user.RoleID,
 	}
-
-	err = templates.ExecuteTemplate(w, "myprofile.html", data)
-	if err != nil {
-		log.Println("Error rendering my profile page:", err)
-		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
-	}
+	
 	err = templates.ExecuteTemplate(w, "myprofile.html", data)
 	if err != nil {
 		log.Println("Error rendering my profile page:", err)

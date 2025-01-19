@@ -2,16 +2,15 @@ package main
 
 import (
 	"fmt"
-	// db "forum/database"
+	db "forum/database"
 	"forum/src/server"
 	"log"
 	"net/http"
 )
 
 func init() {
-	// db.DataBase()
-	// db.DropDataBase()
-	// db.CommentReactions()
+	db.DataBase()
+	//db.DropDataBase()
 }
 
 func main() {
