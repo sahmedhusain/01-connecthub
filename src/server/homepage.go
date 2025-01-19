@@ -91,9 +91,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if selectedTab == "" {
 		selectedTab = "posts"
 	}
-	if selectedTab == "" {
-		selectedTab = "posts"
-	}
 
 	if filter == "" {
 		if selectedTab == "your+posts" {
@@ -106,17 +103,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			filter = "all"
 		}
 	}
-	if filter == "" {
-		if selectedTab == "your+posts" {
-			filter = "newest"
-		} else if selectedTab == "your+replies" {
-			filter = "newest"
-		} else if selectedTab == "your+reactions" {
-			filter = "likes"
-		} else {
-			filter = "all"
-		}
-	}
+	
 
 	switch selectedTab {
 	case "posts":
@@ -149,7 +136,9 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 		if filter == "all" {
 			posts = allPosts
+			
 		} else if CheckFilter(filter, categoryNames) {
+		
 			posts, err = database.GetFilteredPosts(db, filter)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
@@ -271,13 +260,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
-		if err != nil {
-			log.Println("Failed to fetch total posts:", err)
-			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
-			return
-		}
+		
 
 		notifications, err := database.GetLastNotifications(db, userID)
 		if err != nil {
