@@ -25,29 +25,32 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Check if the user is a moderator
-	usrCok, err := r.Cookie("dotcom_user")
+	// Fetch session cookie
+	seshCok, err := r.Cookie("session_token")
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
-		fmt.Println("Error fetching username from cookie")
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		fmt.Println("Error fetching session cookie")
 		return
 	}
 
-	userName := usrCok.Value
+	// Set session token from cookie value
+	seshVal := seshCok.Value
 
+	var userID int
+	err = db.QueryRow("SELECT userid FROM user WHERE current_session = ?", seshVal).Scan(&userID)
+	if err != nil {
+		log.Println("Error userid session ID from user table:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
+		return
+	}
+
+	//must check if user is a moderator!
 	var roleID string
-	err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&roleID)
+	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
-		log.Println("Error fetching session ID:", err)
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-
-	var userID string
-	err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&userID)
-	if err != nil {
-		log.Println("Error fetching session ID:", err)
-		http.Redirect(w, r, "/", http.StatusFound)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 
@@ -62,7 +65,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := struct {
-			UserID string
+			UserID int
 			// Avatar string
 			Posts []database.Post
 		}{

@@ -307,3 +307,14 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
+
+
+func CheckFilter(filter string,categoryNames []string) bool {
+	for _, category := range categoryNames {
+		if filter == category {
+			return true
+
+		}
+	}
+	return false
+}

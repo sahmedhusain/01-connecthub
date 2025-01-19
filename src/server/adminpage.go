@@ -26,22 +26,24 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Retrieve username cookie
-	usrCok, err := r.Cookie("dotcom_user")
+	// Fetch session cookie
+	seshCok, err := r.Cookie("session_token")
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
-		fmt.Println("Error fetching username from cookie")
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		fmt.Println("Error fetching session from cookie")
 		return
 	}
 
-	//set username from cookie value
-	userName := usrCok.Value
+	// Set session token from cookie value
+	seshVal := seshCok.Value
 
+	var userName string
 	var userID int
-	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", userName).Scan(&userID)
+	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
 	if err != nil {
-		log.Println("Error fetching user ID:", err)
-		http.Redirect(w, r, "/", http.StatusFound)
+		log.Println("Error fetching session ID from user table:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
 

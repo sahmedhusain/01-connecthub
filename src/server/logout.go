@@ -23,13 +23,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     "dotcom_user",
-		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
-		HttpOnly: true,
-	})
-
 	_, err = db.Exec("DELETE FROM session WHERE userid = ?", userID)
 	if err != nil {
 		log.Fatal(err)

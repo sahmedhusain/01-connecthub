@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 func ReverseMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -18,29 +19,35 @@ func ReverseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		// Retrieve username cookie
-		usrCok, err := r.Cookie("dotcom_user")
+		// Fetch session cookie
+		seshCok, err := r.Cookie("session_toekn")
 		if err != nil {
 			fmt.Println("This user has no cookie")
 		} else {
-			//Set username from cookie value
-			userName := usrCok.Value
+			//Set session token from cookie value
+			seshVal := seshCok.Value
 
-			var sessionID string
-			err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&sessionID)
+			var exists bool
+			err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM user WHERE current_session = ?)", seshVal).Scan(&exists)
 			if err != nil {
-				log.Println("Error fetching session ID from user table:", err)
+				log.Println("Error :", err)
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				errHandler(w, r, &err)
 				return
-			}
-
-			seshCok, _ := r.Cookie("session_token")
-			if seshCok.Value == sessionID {
+			} else if !exists {
+				log.Println("Inavlid Session")
+				http.SetCookie(w, &http.Cookie{
+					Name:     "session_token",
+					Value:    "",
+					Expires:  time.Now().Add(-time.Hour),
+					HttpOnly: true,
+				})
+				http.Redirect(w, r, "/", http.StatusBadRequest)
+			} else if exists {
 				fmt.Println("Valid cookie")
-				http.Redirect(w, r, "/home", http.StatusFound)
-				return
+				http.Redirect(w, r, "/home", http.StatusUnauthorized)
 			}
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }

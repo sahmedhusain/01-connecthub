@@ -82,14 +82,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 		})
 
-		//Set username cookie
-		http.SetCookie(w, &http.Cookie{
-			Name:     "dotcom_user",
-			Value:    userName,
-			Expires:  time.Now().Add(1 * time.Hour),
-			HttpOnly: true,
-		})
-
 		// Update the user's session ID in the session table
 		result, err := db.Exec("UPDATE session SET sessionid = ? WHERE userid = ?", stringToken, userID)
 		if err != nil {

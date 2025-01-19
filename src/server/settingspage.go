@@ -27,27 +27,31 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	usrCok, err := r.Cookie("dotcom_user")
+	// Fetch session cookie
+	seshCok, err := r.Cookie("session_token")
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
-		fmt.Println("Error fetching username from cookie")
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		fmt.Println("Error fetching session cookie")
 		return
 	}
 
-	var userID string
-	err = db.QueryRow("SELECT userid FROM user WHERE Username = ?", usrCok.Value).Scan(&userID)
+	// Set session token from cookie value
+	seshVal := seshCok.Value
+
+	var userID int
+	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID)
 	if err != nil {
-		log.Println("Error fetching session ID:", err)
-		http.Redirect(w, r, "/", http.StatusFound)
+		log.Println("Error fetching userid and username from user table:", err)
+		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		errHandler(w, r, &err)
 		return
 	}
-
 	log.Println("UserID retrieved from session:", userID)
 
 	switch r.Method {
 	case "GET":
 		var user database.User
-		err := db.QueryRow("SELECT id, first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
+		err := db.QueryRow("SELECT first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
 		if err != nil {
 			log.Println("Failed to fetch user data")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -59,7 +63,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		// passwordShown, _ := session.Values["passwordShown"].(bool)
 
 		data := struct {
-			UserID        string
+			UserID        int
 			FirstName     string
 			LastName      string
 			Username      string

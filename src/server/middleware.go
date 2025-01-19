@@ -19,27 +19,18 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		// Retrieve username cookie
-		usrCok, err := r.Cookie("dotcom_user")
-		if err != nil {
-			http.Redirect(w, r, "/", http.StatusFound)
-			fmt.Println("Error fetching username from cookie")
-			return
-		}
-
-		//Set username from cookie value
-		userName := usrCok.Value
-
-		var sessionID string
-		err = db.QueryRow("SELECT current_session FROM user WHERE Username = ?", userName).Scan(&sessionID)
-		if err != nil {
-			log.Println("Error fetching session ID from user table:", err)
-			http.Redirect(w, r, "/", http.StatusFound)
-			return
-		}
-
+		// Fetch session cookie
 		seshCok, err := r.Cookie("session_token")
-		if err != nil || seshCok.Value == "" || seshCok.Value != sessionID {
+		if err != nil {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			fmt.Println("Error fetching session cookie")
+			return
+		}
+
+		// Set session token from cookie value
+		seshVal := seshCok.Value
+
+		if seshVal == "" {
 			fmt.Println("Invalid session")
 			http.SetCookie(w, &http.Cookie{
 				Name:     "session_token",
@@ -48,16 +39,27 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 				HttpOnly: true,
 			})
 
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+
+		var exists bool
+		err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM user WHERE current_session = ?)", seshVal).Scan(&exists)
+		if err != nil {
+			log.Println("Error :", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			errHandler(w, r, &err)
+			return
+		} else if !exists {
+			log.Println("Inavlid Session")
 			http.SetCookie(w, &http.Cookie{
-				Name:     "dotcom_user",
+				Name:     "session_token",
 				Value:    "",
 				Expires:  time.Now().Add(-time.Hour),
 				HttpOnly: true,
 			})
-			http.Redirect(w, r, "/", http.StatusFound)
-			return
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }
