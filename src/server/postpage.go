@@ -67,15 +67,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
-	postID := r.URL.Query().Get("id")
-	if postID == "" {
-		log.Println("Post ID not found in query parameters")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-		return
-	}
 
-	var post database.Post
-	err = db.QueryRow(`
 	var post database.Post
 	err = db.QueryRow(`
         SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
@@ -85,7 +77,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
         FROM post
         JOIN user ON post.user_userid = user.userid
         WHERE post.postid = ?
-    `, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
+		`, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
 	if err != nil {
 		log.Println("Error querying post:", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -109,13 +101,13 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	postIDInt, err := strconv.Atoi(postID)
+	postIDInt, err = strconv.Atoi(postID)
 	if err != nil {
 		log.Println("Error converting post ID to integer:", err)
 		http.Error(w, "Bad request", http.StatusBadRequest)
 		return
 	}
-	comments, err := database.GetCommentsForPost(db, postIDInt)
+	comments, err = database.GetCommentsForPost(db, postIDInt)
 	if err != nil {
 		log.Println("Error getting comments for post:", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -132,17 +124,16 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	categories, err := database.GetCategoriesForPost(db, post.PostID)
 	if err != nil {
 		log.Println("Error fetching categories for post:", err)
-		return 
+		return
 	}
-	
 
 	log.Println("User ID:", userID) // Log the UserID to ensure it is being retrieved
 
 	data := PageData{
-		Post:     post,
-		Comments: comments,
-		UserID:   userID, // Ensure UserID is set
-		UserName: userName,
+		Post:       post,
+		Comments:   comments,
+		UserID:     userID, // Ensure UserID is set
+		UserName:   userName,
 		Categories: categories,
 	}
 

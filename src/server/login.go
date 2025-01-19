@@ -108,14 +108,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		_, err = db.Exec("UPDATE user SET session_sessionid = ? WHERE userid = ?", sessionID, userID)
-		if err != nil {
-			log.Println("Error updating user session ID:", err)
-			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
-			return
-		}
-
 		log.Println("User logged in with userID:", userID)
 
 		log.Println("Redirecting to Home page with user ID")

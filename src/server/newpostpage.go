@@ -114,7 +114,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			TotalPosts    int
 			SelectedTab   string
 			RoleID        int
-			RoleID        int
 		}{
 			UserID:        userID,
 			Categories:    categories,
@@ -124,8 +123,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			UserName:      userName,
 			TotalLikes:    totalLikes,
 			TotalPosts:    totalPosts,
-			SelectedTab:   "posts",
-			RoleID:        user.RoleID,
 			SelectedTab:   "posts",
 			RoleID:        user.RoleID,
 		}
