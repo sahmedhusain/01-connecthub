@@ -23,9 +23,8 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
-            {{if .HasSession}}
             <form action="/newpost" method="GET">
-                <input type="hidden" name="user" value="{{.UserID}}">
+                <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
@@ -87,12 +86,6 @@
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
-            {{else}}
-            <div class="user-actions">
-                <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
-                <a href="/"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
-            </div>
-            {{end}}
         </div>
     </header>
     <div class="feed-container">
@@ -132,7 +125,6 @@
                         </form>
                     </li>
                 </ul>
-                {{if .HasSession}}
                 <h3 class="menu-heading">Activity centre</h3>
                 <ul>
                     <li>
@@ -190,7 +182,6 @@
                     </li>
                     {{end}}
                 </ul>
-                {{end}}
                 {{end}}
             </nav>
             <div class="social-icons">
