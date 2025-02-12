@@ -104,7 +104,8 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 
-		provid, _ := db.Query("SELECT provider FROM user WHERE email = ?", primaryEmail)
+
+		provid, err := db.Query("SELECT provider FROM user WHERE email = ?", primaryEmail)
 		if err != nil {
 			log.Println("Error executing query:", err)
 			return
@@ -159,8 +160,8 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "GitHub ID is missing or invalid", http.StatusInternalServerError)
 			return
 		}
-		stmtt, errr := db.Prepare("INSERT INTO google (gituserid, gitF_name, gitL_name, gitUsername, gitEmail, gitpassword, gitAvatar, user_userid) VALUES (?, ?, ?, ?, ?, ?, ?,?)")
-		if errr != nil {
+		stmtt, err := db.Prepare("INSERT INTO google (gituserid, gitF_name, gitL_name, gitUsername, gitEmail, gitpassword, gitAvatar, user_userid) VALUES (?, ?, ?, ?, ?, ?, ?,?)")
+		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
 			errData := server.ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			server.ErrHandler(w, r, &errData)
@@ -168,14 +169,14 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		}
 		defer stmtt.Close()
 
-		guserid, _ := db.Query("SELECT userid FROM user WHERE email = ?", primaryEmail)
+		var userid int
+		err = db.QueryRow("SELECT userid FROM user WHERE email = ?", primaryEmail).Scan(&userid)
 		if err != nil {
 			log.Println("Error executing query:", err)
 			return
 		}
-		defer guserid.Close()
 
-		_, err = stmtt.Exec(githubID, "", "", username, primaryEmail, hashed, defaultAvatar, guserid)
+		_, err = stmtt.Exec(githubID, "", "", username, primaryEmail, hashed, defaultAvatar, userid)
 		if err != nil {
 			log.Println("Failed to insert user data:", err)
 			errData := server.ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -190,8 +191,8 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 	}
 	server.CreateSession(w, r, sid)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
 
+}
 var (
 	oauthConfigGoogle = &oauth2.Config{
 		ClientID:     "45bcae291c72da86dbdd8b65129c950f6bbf773a270576066421-puugu8n2v7om91no9u1kq116l0uf345e.apps.googleusercontent.com",
@@ -264,7 +265,7 @@ func CallbackGoogle(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 
-		provid, _ := db.Query("SELECT provider FROM user WHERE email = ?", email)
+		provid, err := db.Query("SELECT provider FROM user WHERE email = ?", email)
 		if err != nil {
 			log.Println("Error executing query:", err)
 			return
@@ -311,15 +312,15 @@ func CallbackGoogle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		gouserid, _ := db.Query("SELECT userid FROM user WHERE email = ?", email)
+		var userid int
+		err = db.QueryRow("SELECT userid FROM user WHERE email = ?", email).Scan(&userid)
 		if err != nil {
 			log.Println("Error executing query:", err)
 			return
 		}
-		defer gouserid.Close()
 
-		stmtt, errr := db.Prepare("INSERT INTO google (googleuserid, googleF_name, googleL_name, googleUsername, googleEmail, googlepassword, googleAvatar, user_userid) VALUES (?, ?, ?, ?, ?, ?, ?,?)")
-		if errr != nil {
+		stmtt, err := db.Prepare("INSERT INTO google (googleuserid, googleF_name, googleL_name, googleUsername, googleEmail, googlepassword, googleAvatar, user_userid) VALUES (?, ?, ?, ?, ?, ?, ?,?)")
+		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
 			errData := server.ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			server.ErrHandler(w, r, &errData)
@@ -327,7 +328,7 @@ func CallbackGoogle(w http.ResponseWriter, r *http.Request) {
 		}
 		defer stmtt.Close()
 
-		_, err = stmtt.Exec(googleID, firstName, lastName, username, email, hashed, profilePicture, gouserid)
+		_, err = stmtt.Exec(googleID, firstName, lastName, username, email, hashed, profilePicture, userid)
 		if err != nil {
 			log.Println("Failed to insert user data:", err)
 			errData := server.ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -349,7 +350,6 @@ func CallbackGoogle(w http.ResponseWriter, r *http.Request) {
 	server.CreateSession(w, r, sid)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
-
 func Emailexists(email string, w http.ResponseWriter, r *http.Request) (bool, error) {
 	var emailExists bool
 
