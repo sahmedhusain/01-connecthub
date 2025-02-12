@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"forum/database"
 	"log"
@@ -118,4 +119,8 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+}
+
+func base64EncodeImage(img []byte) string {
+	return base64.StdEncoding.EncodeToString(img)
 }

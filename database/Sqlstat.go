@@ -632,7 +632,7 @@ func GetLastNotifications(db *sql.DB, userID int) ([]Notification, error) {
 	return notifications, nil
 }
 
-func InsertPost(db *sql.DB, content string, image sql.NullString, userID string) (int, error) {
+func InsertPost(db *sql.DB, content string, image []byte, userID string) (int, error) {
 	stmt, err := db.Prepare("INSERT INTO post (image, content, post_at, user_userid) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		return 0, err

@@ -81,7 +81,7 @@ func DataBase() {
 	const CreatePostTable = `
 		CREATE TABLE IF NOT EXISTS post (
 			postid INTEGER PRIMARY KEY AUTOINCREMENT,
-			image TEXT NULL,
+			image BLOB,
 			content TEXT NULL,
 			post_at DATETIME NOT NULL,
 			user_userid INTEGER NOT NULL,

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"forum/database"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 )
 
 const maxPostLength = 500
+const maxFileSize = 20 << 20
 
 func NewPostPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/newpost" {
@@ -171,18 +173,34 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		file, _, err := r.FormFile("image")
-		var image sql.NullString
-		if err == nil {
-			defer file.Close()
-
-			image.String = "forum/static/uploads"
-			image.Valid = true
-		} else {
-			image.Valid = false
+		// Handle file upload
+		file, fileHeader, err := r.FormFile("image")
+		if err != nil && err != http.ErrMissingFile {
+			log.Println("Error getting uploaded file")
+			err := ErrorPageData{Code: "500", ErrorMsg: "Error getting uploaded file"}
+			ErrHandler(w, r, &err)
+			return
 		}
 
-		postID, err := database.InsertPost(db, content, image, userID)
+		var imageData []byte
+		if file != nil {
+			defer file.Close()
+
+			if fileHeader.Size > maxFileSize {
+				err := ErrorPageData{Code: "500", ErrorMsg: "Image size exceeds 20 MB limit"}
+				ErrHandler(w, r, &err)
+				return
+			}
+
+			imageData, err = io.ReadAll(file)
+			if err != nil {
+				err := ErrorPageData{Code: "500", ErrorMsg: "Error reading uploaded file"}
+				ErrHandler(w, r, &err)
+				return
+			}
+		}
+
+		postID, err := database.InsertPost(db, content, imageData, userID)
 		if err != nil {
 			log.Println("Failed to insert new post")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
