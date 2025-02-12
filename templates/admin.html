@@ -25,7 +25,7 @@
         <div class="user-actions">
             {{if .HasSession}}
             <form action="/newpost" method="GET">
-                <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                <input type="hidden" name="user" value="{{.UserID}}">
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
@@ -42,7 +42,6 @@
                             <button type="submit" class="dropdown-item">
                                 <img src="{{.UserImage}}" alt="User Image" class="notification-user-image">
                                 <div class="notification-user-name">
-                                    <span>@{{.UserName}}</span><span> Has {{.Message}}</span>
                                     <span>@{{.UserName}}</span><span> Has {{.Message}}</span>
                                 </div>
                             </button>

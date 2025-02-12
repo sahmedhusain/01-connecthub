@@ -99,6 +99,12 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		}
 		password, _ = HashPassword(password)
 		defaultAvatar := "static/assets/default-avatar.png"
+		var roleID int
+		if email == "sayedahmed97.sad@gmail.com" {
+			roleID = 1
+		} else {
+			roleID = 3
+		}
 		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar, provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)")
 		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
@@ -108,7 +114,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(F_name, L_name, username, email, password, "", 3, defaultAvatar, "normal")
+		_, err = stmt.Exec(F_name, L_name, username, email, password, "", roleID, defaultAvatar, "normal")
 		if err != nil {
 			log.Println("Failed to insert user data:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

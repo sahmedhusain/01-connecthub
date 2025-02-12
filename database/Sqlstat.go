@@ -88,7 +88,7 @@ type UserSession struct {
 }
 
 func GetAllCategories(db *sql.DB) ([]Category, error) {
-	rows, err := db.Query("SELECT idcategories, name, description FROM categories")
+	rows, err := db.Query("SELECT idcategories, name FROM categories")
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func GetAllCategories(db *sql.DB) ([]Category, error) {
 	var categories []Category
 	for rows.Next() {
 		var category Category
-		if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
+		if err := rows.Scan(&category.ID, &category.Name); err != nil {
 			return nil, err
 		}
 		categories = append(categories, category)
@@ -344,7 +344,7 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 
 func GetCategoriesForPost(db *sql.DB, postID int) ([]Category, error) {
 	rows, err := db.Query(`
-        SELECT c.idcategories, c.name, c.description
+        SELECT c.idcategories, c.name
         FROM categories c
         JOIN post_has_categories phc ON c.idcategories = phc.categories_idcategories
         WHERE phc.post_postid = ?
@@ -357,7 +357,7 @@ func GetCategoriesForPost(db *sql.DB, postID int) ([]Category, error) {
 	var categories []Category
 	for rows.Next() {
 		var category Category
-		if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
+		if err := rows.Scan(&category.ID, &category.Name); err != nil {
 			return nil, err
 		}
 		categories = append(categories, category)
