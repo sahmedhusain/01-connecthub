@@ -13,7 +13,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/post" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -22,6 +22,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Println("Error opening database:", err)
@@ -47,7 +48,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching userid and username from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -71,7 +72,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch posts")
 		errData := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 

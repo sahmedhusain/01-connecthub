@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	db "forum/database"
+	auth "forum/src/authentication"
 	"forum/src/server"
 	"log"
 	"net/http"
@@ -38,6 +39,10 @@ func main() {
 	http.HandleFunc("/changepassword", server.AuthMiddleware(server.ChangePassword))
 	// http.HandleFunc("/togglepassword", server.AuthMiddleware(server.TogglePassword))
 	http.HandleFunc("/addcomment", server.AuthMiddleware(server.AddComment))
+	http.HandleFunc("/callbackGoogle", server.AuthMiddleware(auth.CallbackGoogle))
+	http.HandleFunc("/auth/google", server.AuthMiddleware(auth.LoginPageGoogle))
+	http.HandleFunc("/auth/github/callback", server.AuthMiddleware(auth.Callback))
+	http.HandleFunc("/auth/github", server.AuthMiddleware(auth.LoginPageGit))
 
 	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 

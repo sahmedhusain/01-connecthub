@@ -13,14 +13,14 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/home" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
 	if r.Method != "GET" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -28,7 +28,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -58,7 +58,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		} else if err != nil {
 			log.Println("Error fetching userid ID from user table:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		} else {
 			log.Println("User is logged in:", userName)
@@ -69,7 +69,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch users:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -77,7 +77,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch categories:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -92,7 +92,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch posts:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -103,17 +103,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		selectedTab = "posts"
 	}
 
-	if filter == "" {
-		if selectedTab == "your+posts" {
-			filter = "newest"
-		} else if selectedTab == "your+replies" {
-			filter = "newest"
-		} else if selectedTab == "your+reactions" {
-			filter = "likes"
-		} else {
-			filter = "all"
-		}
-	}
 	if filter == "" {
 		if selectedTab == "your+posts" {
 			filter = "newest"
@@ -136,7 +125,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		case "oldest":
@@ -144,32 +133,31 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		default:
 			log.Println("Invalid filter selected", err)
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	case "tags":
 
 		if filter == "all" {
 			posts = allPosts
-			
 		} else if CheckFilter(filter, categoryNames) {
-			posts, err = database.GetFilteredPosts(db, filter)
+			posts, err = database.GetPostsByCategory(db, filter)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else {
 			log.Println("Invalid filter selected", err)
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -182,7 +170,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		case "oldest":
@@ -190,13 +178,13 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		default:
 			log.Println("Invalid filter selected", err)
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -206,7 +194,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch posts:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -220,7 +208,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		case "dislikes":
@@ -229,20 +217,20 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		default:
 			log.Println("Invalid filter selected", err)
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
 	default:
 		log.Println("Invalid tab selected", err)
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -253,12 +241,12 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		if err == sql.ErrNoRows {
 			log.Println("No user found with the given ID:", userID)
 			err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		} else if err != nil {
 			log.Println("Failed to fetch user data:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -276,17 +264,23 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch total likes:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
-		
+		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
+		if err != nil {
+			log.Println("Failed to fetch total posts:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
 
 		notifications, err := database.GetLastNotifications(db, userID)
 		if err != nil {
 			log.Println("Failed to fetch notifications:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -311,7 +305,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error rendering home page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	} else {
@@ -320,7 +314,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error rendering home page:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		}
@@ -338,7 +332,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error rendering home page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	}

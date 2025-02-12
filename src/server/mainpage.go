@@ -11,14 +11,14 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
 	if r.Method != "GET" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -32,7 +32,7 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -41,7 +41,7 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch categories")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -65,7 +65,7 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch posts")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -73,7 +73,7 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch users")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -89,7 +89,7 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error rendering index page:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 }

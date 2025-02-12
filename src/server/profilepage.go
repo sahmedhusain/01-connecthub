@@ -12,7 +12,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/profile" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -20,7 +20,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -45,7 +45,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error converting userID to int:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	var user database.User
@@ -53,7 +53,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch user data")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -61,7 +61,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch user posts")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -69,7 +69,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch followers count")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -77,7 +77,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch following count")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -85,7 +85,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch friends count")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -93,7 +93,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to check if user is following")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -154,7 +154,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error rendering profile page:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 }

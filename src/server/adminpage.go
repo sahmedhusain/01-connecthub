@@ -13,7 +13,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -21,7 +21,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -43,7 +43,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching session ID from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch users")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -90,7 +90,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch posts")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -98,7 +98,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch categories")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -106,7 +106,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch reports")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -114,7 +114,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch total users count")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -122,7 +122,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch total posts count")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -130,7 +130,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch total categories count")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -138,7 +138,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch notifications:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -151,7 +151,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					log.Println("Failed to fetch user logs")
 					errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-					errHandler(w, r, &errData)
+					ErrHandler(w, r, &errData)
 					return
 				}
 			}
@@ -164,7 +164,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					log.Println("Failed to fetch user sessions:", err)
 					errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-					errHandler(w, r, &errData)
+					ErrHandler(w, r, &errData)
 					return
 				}
 			}
@@ -200,7 +200,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error rendering admin page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	case "POST":
@@ -211,7 +211,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to delete user:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 				return
 			}
 		} else if r.FormValue("delete_post") != "" {
@@ -220,7 +220,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to delete post")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("delete_category") != "" {
@@ -229,7 +229,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to delete category")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("add_category") != "" {
@@ -238,7 +238,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to add category")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("resolve_report") != "" {
@@ -247,7 +247,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to resolve report")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("delete_comment") != "" {
@@ -256,7 +256,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to delete comment")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else {
@@ -268,7 +268,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 					if err != nil {
 						log.Println("Failed to update user role:", err)
 						err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-						errHandler(w, r, &err)
+						ErrHandler(w, r, &err)
 						return
 					}
 				}
@@ -279,7 +279,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	default:
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 }

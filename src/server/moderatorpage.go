@@ -12,7 +12,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/moderator" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -20,7 +20,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -41,7 +41,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error userid session ID from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -50,7 +50,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -60,7 +60,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch posts")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -78,7 +78,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error rendering home page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	case "POST":
@@ -89,7 +89,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to delete post")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("report_post") != "" {
@@ -99,7 +99,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to report post")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("delete_comment") != "" {
@@ -108,7 +108,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to delete comment")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		} else if r.FormValue("report_comment") != "" {
@@ -117,7 +117,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to report comment")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 		}
@@ -126,7 +126,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 	default:
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 }

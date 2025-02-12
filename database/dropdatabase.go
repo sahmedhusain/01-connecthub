@@ -30,6 +30,8 @@ func DropDataBase() {
 	const DropNotificationsTable = `DROP TABLE IF EXISTS notifications;`
 	const DropFollowingTable = `DROP TABLE IF EXISTS following;`
 	const DropReportsTable = `DROP TABLE IF EXISTS reports;`
+	const DropGoodleTable = `DROP TABLE IF EXISTS google;`
+	const DropGithubTable = `DROP TABLE IF EXISTS github;`
 
 	dropTableStatements := []string{
 		DropCategoriesTable,
@@ -48,6 +50,8 @@ func DropDataBase() {
 		DropNotificationsTable,
 		DropFollowingTable,
 		DropReportsTable,
+		DropGoodleTable,
+		DropGithubTable,
 	}
 
 	for _, stmt := range dropTableStatements {

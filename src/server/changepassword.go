@@ -10,7 +10,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -22,7 +22,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -32,14 +32,14 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching user:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
 	if storedPassword != currentPassword {
 		log.Println("Current password is incorrect")
 		err := ErrorPageData{Code: "400", ErrorMsg: "Current password is incorrect"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -47,7 +47,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error updating password:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 

@@ -12,7 +12,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/notifications" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -20,7 +20,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -29,7 +29,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error converting userID to int:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -37,7 +37,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to fetch notifications")
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 		return
 	}
 
@@ -55,7 +55,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error rendering notifications page:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 }

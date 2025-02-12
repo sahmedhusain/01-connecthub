@@ -11,7 +11,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/signup" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -31,7 +31,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error rendering signup page:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 			}
 			return
 		}
@@ -43,7 +43,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error rendering signup page:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 			}
 			return
 		}
@@ -52,7 +52,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Database connection failed")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 		defer db.Close()
@@ -62,7 +62,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to check if username exists")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -70,7 +70,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to check if email exists")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -81,7 +81,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error rendering signup page:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 			}
 			return
 		}
@@ -93,27 +93,26 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error rendering signup page:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 			}
 			return
 		}
 		password, _ = HashPassword(password)
 		defaultAvatar := "static/assets/default-avatar.png"
-		// Insert user data into the database
-		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar, provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)")
 		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(F_name, L_name, username, email, password, "", 3, defaultAvatar)
+		_, err = stmt.Exec(F_name, L_name, username, email, password, "", 3, defaultAvatar, "normal")
 		if err != nil {
 			log.Println("Failed to insert user data:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -126,6 +125,6 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error rendering signup page:", err)
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 	}
 }

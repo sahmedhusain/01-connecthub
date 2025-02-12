@@ -118,6 +118,7 @@ func DataBase() {
 			current_session TEXT,
 			role_id INTEGER NOT NULL,
 			Avatar TEXT,
+			provider TEXT,
 			FOREIGN KEY (current_session) REFERENCES session(sessionid),
 			FOREIGN KEY (role_id) REFERENCES user_roles(roleid)
 		);
@@ -181,6 +182,33 @@ func DataBase() {
 			FOREIGN KEY (reported_by) REFERENCES user(userid)
 		);`
 
+	const CreateGithubTable = `
+		CREATE TABLE IF NOT EXISTS github (
+			gituserid INTEGER PRIMARY KEY AUTOINCREMENT,
+			gitF_name TEXT NOT NULL,
+			gitL_name TEXT NOT NULL,
+			gitUsername TEXT NOT NULL,
+			gitEmail TEXT NOT NULL,
+			gitpassword TEXT NOT NULL,
+			gitAvatar TEXT,
+			user_userid INTEGER NOT NULL,
+
+			FOREIGN KEY (user_userid) REFERENCES user(userid)
+		);`
+
+	const CreateGoogleTable = `
+		CREATE TABLE IF NOT EXISTS google (
+			googleuserid INTEGER PRIMARY KEY AUTOINCREMENT,
+			googleF_name TEXT NOT NULL,
+			googleL_name TEXT NOT NULL,
+			googleUsername TEXT NOT NULL,
+			googleEmail TEXT NOT NULL,
+			googlepassword TEXT NOT NULL,
+			googleAvatar TEXT,
+			user_userid INTEGER NOT NULL,
+			FOREIGN KEY (user_userid) REFERENCES user(userid)
+		);`
+
 	createTableStatements := []string{
 		CreateCategoriesTable,
 		CreateCommentTable,
@@ -198,6 +226,8 @@ func DataBase() {
 		CreateNotificationsTable,
 		CreateFollowingTable,
 		CreateReportsTable,
+		CreateGithubTable,
+		CreateGoogleTable,
 	}
 
 	for _, stmt := range createTableStatements {
@@ -276,7 +306,6 @@ func DataBase() {
 		insertUserRoles,
 		insertUsers,
 	}
-
 
 	for _, group := range allInserts {
 		for _, stmt := range group {

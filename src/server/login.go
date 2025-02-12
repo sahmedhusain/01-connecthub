@@ -12,7 +12,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -20,7 +20,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -41,13 +41,13 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					log.Println("Error rendering login page:", err)
 					errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-					errHandler(w, r, &errData)
+					ErrHandler(w, r, &errData)
 				}
 				return
 			}
 			log.Println("Failed to fetch user data")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -58,7 +58,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error rendering login page:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 			}
 			return
 		}
@@ -68,7 +68,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error generating UUID:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 		}
 
 		stringToken := sessionToken.String()
@@ -86,7 +86,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error updating session ID in session table:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		} else if rowsAffected, err := result.RowsAffected(); err == nil && rowsAffected == 0 { //only insert a new row if no record is updated (i.e., no session is found)
 			_, err := db.Exec("INSERT INTO session (sessionid, userid, endtime) VALUES (?, ?, ?) RETURNING sessionid",
@@ -94,7 +94,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Error creating new session:", err)
 				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &errData)
+				ErrHandler(w, r, &errData)
 				return
 			}
 		}
@@ -104,7 +104,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error updating session ID in user table:", err)
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -118,6 +118,6 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error rendering login page:", err)
 		errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &errData)
+		ErrHandler(w, r, &errData)
 	}
 }

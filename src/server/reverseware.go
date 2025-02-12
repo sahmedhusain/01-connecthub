@@ -14,7 +14,7 @@ func ReverseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			log.Println("Database connection failed")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 		defer db.Close()
@@ -32,7 +32,7 @@ func ReverseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			if err != nil {
 				log.Println("Error :", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			} else if !exists {
 				log.Println("Inavlid Session")

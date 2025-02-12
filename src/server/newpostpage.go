@@ -16,14 +16,14 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/newpost" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 	}
 
 	db, err := sql.Open("sqlite3", "./database/main.db")
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -45,7 +45,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching userid and username from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -55,7 +55,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch categories")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -63,7 +63,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch user data")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -71,7 +71,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch notifications")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -87,7 +87,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch role name")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -97,7 +97,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch total likes")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -105,7 +105,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch total posts")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -137,7 +137,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error rendering new post page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -147,7 +147,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to parse form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -157,7 +157,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if userID == "" || content == "" {
 			log.Println("Invalid form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -186,7 +186,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to insert new post")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 

@@ -14,7 +14,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/settings" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -22,7 +22,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Database connection failed")
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -43,7 +43,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching userid and username from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	log.Println("UserID retrieved from session:", userID)
@@ -55,7 +55,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to fetch user data")
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &errData)
+			ErrHandler(w, r, &errData)
 			return
 		}
 
@@ -86,7 +86,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error rendering settings page:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	case "POST":
@@ -94,7 +94,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to parse form data")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -117,7 +117,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println("Failed to open file for writing")
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-				errHandler(w, r, &err)
+				ErrHandler(w, r, &err)
 				return
 			}
 			defer f.Close()
@@ -125,7 +125,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		} else if err != http.ErrMissingFile {
 			log.Println("Failed to upload avatar")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 
@@ -138,7 +138,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Failed to update user data")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 		log.Println("User data updated with ID:", userID)
@@ -146,7 +146,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	default:
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 }

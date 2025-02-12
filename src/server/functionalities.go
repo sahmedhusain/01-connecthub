@@ -64,7 +64,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -72,7 +72,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Invalid post ID")
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -80,7 +80,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error converting userID to int:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -88,7 +88,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -97,7 +97,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error toggling like:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	log.Println("Like toggled")
@@ -108,7 +108,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -116,7 +116,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Invalid post ID")
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -124,7 +124,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error converting userID to int:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -132,7 +132,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -141,7 +141,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error toggling dislike:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	log.Println("Dislike toggled")
@@ -152,7 +152,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -160,7 +160,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Invalid comment ID")
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -168,7 +168,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error converting userID to int:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -176,7 +176,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -185,7 +185,7 @@ func LikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error toggling like:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	log.Println("Like toggled")
@@ -196,7 +196,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -204,7 +204,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Invalid comment ID")
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -212,7 +212,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error converting userID to int:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -220,7 +220,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -229,7 +229,7 @@ func DislikeComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error toggling dislike:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	log.Println("Dislike toggled")
@@ -240,7 +240,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -248,7 +248,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	if postID == "" {
 		log.Println("Post ID is missing")
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -256,7 +256,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -265,7 +265,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error deleting post:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -276,7 +276,7 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Println("Method not allowed")
 		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -284,7 +284,7 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 	if postID == "" {
 		log.Println("Post ID is missing")
 		err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -292,7 +292,7 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -301,7 +301,7 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error reporting post:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 

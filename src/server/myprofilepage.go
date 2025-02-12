@@ -12,7 +12,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/myprofile" {
 		log.Println("Invalid URL path")
 		err := ErrorPageData{Code: "404", ErrorMsg: "PAGE NOT FOUND"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -20,7 +20,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error opening database:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 	defer db.Close()
@@ -42,7 +42,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching userid and username from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	} else if err != nil {
 		log.Println("Error fetching user details:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -62,7 +62,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching user posts:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -70,7 +70,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching followers count:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -78,7 +78,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching following count:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -86,7 +86,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching friends count:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -94,7 +94,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching notifications:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -102,7 +102,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching total likes:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -110,7 +110,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error fetching total posts:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 		return
 	}
 
@@ -131,7 +131,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error fetching followers:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	} else if view == "following" {
@@ -139,7 +139,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error fetching following:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	} else if view == "friends" {
@@ -147,7 +147,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error fetching friends:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	}
@@ -156,7 +156,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error fetching followers:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	} else if view == "following" {
@@ -164,7 +164,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error fetching following:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	} else if view == "friends" {
@@ -172,7 +172,7 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error fetching friends:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			errHandler(w, r, &err)
+			ErrHandler(w, r, &err)
 			return
 		}
 	}
@@ -227,6 +227,6 @@ func MyProfilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error rendering my profile page:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		errHandler(w, r, &err)
+		ErrHandler(w, r, &err)
 	}
 }
