@@ -155,6 +155,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 
 		userID := r.FormValue("user")
 		content := strings.TrimSpace(r.FormValue("content"))
+		title := strings.TrimSpace(r.FormValue("title"))
 		fmt.Println(userID, content)
 		if userID == "" || content == "" {
 			log.Println("Invalid form data")
@@ -200,7 +201,7 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		postID, err := database.InsertPost(db, content, imageData, userID)
+		postID, err := database.InsertPost(db, content, title, imageData, userID)
 		if err != nil {
 			log.Println("Failed to insert new post")
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}

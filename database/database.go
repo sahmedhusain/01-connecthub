@@ -83,6 +83,7 @@ func DataBase() {
 			postid INTEGER PRIMARY KEY AUTOINCREMENT,
 			image BLOB,
 			content TEXT NULL,
+			title  TEXT NULL,
 			post_at DATETIME NOT NULL,
 			user_userid INTEGER NOT NULL,
 			FOREIGN KEY (user_userid) REFERENCES user(userid)

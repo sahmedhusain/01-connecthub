@@ -42,6 +42,7 @@ type Comment struct {
 type Post struct {
 	PostID     int
 	Image      sql.NullString
+	Title      string
 	Content    string
 	PostAt     time.Time
 	UserUserID int
@@ -187,7 +188,7 @@ func GetUserReaction(db *sql.DB, userid int, filter string) ([]Post, error) {
 }
 func GetUserLikedPosts(db *sql.DB, userID int) ([]Post, error) {
 	rows, err := db.Query(`
-        SELECT post.postid, post.image, post.content, post.post_at,
+        SELECT post.postid, post.image, post.content, post.title, post.post_at,
 		        		user.avatar, user.F_name, user.L_name, user.Username,
 		 (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -223,7 +224,7 @@ func GetUserLikedPosts(db *sql.DB, userID int) ([]Post, error) {
 
 func GetUserDislikedPosts(db *sql.DB, userID int) ([]Post, error) {
 	rows, err := db.Query(`
- SELECT post.postid, post.image, post.content, post.post_at,
+ SELECT post.postid, post.image, post.content, post.title, post.post_at,
         		user.avatar, user.F_name, user.L_name, user.Username,
 		               (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -295,7 +296,7 @@ func GetUserCommentedPosts(db *sql.DB, userid int, filter string) ([]Post, error
 
 func GetAllPosts(db *sql.DB) ([]Post, error) {
 	rows, err := db.Query(`
-        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+        SELECT post.postid, post.image, post.title, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -313,7 +314,7 @@ func GetAllPosts(db *sql.DB) ([]Post, error) {
 	for rows.Next() {
 		var post Post
 		var postAt string
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Title, &post.Content, &post.Title, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
@@ -404,7 +405,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 	switch filter {
 	case "following":
 		rows, err = db.Query(`
-            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+            SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                    (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                    (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -414,7 +415,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
         `)
 	case "friends":
 		rows, err = db.Query(`
-            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+            SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                    (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                    (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -424,7 +425,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
         `)
 	case "top-rated":
 		rows, err = db.Query(`
-            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+            SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                    (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                    (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -434,7 +435,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
         `)
 	case "oldest":
 		rows, err = db.Query(`
-            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+            SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                    (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                    (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -444,7 +445,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
         `)
 	default:
 		rows, err = db.Query(`
-            SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+            SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                    (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                    (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                    (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -464,7 +465,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 	for rows.Next() {
 		var post Post
 		var postAt string
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.Title, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
@@ -495,7 +496,7 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 
 func GetPostsByMultiCategory(db *sql.DB, categoryName string) ([]Post, error) {
 	rows, err := db.Query(`
-        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+        SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -516,7 +517,7 @@ func GetPostsByMultiCategory(db *sql.DB, categoryName string) ([]Post, error) {
 	for rows.Next() {
 		var post Post
 		var postAt string
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.Title, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
@@ -548,7 +549,7 @@ func GetPostsByMultiCategory(db *sql.DB, categoryName string) ([]Post, error) {
 
 func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 	rows, err := db.Query(`
-        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+        SELECT post.postid, post.image, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
@@ -569,7 +570,7 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 	for rows.Next() {
 		var post Post
 		var postAt string
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.Title, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
@@ -632,14 +633,14 @@ func GetLastNotifications(db *sql.DB, userID int) ([]Notification, error) {
 	return notifications, nil
 }
 
-func InsertPost(db *sql.DB, content string, image []byte, userID string) (int, error) {
-	stmt, err := db.Prepare("INSERT INTO post (image, content, post_at, user_userid) VALUES (?, ?, ?, ?)")
+func InsertPost(db *sql.DB, content string, title string, image []byte, userID string) (int, error) {
+	stmt, err := db.Prepare("INSERT INTO post (image, content, title, post_at, user_userid) VALUES (?, ?,?, ?, ?)")
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(image, content, time.Now(), userID)
+	res, err := stmt.Exec(image, content, title, time.Now(), userID)
 	if err != nil {
 		return 0, err
 	}
@@ -672,7 +673,7 @@ func GetUserPosts(db *sql.DB, userID int, filter string) ([]Post, error) {
 	}
 
 	rows, err := db.Query(`SELECT 
-		post.postid, post.content, post.post_at, post.user_userid, 
+		post.postid, post.content, post.title, post.post_at, post.user_userid, 
 		user.avatar, user.F_name, user.L_name, user.Username,
 				 (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -688,7 +689,7 @@ func GetUserPosts(db *sql.DB, userID int, filter string) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Content, &post.PostAt, &post.UserUserID, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Content, &post.Title, &post.PostAt, &post.UserUserID, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)

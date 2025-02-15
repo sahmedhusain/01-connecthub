@@ -227,10 +227,11 @@
                         </div>
                     </div>
                     <div class="post-content">
+                        <h2>{{.Post.Title}}</h2>
                         <p>{{.Post.Content}}</p>
-                        <!--                         {{if .Post.Image.Valid}}
+                        {{if .Post.Image.Valid}}
                         <img src="{{.Post.Image.String}}" alt="Post Image">
-                        {{end}} -->
+                        {{end}}
                         <div class="post-categories">
                             {{range .Categories}}
                             <form action="/home" method="GET">

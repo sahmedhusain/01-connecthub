@@ -2,7 +2,6 @@ package server
 
 import (
 	"database/sql"
-	"encoding/base64"
 	"fmt"
 	"forum/database"
 	"log"
@@ -62,14 +61,14 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 	var post database.Post
 	err = db.QueryRow(`
-        SELECT post.postid, post.image, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+        SELECT post.postid, post.image, post.title, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
                (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
         FROM post
         JOIN user ON post.user_userid = user.userid
         WHERE post.postid = ?
-		`, postID).Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
+		`, postID).Scan(&post.PostID, &post.Image, &post.Title, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
 	if err != nil {
 		log.Println("Failed to fetch posts")
 		errData := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
@@ -119,8 +118,4 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-}
-
-func base64EncodeImage(img []byte) string {
-	return base64.StdEncoding.EncodeToString(img)
 }
