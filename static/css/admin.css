@@ -12,6 +12,14 @@
     --shadow-light: rgba(0, 0, 0, 0.1);
 }
 
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
 main {
     padding: 20px;
     background-color: var(--background-color);
@@ -27,6 +35,7 @@ main {
 .container {
     max-width: 1500px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
 h1,
@@ -46,10 +55,10 @@ h2 {
 }
 
 .dashboard-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
+    margin-bottom: 25px;
 }
 
 .dashboard-stats div {
@@ -58,7 +67,6 @@ h2 {
     padding: 25px;
     border-radius: var(--radius);
     text-align: center;
-    flex: 1;
     transition: background-color var(--transition), transform var(--transition);
 }
 
@@ -71,6 +79,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 25px;
+    box-shadow: 0 2px 5px var(--shadow-light);
 }
 
 table,

@@ -93,6 +93,20 @@
     background: none;
 }
 
+.action-link.delete:hover {
+    color: #FFFFFF;
+    background-color: #DC2626;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.action-link.report:hover {
+    color: #FFFFFF;
+    background-color: #1F2937;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
 .dropdown-content button img {
     width: 45px;
     height: 45px;
