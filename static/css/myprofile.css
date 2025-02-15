@@ -43,7 +43,6 @@ main {
     gap: 2rem;
     margin-bottom: 2rem;
     flex-wrap: wrap;
-    /* Ensures layout adapts for smaller screens */
 }
 
 .profile-header img {
@@ -52,10 +51,11 @@ main {
     border-radius: 50%;
     object-fit: cover;
     box-shadow: var(--box-shadow);
+    transition: transform var(--transition);
 }
 
-.profile-info {
-    flex: 1;
+.profile-header img:hover {
+    transform: scale(1.05); /* Added hover effect */
 }
 
 .profile-info h1 {
@@ -64,6 +64,10 @@ main {
     color: var(--secondary-color);
     margin: 0;
     transition: color var(--transition);
+}
+
+.profile-info h1:hover {
+    color: var(--hover-color); /* Added hover effect */
 }
 
 .profile-info p {
@@ -88,7 +92,6 @@ main {
 .posts-container {
     margin-top: 2rem;
     width: 100%;
-    /* Ensures container spans full width */
 }
 
 .posts-container h2 {
@@ -112,6 +115,7 @@ main {
 
 .posts-container .post:hover {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px); /* Added hover effect */
 }
 
 .post img {

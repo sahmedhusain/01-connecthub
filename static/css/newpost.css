@@ -9,7 +9,7 @@
     --text-color: #374151;
     --muted-text-color: #6B7280;
     --font-family: 'Roboto', sans-serif;
-    --radius: 6px;
+    --radius: 8px; /* Increased border-radius for a modern look */
     --transition: 0.3s ease;
     --shadow-light: rgba(0, 0, 0, 0.1);
 }
@@ -54,7 +54,7 @@ form textarea {
     width: 100%;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    padding: 10px;
+    padding: 12px; /* Increased padding for better readability */
     font-size: 14px;
     margin-bottom: 15px;
     outline: none;
@@ -81,7 +81,7 @@ form textarea {
     gap: 8px;
     background-color: var(--border-color);
     color: var(--secondary-color);
-    padding: 10px 15px;
+    padding: 12px 20px; /* Increased padding for better clickability */
     border-radius: var(--radius);
     cursor: pointer;
     font-size: 14px;

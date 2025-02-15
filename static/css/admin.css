@@ -29,7 +29,8 @@ main {
     margin: 0 auto;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: var(--text-color);
     padding-bottom: 15px;
     margin-bottom: 25px;
@@ -48,6 +49,7 @@ h2 {
     display: flex;
     justify-content: space-around;
     margin-bottom: 25px;
+    gap: 15px;
 }
 
 .dashboard-stats div {
@@ -57,12 +59,12 @@ h2 {
     border-radius: var(--radius);
     text-align: center;
     flex: 1;
-    margin: 0 15px;
-    transition: background-color var(--transition);
+    transition: background-color var(--transition), transform var(--transition);
 }
 
 .dashboard-stats div:hover {
     background-color: #d6d9db;
+    transform: translateY(-5px);
 }
 
 table {
@@ -71,17 +73,25 @@ table {
     margin-bottom: 25px;
 }
 
-table, th, td {
+table,
+th,
+td {
     border: 1px solid var(--border-color);
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
 }
 
 th {
     background-color: var(--header-bg-color);
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
 }
 
 .role-select,
@@ -92,6 +102,15 @@ th {
     margin-bottom: 12px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
+    font-size: 16px;
+    transition: border-color var(--transition);
+}
+
+.role-select:focus,
+.user-logs-select:focus,
+.user-sessions-select:focus {
+    border-color: var(--primary-color);
+    outline: none;
 }
 
 .delete-button,
@@ -105,7 +124,7 @@ th {
     padding: 12px 24px;
     cursor: pointer;
     border-radius: var(--radius);
-    transition: opacity var(--transition);
+    transition: opacity var(--transition), transform var(--transition);
     font-size: 16px;
     margin-right: 12px;
 }
@@ -123,18 +142,19 @@ th {
 .view-logs-button:hover,
 .view-sessions-button:hover {
     opacity: var(--hover-opacity);
+    transform: translateY(-2px);
 }
 
 .category-form {
     display: flex;
     justify-content: space-between;
     margin-bottom: 25px;
+    gap: 12px;
 }
 
 .category-form input {
     flex: 1;
     padding: 12px;
-    margin-right: 12px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     font-size: 16px;
@@ -143,4 +163,5 @@ th {
 
 .category-form input:focus {
     border-color: var(--primary-color);
+    outline: none;
 }

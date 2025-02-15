@@ -5,7 +5,7 @@
     --border-color: #ddd;
     --hover-opacity: 0.8;
     --font-family: 'Arial', sans-serif;
-    --radius: 5px;
+    --radius: 8px; /* Increased border-radius for a modern look */
     --transition: 0.3s ease;
     --shadow-light: rgba(0, 0, 0, 0.1);
     --text-color: #333;
@@ -45,6 +45,7 @@ h2 {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
+    gap: 15px; /* Added gap for better spacing */
 }
 
 .dashboard-stats div {
@@ -55,17 +56,19 @@ h2 {
     text-align: center;
     flex: 1;
     margin: 0 10px;
-    transition: background-color var(--transition);
+    transition: background-color var(--transition), transform var(--transition);
 }
 
 .dashboard-stats div:hover {
     background-color: #0056b3;
+    transform: translateY(-5px); /* Added hover effect */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    box-shadow: 0 4px 6px var(--shadow-light); /* Added shadow for better visibility */
 }
 
 table, th, td {
@@ -73,12 +76,17 @@ table, th, td {
 }
 
 th, td {
-    padding: 10px;
+    padding: 12px; /* Increased padding for better readability */
     text-align: left;
 }
 
 th {
     background-color: var(--table-bg-color);
+    font-weight: bold; /* Added bold font for headers */
+}
+
+tr:hover {
+    background-color: #f9f9f9; /* Added hover effect for rows */
 }
 
 .delete-button,
@@ -87,7 +95,7 @@ th {
     cursor: pointer;
     border-radius: var(--radius);
     margin-right: 5px;
-    transition: opacity var(--transition);
+    transition: opacity var(--transition), transform var(--transition);
 }
 
 .delete-button {
@@ -103,12 +111,14 @@ th {
 .delete-button:hover,
 .report-button:hover {
     opacity: var(--hover-opacity);
+    transform: translateY(-2px); /* Added hover effect */
 }
 
 .category-form {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    gap: 10px; /* Added gap for better spacing */
 }
 
 .category-form input {
@@ -123,4 +133,5 @@ th {
 
 .category-form input:focus {
     border-color: var(--primary-color);
+    outline: none; /* Removed default outline */
 }

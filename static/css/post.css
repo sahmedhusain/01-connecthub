@@ -45,6 +45,11 @@ main {
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 2px 5px var(--shadow-light);
+    transition: transform var(--transition);
+}
+
+.post-header img:hover {
+    transform: scale(1.05); /* Added hover effect */
 }
 
 .post-info h3 {
@@ -69,8 +74,6 @@ main {
     text-align-last: left;
 }
 
-
-
 .post-content p {
     margin-bottom: 15px;
     overflow-wrap: break-word;
@@ -83,6 +86,11 @@ main {
     border-radius: var(--radius);
     margin-top: 15px;
     box-shadow: 0 2px 5px var(--shadow-light);
+    transition: transform var(--transition);
+}
+
+.post-content img:hover {
+    transform: scale(1.02); /* Added hover effect */
 }
 
 .post-actions {
@@ -104,6 +112,7 @@ main {
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: color var(--transition);
 }
 
 .post-actions button:hover {
@@ -126,6 +135,11 @@ main {
     align-items: flex-start;
     gap: 15px;
     margin-bottom: 20px;
+    transition: transform var(--transition);
+}
+
+.comment:hover {
+    transform: translateX(5px); /* Added hover effect */
 }
 
 .comment img {
@@ -206,6 +220,7 @@ main {
     color: var(--text-muted-color);
     font-size: 14px;
     cursor: pointer;
+    transition: color var(--transition);
 }
 
 .action-link:hover {
@@ -247,6 +262,7 @@ textarea {
     resize: none;
     transition: border-color var(--transition);
 }
+
 .comment-content time {
     display: flex;
     font-size: 12px;
@@ -302,6 +318,11 @@ textarea {
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: color var(--transition);
+}
+
+.comment-actions button:hover {
+    color: var(--primary-color);
 }
 
 .comment-actions time {
@@ -311,6 +332,56 @@ textarea {
     margin-left: 5px;
 }
 
-.comment-actions button:hover {
-    color: var(--primary-color);
+/* Responsive Design */
+@media (max-width: 768px) {
+    .post-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .post-header img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .post-info h3 {
+        font-size: 18px;
+    }
+
+    .post-info span {
+        font-size: 12px;
+    }
+
+    .post-content {
+        font-size: 14px;
+    }
+
+    .post-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .comment {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .comment img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .comment-content {
+        width: 100%;
+    }
+
+    .add-comment textarea {
+        font-size: 12px;
+    }
+
+    .add-comment button {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
 }

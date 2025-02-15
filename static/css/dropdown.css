@@ -17,10 +17,6 @@
 }
 
 .dropdown-content {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
     display: none;
     position: absolute;
     background-color: #FFFFFF;
@@ -107,18 +103,23 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.profile-button .profile-image:hover {
+    transform: scale(1.05);
 }
 
 .fa-bell {
     font-size: 25px;
     color: #374151;
     position: relative;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .fa-bell:hover {
     color: #2563EB;
     transform: scale(1.1);
-    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .fa-bell::after {

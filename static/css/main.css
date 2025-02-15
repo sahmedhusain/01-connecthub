@@ -1,21 +1,40 @@
+:root {
+    --primary-color: #3B82F6;
+    --secondary-color: #1F2937;
+    --background-color: #F9FAFB;
+    --foreground-color: #FFFFFF;
+    --border-color: #E5E7EB;
+    --text-color: #333;
+    --text-light-color: #6B7280;
+    --hover-color: #2563EB;
+    --font-family: 'Roboto', sans-serif;
+    --radius: 8px;
+    --transition: all 0.3s ease-in-out;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+}
+
 body {
     margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #F9FAFB;
+    font-family: var(--font-family);
+    background-color: var(--background-color);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    color: #333;
+    color: var(--text-color);
 }
 
 header {
-    background-color: #FFFFFF;
-    border-bottom: 2px solid #E5E7EB;
+    background-color: var(--foreground-color);
+    border-bottom: 2px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px var(--shadow-light);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .feed {
@@ -30,6 +49,8 @@ header {
 .feed-container {
     display: flex;
     flex: 1;
+    gap: 20px;
+    padding: 20px;
 }
 
 .logo-container {
@@ -37,7 +58,7 @@ header {
     align-items: center;
     gap: 1px;
     text-decoration: none;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition);
 }
 
 .logo-container:hover {
@@ -47,11 +68,12 @@ header {
 .logo-container img {
     width: 60px;
     height: 60px;
+    border-radius: var(--radius);
 }
 
 .logo-container span {
     font-size: 18px;
-    color: #1F2937;
+    color: var(--secondary-color);
     letter-spacing: 0.5px;
 }
 
@@ -79,34 +101,34 @@ header {
 
 .user-actions button {
     padding: 10px 20px;
-    border-radius: 6px;
+    border-radius: var(--radius);
     border: none;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color var(--transition), transform var(--transition);
 }
 
 .user-actions button:hover {
-    background-color: #2563EB;
-    color: white;
+    background-color: var(--hover-color);
+    color: var(--foreground-color);
     transform: translateY(-2px);
 }
 
 .register {
-    background-color: #3B82F6;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--foreground-color);
     border: none;
     cursor: pointer;
 }
 
 .register:hover {
-    background-color: #2563EB;
+    background-color: var(--hover-color);
 }
 
 .login {
-    background-color: #E5E7EB;
-    color: #1F2937;
+    background-color: var(--border-color);
+    color: var(--secondary-color);
 }
 
 .login:hover {
@@ -123,14 +145,13 @@ main {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
+    background-color: var(--foreground-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
     padding: 20px;
     width: 260px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px var(--shadow-light);
     position: sticky;
-    margin-left: 20px;
     top: 20px;
     bottom: 60px;
     margin-top: 20px;
@@ -145,7 +166,7 @@ main {
     cursor: pointer;
     font: inherit;
     color: inherit;
-    transition: color 0.3s ease;
+    transition: color var(--transition);
 }
 
 .sidebar nav {
@@ -156,8 +177,8 @@ main {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 15px;
-    color: #1F2937;
-    border-bottom: 1px solid #E5E7EB;
+    color: var(--secondary-color);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
 }
 
@@ -173,16 +194,16 @@ main {
 .sidebar nav ul li button {
     text-decoration: none;
     font-size: 16px;
-    color: #1F2937;
+    color: var(--secondary-color);
     font-weight: 500;
     padding: 10px 20px;
-    border-radius: 6px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    border-radius: var(--radius);
+    transition: background-color var(--transition), transform var(--transition);
 }
 
 .sidebar nav ul li button:hover {
-    background-color: #3B82F6;
-    color: #FFFFFF;
+    background-color: var(--primary-color);
+    color: var(--foreground-color);
     transform: translateY(-2px);
 }
 
@@ -191,16 +212,16 @@ main {
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
-    border-radius: 6px;
-    background-color: #F3F4F6;
-    color: #374151;
+    border-radius: var(--radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition);
     position: relative;
 }
 
 .search-container:hover {
-    background-color: #E5E7EB;
+    background-color: var(--border-color);
 }
 
 .search-container i {
@@ -210,7 +231,7 @@ main {
 .search-container span {
     font-size: 16px;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-color);
 }
 
 .search-bar {
@@ -220,12 +241,12 @@ main {
     width: 0;
     opacity: 0;
     padding: 10px;
-    border: 1px solid #E5E7EB;
-    border-radius: 6px;
-    background-color: #FFFFFF;
-    color: #374151;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--foreground-color);
+    color: var(--text-color);
     font-size: 16px;
-    transition: width 0.3s ease, opacity 0.3s ease;
+    transition: width var(--transition), opacity var(--transition);
 }
 
 .search-container:hover .search-bar,
@@ -236,15 +257,15 @@ main {
 
 .search-bar:focus {
     outline: none;
-    border-color: #3B82F6;
+    border-color: var(--primary-color);
 }
 
 .menu-heading {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 15px;
-    color: #1F2937;
-    border-bottom: 1px solid #E5E7EB;
+    color: var(--secondary-color);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
 }
 
@@ -257,21 +278,21 @@ main {
 }
 
 .social-link {
-    color: #1F2937;
+    color: var(--secondary-color);
     font-size: 24px;
     text-decoration: none;
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: color var(--transition), transform var(--transition);
 }
 
 .social-link:hover {
-    color: #3B82F6;
+    color: var(--primary-color);
     transform: translateY(-2px);
 }
 
 .rights {
     text-align: center;
     padding: 0px 0;
-    color: #6B7280;
+    color: var(--text-light-color);
     font-size: 14px;
 }
 
@@ -279,13 +300,13 @@ main {
     position: fixed;
     bottom: 30px;
     left: 20px;
-    background-color: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
+    background-color: var(--foreground-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
     padding: 20px;
     width: 260px;
     height: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px var(--shadow-light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -301,8 +322,8 @@ main {
 
 .filters button.selected,
 .sidebar nav ul li button.selected {
-    background-color: #3B82F6;
-    color: #FFFFFF;
+    background-color: var(--primary-color);
+    color: var(--foreground-color);
     padding: 10px 20px;
 }
 
@@ -310,10 +331,49 @@ main {
     display: block;
     width: 100%;
     font-weight: bold;
-    color: #3B82F6;
+    color: var(--primary-color);
 }
 
 p {
     margin: 0;
     text-align-last: center;
+}
+
+@media (max-width: 768px) {
+    .feed-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: relative;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .sidebar-rights {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .logo-container img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .logo-container span {
+        font-size: 16px;
+    }
+
+    .user-actions {
+        gap: 10px;
+    }
+
+    .user-actions button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
 }
