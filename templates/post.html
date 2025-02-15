@@ -229,9 +229,9 @@
                     <div class="post-content">
                         <h2>{{.Post.Title}}</h2>
                         <p>{{.Post.Content}}</p>
-                        {{if .Post.Image}}
-                        <img src="data:image/jpeg;base64,{{.Post.Image}}" alt="Post Image">
-                        {{end}}
+                        {{if .Post.Image.Valid}}
+                        <img src="data:image/jpeg;base64,{{.ImageBase64}}" alt="Post Image">
+                    {{end}}
                         <div class="post-categories">
                             {{range .Categories}}
                             <form action="/home" method="GET">

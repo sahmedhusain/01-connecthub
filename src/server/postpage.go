@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"forum/database"
 	"log"
@@ -76,6 +77,12 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Encode the image to base64
+	var base64Image string
+	if post.Image.Valid {
+		base64Image = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+	}
+
 	postIDInt, err := strconv.Atoi(postID)
 	if err != nil {
 		log.Println("Error converting post ID to integer:", err)
@@ -102,14 +109,15 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("User ID:", userID) // Log the UserID to ensure it is being retrieved
+	log.Println("User ID:", userID)
 
 	data := PageData{
-		Post:       post,
-		Comments:   comments,
-		UserID:     userID, // Ensure UserID is set
-		UserName:   userName,
-		Categories: categories,
+		Post:        post,
+		Comments:    comments,
+		UserID:      userID,
+		UserName:    userName,
+		Categories:  categories,
+		ImageBase64: base64Image,
 	}
 
 	err = templates.ExecuteTemplate(w, "post.html", data)

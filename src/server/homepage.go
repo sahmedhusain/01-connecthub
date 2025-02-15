@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"forum/database"
 	"log"
@@ -95,6 +96,14 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		ErrHandler(w, r, &err)
 		return
 	}
+
+	for i, post := range allPosts {
+		if post.Image.Valid {
+			allPosts[i].ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
+	}
+
+	posts = allPosts
 
 	filter := r.URL.Query().Get("filter")
 	selectedTab := r.URL.Query().Get("tab")

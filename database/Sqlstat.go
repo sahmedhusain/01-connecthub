@@ -54,6 +54,7 @@ type Post struct {
 	Dislikes   int
 	Comments   int
 	Categories []Category
+	ImageBase64 string
 }
 
 type Notification struct {

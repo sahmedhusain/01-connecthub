@@ -366,6 +366,9 @@
                                     <h2>{{.Title}}</h2>
                                     <p style="font-weight: 500;">{{.Content}}</p>
                                 </button>
+                                {{if .Image.Valid}}
+                                <img src="data:image/jpeg;base64,{{.ImageBase64}}" alt="Post Image">
+                            {{end}}
                             </form>
                             <div class="post-categories">
                                 {{range .Categories}}

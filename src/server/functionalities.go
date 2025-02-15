@@ -25,7 +25,6 @@ type ErrorPageData struct {
 	Code     string
 	ErrorMsg string
 }
-
 type PageData struct {
 	HasSession      bool
 	UserID          int
@@ -48,6 +47,7 @@ type PageData struct {
 	Comments        []database.Comment
 	SelectedTab     string
 	SelectedFilter  string
+	ImageBase64     string
 }
 
 func HashPassword(password string) (string, error) {
@@ -308,8 +308,7 @@ func ReportPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
 
-
-func CheckFilter(filter string,categoryNames []string) bool {
+func CheckFilter(filter string, categoryNames []string) bool {
 	for _, category := range categoryNames {
 		if filter == category {
 			return true
