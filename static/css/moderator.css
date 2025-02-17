@@ -1,11 +1,11 @@
 :root {
     --primary-color: #007bff;
-    --secondary-color: #dc3545;
+    --secondary-colora: #dc3545;
     --background-color: #fff;
     --border-color: #ddd;
     --hover-opacity: 0.8;
     --font-family: 'Arial', sans-serif;
-    --radius: 8px; /* Increased border-radius for a modern look */
+    --radius: 8px;
     --transition: 0.3s ease;
     --shadow-light: rgba(0, 0, 0, 0.1);
     --text-color: #333;
@@ -26,7 +26,6 @@ main {
 
 .container {
     max-width: 1500px;
-    margin: 0 auto;
 }
 
 h1, h2 {
@@ -76,7 +75,7 @@ table, th, td {
 }
 
 th, td {
-    padding: 12px; /* Increased padding for better readability */
+    padding: 12px;
     text-align: left;
 }
 
@@ -86,7 +85,7 @@ th {
 }
 
 tr:hover {
-    background-color: #f9f9f9; /* Added hover effect for rows */
+    background-color: #f9f9f9;
 }
 
 .delete-button,
@@ -99,7 +98,7 @@ tr:hover {
 }
 
 .delete-button {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-colora);
     color: var(--background-color);
 }
 
@@ -111,14 +110,14 @@ tr:hover {
 .delete-button:hover,
 .report-button:hover {
     opacity: var(--hover-opacity);
-    transform: translateY(-2px); /* Added hover effect */
+    transform: translateY(-2px);
 }
 
 .category-form {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
-    gap: 10px; /* Added gap for better spacing */
+    gap: 10px;
 }
 
 .category-form input {
@@ -133,5 +132,5 @@ tr:hover {
 
 .category-form input:focus {
     border-color: var(--primary-color);
-    outline: none; /* Removed default outline */
+    outline: none;
 }

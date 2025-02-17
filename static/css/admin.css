@@ -1,6 +1,6 @@
 :root {
     --primary-color: #007bff;
-    --secondary-color: #dc3545;
+    --secondary-colora: #dc3545;
     --background-color: #fff;
     --border-color: #ccc;
     --header-bg-color: #e9ecef;
@@ -34,7 +34,6 @@ main {
 
 .container {
     max-width: 1500px;
-    margin: 0 auto;
     padding: 0 20px;
 }
 
@@ -127,7 +126,7 @@ tr:hover {
 .add-button,
 .view-logs-button,
 .view-sessions-button {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-colora);
     color: var(--background-color);
     border: none;
     padding: 12px 24px;
