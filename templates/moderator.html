@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/v4-shims.min.js"></script>
 </head>
-
 <body>
     <header>
         <a href="/home?tab=posts&filter=all" class="logo-container">
@@ -24,12 +22,11 @@
         <div class="user-actions">
             {{if .HasSession}}
             <form action="/newpost" method="GET">
-                <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                <input type="hidden" name="user" value="{{.UserID}}">
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
-            <!-- 
             <div class="dropdown">
                 <a class="dropdown-toggle dropbtn" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -53,12 +50,12 @@
                         <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
-            </div> -->
+            </div>
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar dropbtn">
                 <div class="dropdown-content">
-                    <form action="/home" method="GET">
+                    <form action="/myprofile" method="GET">
                         <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
@@ -72,7 +69,7 @@
                                     [{{.TotalPosts}}]</span>
                             </div>
                         </button>
-                    </form><!-- 
+                    </form>
                     <form action="/myprofile" method="GET">
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
@@ -82,7 +79,7 @@
                         <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
-                    </form> -->
+                    </form>
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -144,15 +141,15 @@
                             </button>
                         </form>
                     </li>
-<!--                     <li>
+                    <li>
                         <form action="/home" method="GET">
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
-                                <i class="fa-solid fa-reply"></i> Your replies
+                                <i class="fa-solid fa-reply"></i> Your comments
                             </button>
                         </form>
-                    </li> -->
+                    </li>
                     <li>
                         <form action="/home" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
@@ -246,12 +243,12 @@
                             <tbody>
                                 {{range .Comments}}
                                 <tr>
-                                    <td>{{.CommentID}}</td>
+                                    <td>{{.ID}}</td>
                                     <td>{{.Content}}</td>
                                     <td>
-                                        <button type="submit" name="delete_comment" value="{{.CommentID}}"
+                                        <button type="submit" name="delete_comment" value="{{.ID}}"
                                             class="delete-button">Delete</button>
-                                        <button type="submit" name="report_comment" value="{{.CommentID}}"
+                                        <button type="submit" name="report_comment" value="{{.ID}}"
                                             class="report-button">Report</button>
                                     </td>
                                 </tr>

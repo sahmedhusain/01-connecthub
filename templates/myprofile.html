@@ -24,12 +24,11 @@
         <div class="user-actions">
             {{if .HasSession}}
             <form action="/newpost" method="GET">
-                <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                <input type="hidden" name="user" value="{{.UserID}}">
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
-            <!-- 
             <div class="dropdown">
                 <a class="dropdown-toggle dropbtn" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -53,12 +52,12 @@
                         <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
-            </div> -->
+            </div>
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar dropbtn">
                 <div class="dropdown-content">
-                    <form action="/home" method="GET">
+                    <form action="/myprofile" method="GET">
                         <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
@@ -67,12 +66,12 @@
                             <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}"
                                 alt="Avatar" class="profile-image">
                             <div class="profile-info">
-                                <span class="username">@{{.UserName}}</span>
+                                <span class="username">@{{.Username}}</span> <!-- Updated field name -->
                                 <span class="stats"><i class="fa-solid fa-medal"></i> {{.TotalLikes}}
                                     [{{.TotalPosts}}]</span>
                             </div>
                         </button>
-                    </form><!-- 
+                    </form>
                     <form action="/myprofile" method="GET">
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
@@ -82,7 +81,7 @@
                         <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
-                    </form> -->
+                    </form>
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -144,15 +143,15 @@
                             </button>
                         </form>
                     </li>
-<!--                     <li>
+                    <li>
                         <form action="/home" method="GET">
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
-                                <i class="fa-solid fa-reply"></i> Your replies
+                                <i class="fa-solid fa-reply"></i> Your comments
                             </button>
                         </form>
-                    </li> -->
+                    </li>
                     <li>
                         <form action="/home" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
@@ -210,7 +209,7 @@
                         <img src="{{.Avatar}}" alt="User Avatar">
                         <div class="profile-info">
                             <h1>{{.FirstName}} {{.LastName}}</h1>
-                            <p>{{.Username}}</p>
+                            <p>{{.Username}}</p> <!-- Updated field name -->
                             <div class="profile-stats">
                                 <div>
                                     <form method="GET" action="/myprofile">
@@ -279,7 +278,7 @@
                                     alt="Avatar">
                                 <div class="post-info">
                                     <h3>{{.FirstName}} {{.LastName}}</h3>
-                                    <p>@{{.Username}}</p>
+                                    <p>@{{.Username}}</p> <!-- Updated field name -->
                                 </div>
                             </div>
                             <div class="post-body">

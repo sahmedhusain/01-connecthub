@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func AdminPage(w http.ResponseWriter, r *http.Request) {
@@ -26,26 +27,38 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Fetch session cookie
+	var hasSession bool
+	var userID int
+	var userName string
 	seshCok, err := r.Cookie("session_token")
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusBadRequest)
-		fmt.Println("Error fetching session from cookie")
-		return
+		fmt.Println("No cookie found, treated as guest")
+	} else if seshCok.Value == "" {
+		hasSession = false
+	} else {
+		hasSession = true
+
+		seshVal := seshCok.Value
+
+		err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+		if err == sql.ErrNoRows {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "session_token",
+				Value:    "",
+				Expires:  time.Now().Add(-time.Hour),
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		} else if err != nil {
+			log.Println("Error fetching userid ID from user table:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		} else {
+			log.Println("User is logged in:", userName)
+		}
 	}
 
-	// Set session token from cookie value
-	seshVal := seshCok.Value
-
-	var userName string
-	var userID int
-	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
-	if err != nil {
-		log.Println("Error fetching session ID from user table:", err)
-		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-		ErrHandler(w, r, &err)
-		return
-	}
 
 	//check if user is an admin
 	var roleID int
@@ -60,12 +73,20 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve avatar from session
-	// avatar, ok := session.Values["avatar"].(string)
-	// if !ok {
-	// 	// Set a default avatar if not found in session
-	// 	avatar = "/static/assets/default-avatar.png"
-	// }
+	if hasSession {
+		var avatar sql.NullString
+		err = db.QueryRow("SELECT avatar, role_id FROM user WHERE userID = ?", userID).Scan(&avatar, &roleID)
+		if err == sql.ErrNoRows {
+			log.Println("No user found with the given ID:", userID)
+			err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
+			ErrHandler(w, r, &err)
+			return
+		} else if err != nil {
+			log.Println("Failed to fetch user data:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
 
 	var roleName string
 	if roleID == 1 {
@@ -178,9 +199,10 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := PageData{
+			HasSession:     hasSession,
 			UserID:   userID,
 			UserName: userName,
-			// Avatar:          avatar,
+			RoleID: 	   roleID,
 			RoleName:        roleName,
 			Users:           users,
 			Posts:           posts,
@@ -282,4 +304,5 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		ErrHandler(w, r, &err)
 		return
 	}
+}
 }

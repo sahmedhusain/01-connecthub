@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConnectHub | Admin dashboard</title>
+    <title>ConnectHub | Admin Dashboard</title>
     <link rel="icon" type="image/x-icon" href="/static/assets/logowhite.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -23,13 +23,13 @@
             <span>Connect</span><span>Hub</span>
         </a>
         <div class="user-actions">
+            {{if .HasSession}}
             <form action="/newpost" method="GET">
-                <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
+                <input type="hidden" name="user" value="{{.UserID}}">
                 <button type="submit" class="register">
                     <i class="fa-regular fa-square-plus"></i> New post
                 </button>
             </form>
-            <!-- 
             <div class="dropdown">
                 <a class="dropdown-toggle dropbtn" href="#"><i class="fa-regular fa-bell"></i></a>
                 <div class="dropdown-content">
@@ -53,12 +53,12 @@
                         <button type="submit" class="dropdown-item show-more">Show more</button>
                     </form>
                 </div>
-            </div> -->
+            </div>
             <div class="dropdown">
                 <img src="{{if .Avatar}}{{.Avatar}}{{else}}/static/assets/default-avatar.png{{end}}" alt="Avatar"
                     class="avatar dropbtn">
                 <div class="dropdown-content">
-                    <form action="/home" method="GET">
+                    <form action="/myprofile" method="GET">
                         <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
@@ -72,7 +72,7 @@
                                     [{{.TotalPosts}}]</span>
                             </div>
                         </button>
-                    </form><!-- 
+                    </form>
                     <form action="/myprofile" method="GET">
                         <button type="submit">
                             <i class="fas fa-user"></i> Your Profile
@@ -82,10 +82,16 @@
                         <button type="submit">
                             <i class="fas fa-cog"></i> Account settings
                         </button>
-                    </form> -->
+                    </form>
                     <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
+            {{else}}
+            <div class="user-actions">
+                <a href="/signup"><button class="register"><i class="fas fa-user-plus"></i> Register</button></a>
+                <a href="/"><button class="login"><i class="fas fa-sign-in-alt"></i> Login</button></a>
+            </div>
+            {{end}}
         </div>
     </header>
     <div class="feed-container">
@@ -125,6 +131,7 @@
                         </form>
                     </li>
                 </ul>
+                {{if .HasSession}}
                 <h3 class="menu-heading">Activity centre</h3>
                 <ul>
                     <li>
@@ -137,15 +144,15 @@
                             </button>
                         </form>
                     </li>
-<!--                     <li>
+                    <li>
                         <form action="/home" method="GET">
                             <input type="hidden" name="tab" value="your+replies">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+replies"}}selected{{end}}">
-                                <i class="fa-solid fa-reply"></i> Your replies
+                                <i class="fa-solid fa-reply"></i> Your comments
                             </button>
                         </form>
-                    </li> -->
+                    </li>
                     <li>
                         <form action="/home" method="GET">
                             <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
@@ -183,6 +190,7 @@
                     {{end}}
                 </ul>
                 {{end}}
+                {{end}}
             </nav>
             <div class="social-icons">
                 <a href="https://instagram.com/reboot01.coding" target="_blank" class="social-link"><i
@@ -198,7 +206,7 @@
         <main>
             <section class="feed">
                 <div class="container">
-                    <h1>Admin Panel</h1>
+                    <h1>Admin Dashboard</h1>
                     <div class="dashboard-stats">
                         <div>
                             <span>{{.TotalUsers}}</span>

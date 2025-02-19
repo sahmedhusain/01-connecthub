@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func SettingsPage(w http.ResponseWriter, r *http.Request) {
@@ -26,145 +27,215 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer db.Close()
-
-	// Fetch session cookie
+	var hasSession bool
+	var userID int
+	var userName string
 	seshCok, err := r.Cookie("session_token")
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusBadRequest)
-		fmt.Println("Error fetching session cookie")
-		return
+		fmt.Println("No cookie found, treated as guest")
+	} else if seshCok.Value == "" {
+		hasSession = false
+	} else {
+		hasSession = true
+
+		seshVal := seshCok.Value
+
+		err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+		if err == sql.ErrNoRows {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "session_token",
+				Value:    "",
+				Expires:  time.Now().Add(-time.Hour),
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		} else if err != nil {
+			log.Println("Error fetching userid ID from user table:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		} else {
+			log.Println("User is logged in:", userName)
+		}
 	}
 
-	// Set session token from cookie value
-	seshVal := seshCok.Value
-
-	var userID int
-	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID)
+	//must check if user is a moderator!
+	var roleID int
+	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
-		log.Println("Error fetching userid and username from user table:", err)
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		ErrHandler(w, r, &err)
 		return
 	}
-	log.Println("UserID retrieved from session:", userID)
 
-	switch r.Method {
-	case "GET":
-		var user database.User
-		err := db.QueryRow("SELECT first_name, last_name, username, email, avatar FROM user WHERE id = ?", userID).Scan(&user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
-		if err != nil {
-			log.Println("Failed to fetch user data")
-			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			ErrHandler(w, r, &errData)
+	var roleName string
+	if roleID == 1 {
+		roleName = "Admin"
+	} else if roleID == 2 {
+		roleName = "Moderator"
+	} else {
+		roleName = "User"
+	}
+
+	if hasSession {
+		var avatar sql.NullString
+		err = db.QueryRow("SELECT avatar, role_id FROM user WHERE userID = ?", userID).Scan(&avatar, &roleID)
+		if err == sql.ErrNoRows {
+			log.Println("No user found with the given ID:", userID)
+			err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
+			ErrHandler(w, r, &err)
 			return
-		}
-
-		//password should never be stored in session!!!
-		// passwordShown, _ := session.Values["passwordShown"].(bool)
-
-		data := struct {
-			UserID        int
-			FirstName     string
-			LastName      string
-			Username      string
-			Email         string
-			Avatar        string
-			Password      string
-			PasswordShown bool
-		}{
-			UserID:    userID,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Username:  user.Username,
-			Email:     user.Email,
-			Avatar:    user.Avatar.String,
-			Password:  "", // Password should be fetched separately if needed
-			// PasswordShown: passwordShown,
-		}
-
-		err = templates.ExecuteTemplate(w, "settings.html", data)
-		if err != nil {
-			log.Println("Error rendering settings page:", err)
+		} else if err != nil {
+			log.Println("Failed to fetch user data:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			ErrHandler(w, r, &err)
 			return
 		}
-	case "POST":
-		err := r.ParseMultipartForm(10 << 20)
-		if err != nil {
-			log.Println("Failed to parse form data")
-			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-			ErrHandler(w, r, &err)
-			return
-		}
 
-		firstName := r.FormValue("first_name")
-		lastName := r.FormValue("last_name")
-		username := r.FormValue("username")
-		email := r.FormValue("email")
-		password := r.FormValue("password")
+		switch r.Method {
+		case "GET":
 
-		var avatarPath sql.NullString
-		file, handler, err := r.FormFile("avatar")
-		if err == nil {
-			defer file.Close()
-			avatarPath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
-			avatarPath.Valid = true
-
-			os.MkdirAll("static/uploads", os.ModePerm)
-
-			f, err := os.OpenFile(avatarPath.String, os.O_WRONLY|os.O_CREATE, 0666)
+			var user database.User
+			err := db.QueryRow("SELECT F_name, L_name, username, email, avatar FROM user WHERE userid = ?", userID).Scan(&user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
 			if err != nil {
-				log.Println("Failed to open file for writing")
+				log.Println("Failed to fetch user data:", err)
+				errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &errData)
+				return
+			}
+			var totalLikes int
+			err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE userid = ?", userID).Scan(&totalLikes)
+			if err != nil {
+				log.Println("Failed to fetch total likes:", err)
+				totalLikes = 0
+			}
+
+			var totalPosts int
+			err = db.QueryRow("SELECT COUNT(*) FROM post WHERE userid = ?", userID).Scan(&totalPosts)
+			if err != nil {
+				log.Println("Failed to fetch total posts:", err)
+				totalPosts = 0
+			}
+			//password should never be stored in session!!!
+			// passwordShown, _ := session.Values["passwordShown"].(bool)
+
+			data := struct {
+				HasSession    bool
+				RoleName      string
+				UserID        int
+				FirstName     string
+				LastName      string
+				UserName      string
+				Email         string
+				Avatar        string
+				Password      string
+				PasswordShown bool
+				Notifications []database.Notification
+				TotalLikes    int
+				TotalPosts    int
+				SelectedTab   string
+				RoleID        int
+			}{
+				HasSession:    hasSession,
+				RoleName:      roleName,
+				UserID:        userID,
+				FirstName:     user.FirstName,
+				LastName:      user.LastName,
+				UserName:      user.Username,
+				Email:         user.Email,
+				Avatar:        user.Avatar.String,
+				Password:      "",                        // Password should be fetched separately if needed
+				Notifications: []database.Notification{}, // Initialize with an empty slice or fetch actual notifications
+				TotalLikes:    totalLikes,
+				TotalPosts:    totalPosts,
+				SelectedTab:   "settings", // Set the default selected tab
+				RoleID:        roleID,
+			}
+
+			err = templates.ExecuteTemplate(w, "settings.html", data)
+			if err != nil {
+				log.Println("Error rendering settings page:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 				ErrHandler(w, r, &err)
 				return
 			}
-			defer f.Close()
-			io.Copy(f, file)
-		} else if err != http.ErrMissingFile {
-			log.Println("Failed to upload avatar")
-			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+		case "POST":
+			err := r.ParseMultipartForm(10 << 20)
+			if err != nil {
+				log.Println("Failed to parse form data")
+				err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+				ErrHandler(w, r, &err)
+				return
+			}
+
+			firstName := r.FormValue("first_name")
+			lastName := r.FormValue("last_name")
+			username := r.FormValue("username")
+			email := r.FormValue("email")
+			password := r.FormValue("password")
+
+			var avatarPath sql.NullString
+			file, handler, err := r.FormFile("avatar")
+			if err == nil {
+				defer file.Close()
+				avatarPath.String = fmt.Sprintf("static/uploads/%s", handler.Filename)
+				avatarPath.Valid = true
+
+				os.MkdirAll("static/uploads", os.ModePerm)
+
+				f, err := os.OpenFile(avatarPath.String, os.O_WRONLY|os.O_CREATE, 0666)
+				if err != nil {
+					log.Println("Failed to open file for writing")
+					err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+					ErrHandler(w, r, &err)
+					return
+				}
+				defer f.Close()
+				io.Copy(f, file)
+			} else if err != http.ErrMissingFile {
+				log.Println("Failed to upload avatar")
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
+
+			if password != "" {
+				_, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, password = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, password, avatarPath, userID)
+			} else {
+				_, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, avatarPath, userID)
+			}
+
+			if err != nil {
+				log.Println("Failed to update user data")
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
+			log.Println("User data updated with ID:", userID)
+			http.Redirect(w, r, "/settings", http.StatusSeeOther)
+		default:
+			log.Println("Method not allowed")
+			err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
 			ErrHandler(w, r, &err)
 			return
 		}
-
-		if password != "" {
-			_, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, password = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, password, avatarPath, userID)
-		} else {
-			_, err = db.Exec("UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, avatar = ? WHERE id = ?", firstName, lastName, username, email, avatarPath, userID)
-		}
-
-		if err != nil {
-			log.Println("Failed to update user data")
-			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			ErrHandler(w, r, &err)
-			return
-		}
-		log.Println("User data updated with ID:", userID)
-		http.Redirect(w, r, "/settings", http.StatusSeeOther)
-	default:
-		log.Println("Method not allowed")
-		err := ErrorPageData{Code: "405", ErrorMsg: "METHOD NOT ALLOWED"}
-		ErrHandler(w, r, &err)
-		return
 	}
+
+	// func TogglePassword(w http.ResponseWriter, r *http.Request) {
+	//     // Retrieve UserID from session
+	//     session, _ := store.Get(r, "session-name")
+	//     userID, ok := session.Values["userID"].(string)
+	//     if !ok || userID == "" {
+	//         log.Println("UserID not found in session, redirecting to login page")
+	//         http.Redirect(w, r, "/", http.StatusSeeOther)
+	//         return
+	//     }
+
+	//     // Toggle the password visibility
+	//     passwordShown, _ := session.Values["passwordShown"].(bool)
+	//     session.Values["passwordShown"] = !passwordShown
+	//     session.Save(r, w)
+
+	//	    http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	//	}
 }
-
-// func TogglePassword(w http.ResponseWriter, r *http.Request) {
-//     // Retrieve UserID from session
-//     session, _ := store.Get(r, "session-name")
-//     userID, ok := session.Values["userID"].(string)
-//     if !ok || userID == "" {
-//         log.Println("UserID not found in session, redirecting to login page")
-//         http.Redirect(w, r, "/", http.StatusSeeOther)
-//         return
-//     }
-
-//     // Toggle the password visibility
-//     passwordShown, _ := session.Values["passwordShown"].(bool)
-//     session.Values["passwordShown"] = !passwordShown
-//     session.Save(r, w)
-
-//     http.Redirect(w, r, "/settings", http.StatusSeeOther)
-// }

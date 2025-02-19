@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func PostPage(w http.ResponseWriter, r *http.Request) {
@@ -32,36 +33,90 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Fetch session cookie
-	seshCok, err := r.Cookie("session_token")
-	if err != nil {
-		http.Redirect(w, r, "/", http.StatusBadRequest)
-		fmt.Println("Error fetching session cookie")
-		return
-	}
-
-	// Set session token from cookie value
-	seshVal := seshCok.Value
-
+	var hasSession bool
 	var userID int
 	var userName string
-	err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+	seshCok, err := r.Cookie("session_token")
 	if err != nil {
-		log.Println("Error fetching userid and username from user table:", err)
+		fmt.Println("No cookie found, treated as guest")
+	} else if seshCok.Value == "" {
+		hasSession = false
+	} else {
+		hasSession = true
+
+		seshVal := seshCok.Value
+
+		err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+		if err == sql.ErrNoRows {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "session_token",
+				Value:    "",
+				Expires:  time.Now().Add(-time.Hour),
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		} else if err != nil {
+			log.Println("Error fetching userid ID from user table:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		} else {
+			log.Println("User is logged in:", userName)
+		}
+	}
+
+	//must check if user is a moderator!
+	var roleID int
+	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
+	if err != nil {
 		err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 		ErrHandler(w, r, &err)
 		return
 	}
 
-	postID := r.URL.Query().Get("id")
-	if postID == "" {
-		log.Println("Post ID not found in query parameters")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-		return
+	var roleName string
+	if roleID == 1 {
+		roleName = "Admin"
+	} else if roleID == 2 {
+		roleName = "Moderator"
+	} else {
+		roleName = "User"
 	}
 
-	var post database.Post
-	err = db.QueryRow(`
+	if hasSession {
+		var avatar sql.NullString
+		err = db.QueryRow("SELECT avatar, role_id FROM user WHERE userID = ?", userID).Scan(&avatar, &roleID)
+		if err == sql.ErrNoRows {
+			log.Println("No user found with the given ID:", userID)
+			err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
+			ErrHandler(w, r, &err)
+			return
+		} else if err != nil {
+			log.Println("Failed to fetch user data:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
+
+		var userName string
+		seshVal := seshCok.Value
+		err = db.QueryRow("SELECT userid, Username FROM user WHERE current_session = ?", seshVal).Scan(&userID, &userName)
+		if err != nil {
+			log.Println("Error fetching userid and username from user table:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
+
+		postID := r.URL.Query().Get("id")
+		if postID == "" {
+			log.Println("Post ID not found in query parameters")
+			http.Redirect(w, r, "/home", http.StatusSeeOther)
+			return
+		}
+
+		var post database.Post
+		err = db.QueryRow(`
         SELECT post.postid, post.image, post.title, post.content, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
                (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -70,60 +125,63 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
         JOIN user ON post.user_userid = user.userid
         WHERE post.postid = ?
 		`, postID).Scan(&post.PostID, &post.Image, &post.Title, &post.Content, &post.PostAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments)
-	if err != nil {
-		log.Println("Failed to fetch posts")
-		errData := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
-		ErrHandler(w, r, &errData)
-		return
-	}
+		if err != nil {
+			log.Println("Failed to fetch posts")
+			errData := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
+			ErrHandler(w, r, &errData)
+			return
+		}
 
-	// Encode the image to base64
-	var base64Image string
-	if post.Image.Valid {
-		base64Image = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
-	}
+		// Encode the image to base64
+		var base64Image string
+		if post.Image.Valid {
+			base64Image = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
 
-	postIDInt, err := strconv.Atoi(postID)
-	if err != nil {
-		log.Println("Error converting post ID to integer:", err)
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
-	}
-	comments, err := database.GetCommentsForPost(db, postIDInt)
-	if err != nil {
-		log.Println("Error getting comments for post:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
+		postIDInt, err := strconv.Atoi(postID)
+		if err != nil {
+			log.Println("Error converting post ID to integer:", err)
+			http.Error(w, "Bad request", http.StatusBadRequest)
+			return
+		}
+		comments, err := database.GetCommentsForPost(db, postIDInt)
+		if err != nil {
+			log.Println("Error getting comments for post:", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 
-	if userID < 0 {
-		log.Println("User ID not found in query parameters")
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
-		return
-	}
+		if userID < 0 {
+			log.Println("User ID not found in query parameters")
+			http.Redirect(w, r, "/home", http.StatusSeeOther)
+			return
+		}
 
-	// Fetch categories for the post
-	categories, err := database.GetCategoriesForPost(db, post.PostID)
-	if err != nil {
-		log.Println("Error fetching categories for post:", err)
-		return
-	}
+		// Fetch categories for the post
+		categories, err := database.GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			log.Println("Error fetching categories for post:", err)
+			return
+		}
 
-	log.Println("User ID:", userID)
+		log.Println("User ID:", userID)
 
-	data := PageData{
-		Post:        post,
-		Comments:    comments,
-		UserID:      userID,
-		UserName:    userName,
-		Categories:  categories,
-		ImageBase64: base64Image,
-	}
+		data := PageData{
+			RoleName:    roleName,
+			HasSession:  hasSession,
+			Post:        post,
+			Comments:    comments,
+			UserID:      userID,
+			UserName:    userName,
+			Categories:  categories,
+			ImageBase64: base64Image,
+		}
 
-	err = templates.ExecuteTemplate(w, "post.html", data)
-	if err != nil {
-		log.Println("Error executing template:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
+		err = templates.ExecuteTemplate(w, "post.html", data)
+		if err != nil {
+			log.Println("Error executing template:", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	}
 }
