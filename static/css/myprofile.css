@@ -150,11 +150,77 @@ main {
     color: var(--text-light-color);
 }
 
-.post-body p {
+.post-body {
     margin-top: 1rem;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--text-color);
+}
+
+.post-body h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0 0 15px 0;
+}
+
+.post-body p {
+    font-size: 16px;
+    color: #374151;
+    margin-top: 15px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.post-body button {
+    width: 100%;
+    text-align: left;
+    padding: 0;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.post-body img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+}
+
+.post-categories {
+    margin-top: 10px;
+    display: inline;
+}
+
+.post-categories button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: color 0.3s ease;
+    padding: 0;
+    margin-right: 5px;
+}
+
+.category-box {
+    display: inline-block;
+    background-color: var(--border-color);
+    color: var(--text-light-color);
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.category-box:hover {
+    background-color: #D1D5DB;
 }
 
 .post-actions {
@@ -166,20 +232,51 @@ main {
     color: var(--text-light-color);
 }
 
-.post-actions button {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    font-size: 0.9rem;
-    cursor: pointer;
+.post-actions {
     display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text-light-color);
     align-items: center;
-    gap: 0.5rem;
-    transition: color var(--transition);
+    position: relative;
 }
 
-.post-actions button:hover {
-    color: var(--hover-color);
+.post-actions button,
+.post-actions a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.post-actions button:hover,
+.post-actions a:hover {
+    color: var(--accent-color);
+}
+
+.post-actions time {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.8em;
+    color: var(--text-light-color);
+}
+
+.hover-effect {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.hover-effect:hover {
+    color: var(--accent-color);
 }
 
 @media (max-width: 768px) {

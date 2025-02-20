@@ -273,19 +273,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="post-header">
-                                <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
-                                    alt="Avatar">
-                                <div class="post-info">
-                                    <h3>{{.FirstName}} {{.LastName}}</h3>
-                                    <p>@{{.Username}}</p> <!-- Updated field name -->
-                                </div>
-                            </div>
                             <div class="post-body">
                                 <form action="/post" method="GET">
                                     <input type="hidden" name="id" value="{{.PostID}}">
                                     <button type="submit" class="action-link"
                                         style="background:none; border:none; color:inherit; cursor:pointer; text-decoration:none;">
+                                        <h2>{{.Title}}</h2>
                                         <p>{{.Content}}</p>
                                     </button>
                                 </form>
@@ -317,7 +310,7 @@
                                 </form>
                                 <form action="/post" method="GET">
                                     <input type="hidden" name="id" value="{{.PostID}}">
-                                    <button type="submit" class="action-link"><span><i class="fa-regular fa-comment"></i>
+                                    <button type="submit" class="action-link"><span><i class="fa-regular fa-message"></i>
                                             {{.Comments}}</span></button>
                                 </form>
                                 <time><i class="fa fa-clock"></i> {{.PostAt.Format "02/01/2006 - 15:04"}}</time>
