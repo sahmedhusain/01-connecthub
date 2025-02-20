@@ -269,7 +269,7 @@
                     </div>
                     <div class="comments-section">
                         <h2>Comments</h2>
-                        {{range .Comments}}<!-- 
+                        {{range .Comments}}
                         {{if or ( or (eq (printf "%v" $.RoleID) "1") (eq (printf "%v" $.RoleID) "2")) (eq (printf "%v" $.UserID) (printf "%v" .UserID))}}
                         <div class="post-actions">
                             <div class="dropdown" style="position: absolute; right: 0;">
@@ -288,7 +288,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{end}} -->
+                        {{end}}
                         <div class="comment">
                             <div class="comment-header">
                                 <img src="{{if .Avatar.Valid}}{{.Avatar.String}}{{else}}/static/assets/default-avatar.png{{end}}"
@@ -340,6 +340,7 @@
         </main>
         <script src="/static/js/dropdown.js"></script>
         <script src="/static/js/postpage.js"></script>
+        <script src="/static/js/search.js"></script>
 </body>
 
 </html>

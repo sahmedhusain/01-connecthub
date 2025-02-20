@@ -214,7 +214,6 @@
                             <i class="fas fa-th-list"></i> All
                         </button>
                     </form>
-                    <!--
                     {{if .HasSession}}
                     <form action="/home" method="GET">
                         <input type="hidden" name="user" value="{{.UserID}}">
@@ -233,7 +232,6 @@
                         </button>
                     </form>
                     {{end}}
-                -->
                     <form action="/home" method="GET">
                         <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <input type="hidden" name="tab" value="posts">
@@ -415,6 +413,7 @@
         </main>
     </div>
     <script src="/static/js/dropdown.js"></script>
+    <script src="/static/js/search.js"></script>
 </body>
 
 </html>

@@ -43,6 +43,8 @@ func main() {
 	http.HandleFunc("/auth/google", server.AuthMiddleware(auth.LoginPageGoogle))
 	http.HandleFunc("/auth/github/callback", server.AuthMiddleware(auth.Callback))
 	http.HandleFunc("/auth/github", server.AuthMiddleware(auth.LoginPageGit))
+	http.HandleFunc("/search", server.AuthMiddleware(server.SearchHandler))
+	http.HandleFunc("/searchpage", server.AuthMiddleware(server.SearchPageHandler))
 
 	fmt.Println("Server running on http://localhost:8080\nTo stop the server press Ctrl+C")
 

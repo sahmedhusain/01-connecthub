@@ -25,6 +25,17 @@ type ErrorPageData struct {
 	Code     string
 	ErrorMsg string
 }
+
+type SearchResult struct {
+	Type       string `json:"type"`
+	ID         int    `json:"id"`
+	Name       string `json:"name"`
+	Avatar     string `json:"avatar,omitempty"`
+	Title      string `json:"title,omitempty"`
+	Content    string `json:"content,omitempty"`
+	Username   string `json:"username,omitempty"`
+	CategoryID int    `json:"category_id,omitempty"`
+}
 type PageData struct {
 	HasSession      bool
 	UserID          int
@@ -50,6 +61,7 @@ type PageData struct {
 	SelectedFilter  string
 	ImageBase64     string
 	UserRoleName    string
+	SearchQuery string
 }
 
 func HashPassword(password string) (string, error) {
