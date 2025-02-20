@@ -99,6 +99,23 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		var totalLikes, totalPosts int
+		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userID = ?", userID).Scan(&totalLikes)
+		if err != nil {
+			log.Println("Failed to fetch total likes:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
+
+		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
+		if err != nil {
+			log.Println("Failed to fetch total posts:", err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
+
 		data := struct {
 			HasSession    bool
 			UserID        int
@@ -118,8 +135,8 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 			RoleName:      roleName,
 			Notifications: notifications,
 			RoleID:        roleID,
-			TotalLikes:    0,
-			TotalPosts:    0,
+			TotalLikes:    totalLikes,
+			TotalPosts:    totalPosts,
 			SelectedTab:   "notifications",
 		}
 

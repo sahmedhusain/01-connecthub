@@ -33,6 +33,7 @@ type PageData struct {
 	RoleName        string
 	TotalLikes      int
 	TotalPosts      int
+	TotalPostsc     int
 	Categories      []database.Category
 	Users           []database.User
 	Posts           []database.Post
@@ -48,6 +49,7 @@ type PageData struct {
 	SelectedTab     string
 	SelectedFilter  string
 	ImageBase64     string
+	UserRoleName    string
 }
 
 func HashPassword(password string) (string, error) {

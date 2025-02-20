@@ -103,22 +103,22 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 				ErrHandler(w, r, &errData)
 				return
 			}
-			var totalLikes int
-			err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE userid = ?", userID).Scan(&totalLikes)
+			var totalLikes, totalPosts int
+			err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userID = ?", userID).Scan(&totalLikes)
 			if err != nil {
 				log.Println("Failed to fetch total likes:", err)
-				totalLikes = 0
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
 			}
 
-			var totalPosts int
-			err = db.QueryRow("SELECT COUNT(*) FROM post WHERE userid = ?", userID).Scan(&totalPosts)
+			err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
 			if err != nil {
 				log.Println("Failed to fetch total posts:", err)
-				totalPosts = 0
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
 			}
-			//password should never be stored in session!!!
-			// passwordShown, _ := session.Values["passwordShown"].(bool)
-
 			data := struct {
 				HasSession    bool
 				RoleName      string
@@ -221,21 +221,4 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// func TogglePassword(w http.ResponseWriter, r *http.Request) {
-	//     // Retrieve UserID from session
-	//     session, _ := store.Get(r, "session-name")
-	//     userID, ok := session.Values["userID"].(string)
-	//     if !ok || userID == "" {
-	//         log.Println("UserID not found in session, redirecting to login page")
-	//         http.Redirect(w, r, "/", http.StatusSeeOther)
-	//         return
-	//     }
-
-	//     // Toggle the password visibility
-	//     passwordShown, _ := session.Values["passwordShown"].(bool)
-	//     session.Values["passwordShown"] = !passwordShown
-	//     session.Save(r, w)
-
-	//	    http.Redirect(w, r, "/settings", http.StatusSeeOther)
-	//	}
 }

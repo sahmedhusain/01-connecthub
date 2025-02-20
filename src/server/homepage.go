@@ -208,11 +208,9 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case "your+reactions":
-
 		switch filter {
 
 		case "likes":
-			//
 			posts, err = database.GetUserReaction(db, userID, filter)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)

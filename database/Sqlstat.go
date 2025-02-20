@@ -8,15 +8,15 @@ import (
 )
 
 type User struct {
-	ID               int            `json:"id"`
-	FirstName        string         `json:"first_name"`
-	LastName         string         `json:"last_name"`
-	Username         string         `json:"username"`
-	Email            string         `json:"email"`
-	Password         string         `json:"password"`
-	SessionSessionID int            `json:"current_session"`
-	RoleID           int            `json:"role_id"`
-	Avatar           sql.NullString `json:"avatar"`
+	ID               int    `json:"id"`
+	FirstName        string `json:"first_name"`
+	LastName         string `json:"last_name"`
+	Username         string `json:"username"`
+	Email            string `json:"email"`
+	Password         string `json:"password"`
+	SessionSessionID int    `json:"current_session"`
+	RoleID           int    `json:"role_id"`
+	Avatar sql.NullString `json:"avatar"`
 }
 
 type Category struct {
@@ -34,26 +34,26 @@ type Comment struct {
 	Username  string
 	Content   string
 	CreatedAt time.Time
-	Avatar    sql.NullString // Add this field
+	Avatar    sql.NullString
 	Likes     int
 	Dislikes  int
 }
 
 type Post struct {
-	PostID     int
-	Image      sql.NullString
-	Title      string
-	Content    string
-	PostAt     time.Time
-	UserUserID int
-	Username   string
-	FirstName  string
-	LastName   string
-	Avatar     sql.NullString
-	Likes      int
-	Dislikes   int
-	Comments   int
-	Categories []Category
+	PostID      int
+	Image       sql.NullString
+	Title       string
+	Content     string
+	PostAt      time.Time
+	UserUserID  int
+	Username    string
+	FirstName   string
+	LastName    string
+	Avatar      sql.NullString
+	Likes       int
+	Dislikes    int
+	Comments    int
+	Categories  []Category
 	ImageBase64 string
 }
 
@@ -139,51 +139,19 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 	return comments, nil
 }
 
-// func GetUserPosts1(db *sql.DB, username string) ([]Post, error) {
-// 	rows, err := db.Query(`
-//         SELECT postid, image, content, post_at
-//         FROM post
-//         JOIN user ON user_userid = userid
-//         WHERE Username = ?
-//         ORDER BY post.post_at DESC
-//     `, username)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer rows.Close()
-
-// 	var posts []Post
-// 	for rows.Next() {
-// 		var post Post
-// 		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt); err != nil {
-// 			return nil, err
-// 		}
-// 		posts = append(posts, post)
-// 	}
-
-// 	if err := rows.Err(); err != nil {
-// 		return nil, err
-// 	}
-
-// 	return posts, nil
-// }
-
 func GetUserReaction(db *sql.DB, userid int, filter string) ([]Post, error) {
 
-	Lpost, err := GetUserLikedPosts(db, userid)
-	if err != nil {
-		log.Println("Error fetching liked posts:", err)
-	}
-	Dpost, err := GetUserDislikedPosts(db, userid)
-	if err != nil {
-		log.Println("Error fetching disliked posts:", err)
-	}
-
 	if filter == "likes" {
-		// Lpost = append(Lpost, Dpost...)
+		Lpost, err := GetUserLikedPosts(db, userid)
+		if err != nil {
+			log.Println("Error fetching liked posts:", err)
+		}
 		return Lpost, nil
 	} else {
-		// Dpost = append(Dpost, Lpost...)
+		Dpost, err := GetUserDislikedPosts(db, userid)
+		if err != nil {
+			log.Println("Error fetching disliked posts:", err)
+		}
 		return Dpost, nil
 	}
 }
@@ -208,7 +176,7 @@ func GetUserLikedPosts(db *sql.DB, userID int) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.Title, &post.PostAt, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
@@ -245,7 +213,7 @@ func GetUserDislikedPosts(db *sql.DB, userID int) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.Title, &post.PostAt, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
@@ -261,28 +229,39 @@ func GetUserDislikedPosts(db *sql.DB, userID int) ([]Post, error) {
 }
 
 func GetUserCommentedPosts(db *sql.DB, userid int, filter string) ([]Post, error) {
+	order := "DESC"
 	if filter == "newest" {
-		filter = "ASC"
-	} else {
-		filter = "DESC"
+		order = "ASC"
 	}
-	rows, err := db.Query(`
-        SELECT DISTINCT post.postid, post.image, post.content, post.post_at
+
+	query := fmt.Sprintf(`
+        SELECT DISTINCT post.postid, post.image, post.title, post.content, post.title, post.post_at, post.user_userid, user.Username, user.F_name, user.L_name, user.Avatar,
+		               (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
+               (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
+               (SELECT COUNT(*) FROM comment WHERE comment.post_postid = post.postid) AS Comments
         FROM post
         JOIN comment ON post.postid = comment.post_postid
         JOIN user ON comment.user_userid = user.userid
         WHERE user.userid = ?
-        ORDER BY post.post_at ?
-    `, userid, filter)
+        ORDER BY post.post_at %s
+    `, order)
+
+	rows, err := db.Query(query, userid)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	var posts []Post
+	var postAt string
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.PostAt); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Image, &post.Title, &post.Content, &post.Title, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+			return nil, err
+		}
+		post.PostAt, err = time.Parse(time.RFC3339, postAt)
+		if err != nil {
+			log.Println("Error parsing post_at:", err)
 			return nil, err
 		}
 		posts = append(posts, post)
@@ -372,7 +351,7 @@ func GetCategoriesForPost(db *sql.DB, postID int) ([]Category, error) {
 }
 
 func GetAllUsers(db *sql.DB) ([]User, error) {
-	rows, err := db.Query("SELECT userid, F_name, L_name, Username, Email, Avatar FROM user")
+	rows, err := db.Query("SELECT userid, F_name, L_name, Username, Email, Avatar, role_id FROM user")
 	if err != nil {
 		log.Println("Error executing query:", err)
 		return nil, err
@@ -383,7 +362,7 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 	for rows.Next() {
 		var user User
 		var avatar sql.NullString
-		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &avatar); err != nil {
+		if err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Email, &avatar, &user.RoleID); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}

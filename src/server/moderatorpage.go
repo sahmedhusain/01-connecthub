@@ -94,20 +94,6 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
 
-			var totalLikes int
-			err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE userid = ?", userID).Scan(&totalLikes)
-			if err != nil {
-				log.Println("Failed to fetch total likes:", err)
-				totalLikes = 0
-			}
-
-			var totalPosts int
-			err = db.QueryRow("SELECT COUNT(*) FROM post WHERE userid = ?", userID).Scan(&totalPosts)
-			if err != nil {
-				log.Println("Failed to fetch total posts:", err)
-				totalPosts = 0
-			}
-
 			// Fetch posts and comments for the moderator panel
 			posts, err := database.GetAllPosts(db)
 			if err != nil {
@@ -120,6 +106,23 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 			comments, err := database.GetComments(db)
 			if err != nil {
 				log.Println("Failed to fetch comments:", err)
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
+
+			var totalLikes, totalPosts int
+			err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userID = ?", userID).Scan(&totalLikes)
+			if err != nil {
+				log.Println("Failed to fetch total likes:", err)
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
+
+			err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
+			if err != nil {
+				log.Println("Failed to fetch total posts:", err)
 				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 				ErrHandler(w, r, &err)
 				return

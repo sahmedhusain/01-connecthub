@@ -213,7 +213,7 @@
                             Users
                         </div>
                         <div>
-                            <span>{{.TotalPosts}}</span>
+                            <span>{{.TotalPostsc}}</span>
                             Posts
                         </div>
                         <div>
@@ -230,7 +230,8 @@
                                     <th>User ID</th>
                                     <th>Username</th>
                                     <th>Email</th>
-                                    <th>Role</th>
+                                    <th>Current Role</th>
+                                    <th>Change Role</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -240,11 +241,13 @@
                                     <td>{{.ID}}</td>
                                     <td>{{.Username}}</td>
                                     <td>{{.Email}}</td>
+                                    <td></td>
                                     <td>
-                                        <select name="role_{{.ID}}" class="role-select">
-                                            <option value="1" {{if eq .RoleID 1}}selected{{end}}>Admin</option>
-                                            <option value="2" {{if eq .RoleID 2}}selected{{end}}>Moderator</option>
-                                            <option value="3" {{if eq .RoleID 3}}selected{{end}}>User</option>
+                                        <select name="role_{{.ID}}" class="role-select" placeholder="Select Role">
+                                            <option value="" disabled selected></option>
+                                            <option value="1">Admin</option>
+                                            <option value="2">Moderator</option>
+                                            <option value="3">User</option>
                                         </select>
                                     </td>
                                     <td>
