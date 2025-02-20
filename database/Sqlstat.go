@@ -8,15 +8,15 @@ import (
 )
 
 type User struct {
-	ID               int    `json:"id"`
-	FirstName        string `json:"first_name"`
-	LastName         string `json:"last_name"`
-	Username         string `json:"username"`
-	Email            string `json:"email"`
-	Password         string `json:"password"`
-	SessionSessionID int    `json:"current_session"`
-	RoleID           int    `json:"role_id"`
-	Avatar sql.NullString `json:"avatar"`
+	ID               int            `json:"id"`
+	FirstName        string         `json:"first_name"`
+	LastName         string         `json:"last_name"`
+	Username         string         `json:"username"`
+	Email            string         `json:"email"`
+	Password         string         `json:"password"`
+	SessionSessionID int            `json:"current_session"`
+	RoleID           int            `json:"role_id"`
+	Avatar           sql.NullString `json:"avatar"`
 }
 
 type Category struct {
@@ -121,8 +121,7 @@ func GetComments(db *sql.DB) ([]Comment, error) {
 	var comments []Comment
 	for rows.Next() {
 		var comment Comment
-		var commentAt time.Time // SQLite DATETIME is fetched as a string
-		// Scan each row into the Comment struct
+		var commentAt time.Time
 		if err := rows.Scan(&comment.ID, &comment.Content, &commentAt, &comment.PostID, &comment.UserID); err != nil {
 			return nil, err
 		}
@@ -502,14 +501,12 @@ func GetPostsByMultiCategory(db *sql.DB, categoryName string) ([]Post, error) {
 			return nil, err
 		}
 
-		// Parse the postAt string into a time.Time object
 		post.PostAt, err = time.Parse(time.RFC3339, postAt)
 		if err != nil {
 			log.Println("Error parsing post_at:", err)
 			return nil, err
 		}
 
-		// Fetch categories for the post
 		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)
@@ -561,7 +558,6 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 			return nil, err
 		}
 
-		// Fetch categories for the post
 		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)

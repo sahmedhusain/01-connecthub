@@ -49,7 +49,7 @@ main {
 }
 
 .post-header img:hover {
-    transform: scale(1.05); /* Added hover effect */
+    transform: scale(1.05);
 }
 
 .post-info h3 {
@@ -90,7 +90,7 @@ main {
 }
 
 .post-content img:hover {
-    transform: scale(1.02); /* Added hover effect */
+    transform: scale(1.02);
 }
 
 .post-actions {
@@ -139,7 +139,7 @@ main {
 }
 
 .comment:hover {
-    transform: translateX(5px); /* Added hover effect */
+    transform: translateX(5px);
 }
 
 .comment img {
@@ -332,7 +332,6 @@ textarea {
     margin-left: 5px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .post-header {
         flex-direction: column;

@@ -102,9 +102,9 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		var roleID int
 		if email == "sayedahmed97.sad@gmail.com" {
 			roleID = 1
-		} else if email == "qassimhassan9@gmail.com"{
+		} else if email == "qassimhassan9@gmail.com" {
 			roleID = 2
-		}else{
+		} else {
 			roleID = 3
 		}
 		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar, provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)")
@@ -124,7 +124,6 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Redirect to login page or show success message
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}

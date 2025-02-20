@@ -18,7 +18,6 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) {
 		return
 	}
 	defer db.Close()
-	// Generate a new session token
 	sessionToken, err := UUID.GenerateToken()
 	if err != nil {
 		log.Println("Error generating UUID:", err)
@@ -28,15 +27,13 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) {
 
 	stringToken := sessionToken.String()
 
-	//Set session cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
 		Value:    stringToken,
-		Expires:  time.Now().Add(1 * time.Hour), //1 hour lifetime
+		Expires:  time.Now().Add(1 * time.Hour),
 		HttpOnly: true,
 	})
 
-	// Update the user's session ID in the session table
 	result, err := db.Exec("UPDATE session SET sessionid = ? WHERE userid = ?", stringToken, userID)
 	if err != nil {
 		log.Println("Error updating session ID in session table:", err)
@@ -54,7 +51,6 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) {
 		}
 	}
 
-	// Update the user's session ID in the database
 	_, err = db.Exec("UPDATE user SET current_session = ? WHERE userid = ?", stringToken, userID)
 	if err != nil {
 		log.Println("Error updating session ID in user table:", err)

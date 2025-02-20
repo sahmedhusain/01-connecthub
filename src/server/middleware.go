@@ -19,7 +19,6 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		// Fetch session cookie
 		seshCok, err := r.Cookie("session_token")
 		if err != nil {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -27,7 +26,6 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// Set session token from cookie value
 		seshVal := seshCok.Value
 
 		if seshVal == "" {

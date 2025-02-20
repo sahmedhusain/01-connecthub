@@ -61,7 +61,7 @@ type PageData struct {
 	SelectedFilter  string
 	ImageBase64     string
 	UserRoleName    string
-	SearchQuery string
+	SearchQuery     string
 }
 
 func HashPassword(password string) (string, error) {

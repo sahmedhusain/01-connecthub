@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.querySelector('.search-bar');
     const searchContainer = document.querySelector('.search-container');
     let suggestionsDiv = document.querySelector('.search-suggestions');
-    
+
     if (!suggestionsDiv) {
         suggestionsDiv = document.createElement('div');
         suggestionsDiv.className = 'search-suggestions';
@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let debounceTimeout;
-    const DEBOUNCE_DELAY = 300; // ms
+    const DEBOUNCE_DELAY = 300;
 
-    searchInput.addEventListener('input', function(e) {
+    searchInput.addEventListener('input', function (e) {
         clearTimeout(debounceTimeout);
         const query = e.target.value.trim();
-        
+
         if (query.length < 2) {
             suggestionsDiv.style.display = 'none';
             return;
@@ -26,20 +26,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(results => {
                     suggestionsDiv.innerHTML = '';
-                    
+
                     if (results.length === 0) {
                         suggestionsDiv.style.display = 'none';
                         return;
                     }
 
-                    // Group results by type
                     const groupedResults = {
                         user: results.filter(r => r.type === 'user'),
                         category: results.filter(r => r.type === 'category'),
                         post: results.filter(r => r.type === 'post')
                     };
 
-                    // Create sections for each type
                     Object.entries(groupedResults).forEach(([type, items]) => {
                         if (items.length > 0) {
                             const sectionTitle = document.createElement('div');
@@ -65,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function createSuggestionItem(result) {
         const div = document.createElement('div');
         div.className = 'search-suggestion-item';
-        
+
         let icon, content;
-        switch(result.type) {
+        switch (result.type) {
             case 'user':
-                icon = result.avatar ? 
+                icon = result.avatar ?
                     `<img src="${result.avatar}" alt="" class="suggestion-avatar">` :
                     `<div class="suggestion-icon"><i class="fas fa-user"></i></div>`;
                 content = `<strong>@${result.username}</strong><br>${result.name}`;
@@ -97,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleSuggestionClick(result) {
-        switch(result.type) {
+        switch (result.type) {
             case 'user':
                 window.location.href = `/profile?id=${result.id}`;
                 break;
@@ -110,13 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (!searchContainer.contains(e.target)) {
             suggestionsDiv.style.display = 'none';
         }
     });
 
-    searchInput.addEventListener('keydown', function(e) {
+    searchInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             const query = searchInput.value.trim();

@@ -23,7 +23,8 @@ main img {
     margin: 20px 0 10px;
     color: #1F2937;
     font-weight: 900;
-    letter-spacing: 1px;}
+    letter-spacing: 1px;
+}
 
 .error-content h2 {
     font-size: 1.5rem;

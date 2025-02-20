@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownButtons = document.querySelectorAll('.dropbtn');
-    
+
     dropdownButtons.forEach(button => {
         button.addEventListener('click', function (event) {
             event.stopPropagation();

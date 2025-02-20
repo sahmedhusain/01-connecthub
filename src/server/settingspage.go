@@ -59,7 +59,6 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//must check if user is a moderator!
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
@@ -144,11 +143,11 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 				UserName:      user.Username,
 				Email:         user.Email,
 				Avatar:        user.Avatar.String,
-				Password:      "",                        // Password should be fetched separately if needed
-				Notifications: []database.Notification{}, // Initialize with an empty slice or fetch actual notifications
+				Password:      "",
+				Notifications: []database.Notification{},
 				TotalLikes:    totalLikes,
 				TotalPosts:    totalPosts,
-				SelectedTab:   "settings", // Set the default selected tab
+				SelectedTab:   "settings",
 				RoleID:        roleID,
 			}
 

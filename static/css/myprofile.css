@@ -55,7 +55,7 @@ main {
 }
 
 .profile-header img:hover {
-    transform: scale(1.05); /* Added hover effect */
+    transform: scale(1.05);
 }
 
 .profile-info h1 {
@@ -67,7 +67,7 @@ main {
 }
 
 .profile-info h1:hover {
-    color: var(--hover-color); /* Added hover effect */
+    color: var(--hover-color);
 }
 
 .profile-info p {
@@ -115,7 +115,8 @@ main {
 
 .posts-container .post:hover {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    transform: translateY(-5px); /* Added hover effect */
+    transform: translateY(-5px);
+    /* Added hover effect */
 }
 
 .post img {

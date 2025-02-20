@@ -28,7 +28,8 @@ main {
     max-width: 1500px;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: var(--text-color);
     padding-bottom: 10px;
     margin-bottom: 20px;
@@ -44,7 +45,7 @@ h2 {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
-    gap: 15px; /* Added gap for better spacing */
+    gap: 15px;
 }
 
 .dashboard-stats div {
@@ -60,28 +61,31 @@ h2 {
 
 .dashboard-stats div:hover {
     background-color: #0056b3;
-    transform: translateY(-5px); /* Added hover effect */
+    transform: translateY(-5px);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    box-shadow: 0 4px 6px var(--shadow-light); /* Added shadow for better visibility */
+    box-shadow: 0 4px 6px var(--shadow-light);
 }
 
-table, th, td {
+table,
+th,
+td {
     border: 1px solid var(--border-color);
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
 }
 
 th {
     background-color: var(--table-bg-color);
-    font-weight: bold; /* Added bold font for headers */
+    font-weight: bold;
 }
 
 tr:hover {

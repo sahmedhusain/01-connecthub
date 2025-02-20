@@ -65,7 +65,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//must check if user is a moderator!
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
@@ -132,7 +131,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Encode the image to base64
 		var base64Image string
 		if post.Image.Valid {
 			base64Image = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
@@ -157,7 +155,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Fetch categories for the post
 		categories, err := database.GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)

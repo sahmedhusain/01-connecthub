@@ -19,12 +19,10 @@ func ReverseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		// Fetch session cookie
 		seshCok, err := r.Cookie("session_toekn")
 		if err != nil {
 			fmt.Println("This user has no cookie")
 		} else {
-			//Set session token from cookie value
 			seshVal := seshCok.Value
 
 			var exists bool

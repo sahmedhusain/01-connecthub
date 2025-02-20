@@ -9,7 +9,7 @@
     --text-color: #374151;
     --muted-text-color: #6B7280;
     --font-family: 'Roboto', sans-serif;
-    --radius: 8px; /* Increased border-radius for a modern look */
+    --radius: 8px;
     --transition: 0.3s ease;
     --shadow-light: rgba(0, 0, 0, 0.1);
 }
@@ -54,7 +54,7 @@ form textarea {
     width: 100%;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    padding: 12px; /* Increased padding for better readability */
+    padding: 12px;
     font-size: 14px;
     margin-bottom: 15px;
     outline: none;
@@ -81,7 +81,7 @@ form textarea {
     gap: 8px;
     background-color: var(--border-color);
     color: var(--secondary-color);
-    padding: 12px 20px; /* Increased padding for better clickability */
+    padding: 12px 20px;
     border-radius: var(--radius);
     cursor: pointer;
     font-size: 14px;
@@ -131,7 +131,7 @@ form textarea {
     display: none;
 }
 
-.category-filters input[type="checkbox"]:checked + span {
+.category-filters input[type="checkbox"]:checked+span {
     background-color: var(--primary-color);
     color: #FFFFFF;
     border-radius: 8px;

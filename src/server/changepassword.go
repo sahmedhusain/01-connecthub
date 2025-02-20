@@ -60,7 +60,6 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//must check if user is a moderator!
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {

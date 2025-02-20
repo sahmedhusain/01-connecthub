@@ -58,7 +58,6 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//must check if user is a moderator!
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
@@ -119,7 +118,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 		data := struct {
 			HasSession    bool
 			UserID        int
-			UserName      string // Add this field
+			UserName      string
 			Avatar        string
 			Notifications []database.Notification
 			RoleName      string
@@ -130,7 +129,7 @@ func NotificationsPage(w http.ResponseWriter, r *http.Request) {
 		}{
 			HasSession:    hasSession,
 			UserID:        userID,
-			UserName:      userName, // Add this field
+			UserName:      userName,
 			Avatar:        avatar.String,
 			RoleName:      roleName,
 			Notifications: notifications,

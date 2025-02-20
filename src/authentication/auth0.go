@@ -104,7 +104,6 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 
-
 		provid, err := db.Query("SELECT provider FROM user WHERE email = ?", primaryEmail)
 		if err != nil {
 			log.Println("Error executing query:", err)
@@ -193,6 +192,7 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
+
 var (
 	oauthConfigGoogle = &oauth2.Config{
 		ClientID:     "45bcae291c72da86dbdd8b65129c950f6bbf773a270576066421-puugu8n2v7om91no9u1kq116l0uf345e.apps.googleusercontent.com",
@@ -340,7 +340,6 @@ func CallbackGoogle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Log the user in (set session or cookie)
 	sid, _, err := Login(email, token.AccessToken, "Google", w, r)
 	if err != nil {
 		errData := server.ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -424,15 +423,12 @@ func Login(InputEmail, inputPassword, provider string, w http.ResponseWriter, r 
 
 	cook, valid := r.Cookie("session_id")
 
-	// Check if the user already has an active session
 	if valid != nil || cook.Value != "" {
 		return 0, uuid.Nil, fmt.Errorf("user already has an active session")
 	}
 
-	// Generate a new session ID (you can use a library like UUID for this)
 	newSessionID, _ := security.GenerateToken()
 
-	// Update the database with the new session ID
 	_, err = db.Exec("UPDATE user SET current_session = ? WHERE id = ?", newSessionID, id, Provider)
 	if err != nil {
 		return 0, uuid.Nil, err

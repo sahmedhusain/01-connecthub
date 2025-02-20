@@ -59,7 +59,6 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//check if user is an admin
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err == sql.ErrNoRows {

@@ -32,7 +32,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	var results []SearchResult
 
-	// Search users
 	userRows, err := db.Query(`
         SELECT userid, Username, F_name, L_name, Avatar 
         FROM user 
@@ -60,7 +59,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Search categories
 	categoryRows, err := db.Query(`
         SELECT idcategories, name 
         FROM categories 
@@ -82,7 +80,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Search posts
 	postRows, err := db.Query(`
         SELECT postid, title, content 
         FROM post 
@@ -132,7 +129,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Session handling
 	var hasSession bool
 	var userID int
 	var userName string
@@ -163,7 +159,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Initialize page data
 	data := PageData{
 		HasSession:  hasSession,
 		SearchQuery: query,
@@ -171,7 +166,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 		UserName:    userName,
 	}
 
-	// If user is logged in, fetch additional user data
 	if hasSession {
 		var avatar sql.NullString
 		var roleID int
@@ -188,7 +182,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Set role name
 		var roleName string
 		if roleID == 1 {
 			roleName = "Admin"
@@ -198,7 +191,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 			roleName = "User"
 		}
 
-		// Get user statistics
 		var totalLikes, totalPosts int
 		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userID = ?", userID).Scan(&totalLikes)
 		if err != nil {
@@ -216,7 +208,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Get notifications
 		notifications, err := database.GetLastNotifications(db, userID)
 		if err != nil {
 			log.Println("Failed to fetch notifications:", err)
@@ -225,7 +216,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Update page data with user information
 		data.Avatar = avatar.String
 		data.RoleName = roleName
 		data.TotalLikes = totalLikes
@@ -234,7 +224,6 @@ func SearchPageHandler(w http.ResponseWriter, r *http.Request) {
 		data.Notifications = notifications
 	}
 
-	// Execute template with the page data
 	err = templates.ExecuteTemplate(w, "search.html", data)
 	if err != nil {
 		log.Println("Error rendering search page:", err)

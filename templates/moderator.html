@@ -56,7 +56,6 @@
                     class="avatar dropbtn">
                 <div class="dropdown-content">
                     <form action="/myprofile" method="GET">
-                        <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                         <button class="profile-button">
                             {{if or (eq .RoleName "Moderator") (eq .RoleName "Admin")}}
                             <span class="role"><i class="fa-solid fa-user-tie"></i> {{.RoleName}}</span>
@@ -109,7 +108,6 @@
                 <ul>
                     <li>
                         <form action="/home" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="posts">
                             <input type="hidden" name="filter" value="all">
                             <button type="submit" class="{{if eq .SelectedTab "posts"}}selected{{end}}">
@@ -119,7 +117,6 @@
                     </li>
                     <li>
                         <form action="/home" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="tags">
                             <input type="hidden" name="filter" value="all">
                             <button type="submit" class="{{if eq .SelectedTab "tags"}}selected{{end}}">
@@ -133,7 +130,6 @@
                 <ul>
                     <li>
                         <form action="/home" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+posts">
                             <input type="hidden" name="filter" value="newest">
                             <button type="submit" class="{{if eq .SelectedTab "your+posts"}}selected{{end}}">
@@ -152,7 +148,6 @@
                     </li>
                     <li>
                         <form action="/home" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="your+reactions">
                             <input type="hidden" name="filter" value="likes">
                             <button type="submit" class="{{if eq .SelectedTab "your+reactions"}}selected{{end}}">
@@ -167,7 +162,6 @@
                     {{if eq .RoleID 1}}
                     <li>
                         <form action="/admin" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="admin">
                             <button type="submit" class="{{if eq .SelectedTab "admin"}}selected{{end}}">
                                 <i class="fas fa-user-shield"></i> Admin Dashboard
@@ -177,7 +171,6 @@
                     {{else if eq .RoleID 2}}
                     <li>
                         <form action="/moderator" method="GET">
-                            <!-- <input type="hidden" name="user" value="{{.UserID}}"> -->
                             <input type="hidden" name="tab" value="moderator">
                             <button type="submit" class="{{if eq .SelectedTab "moderator"}}selected{{end}}">
                                 <i class="fas fa-user-cog"></i> Moderator Panel

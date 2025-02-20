@@ -271,14 +271,9 @@ func DataBase() {
 		`INSERT INTO user_roles (role_name) VALUES ('Guest');`,
 	}
 
-	// insertUsers := []string{
-	// 	`INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar) VALUES ('Alicia', 'Nguyen', 'aliceN', 'aliceN@example.com', '123', 1, 1, 'https://randomuser.me/api/portraits/women/1.jpg');`,
-	// }
-
 	allInserts := [][]string{
 		insertCategories,
 		insertUserRoles,
-		// insertUsers,
 	}
 
 	for _, group := range allInserts {

@@ -63,14 +63,13 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//check if user is an admin
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err == sql.ErrNoRows {
 		log.Println("No user found with the given user ID:", userID)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
-	} else if err != nil{
+	} else if err != nil {
 		log.Println("User is not an admin or error occurred")
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
@@ -264,7 +263,6 @@ func NewPostPage(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			// Redirect to the home page after successful post
 			http.Redirect(w, r, "/home?tab=posts&filter=all", http.StatusSeeOther)
 		}
 	}

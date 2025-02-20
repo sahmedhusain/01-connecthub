@@ -58,7 +58,6 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//must check if user is a moderator!
 	var roleID int
 	err = db.QueryRow("SELECT role_id FROM user WHERE userid = ?", userID).Scan(&roleID)
 	if err != nil {
@@ -94,7 +93,6 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
 
-			// Fetch posts and comments for the moderator panel
 			posts, err := database.GetAllPosts(db)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
@@ -133,7 +131,7 @@ func ModeratorPage(w http.ResponseWriter, r *http.Request) {
 				UserID:        userID,
 				UserName:      userName,
 				RoleName:      roleName,
-				RoleID: 	  roleID,
+				RoleID:        roleID,
 				Posts:         posts,
 				Comments:      comments,
 				TotalPosts:    totalPosts,
