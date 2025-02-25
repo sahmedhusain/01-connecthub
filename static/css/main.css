@@ -41,6 +41,9 @@ header {
     gap: 20px;
     overflow-y: auto;
     margin-top: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .feed-container {
@@ -136,6 +139,11 @@ main {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .sidebar {
