@@ -455,7 +455,6 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 			return nil, err
 		}
 
-		// Fetch categories for the post
 		categories, err := GetCategoriesForPost(db, post.PostID)
 		if err != nil {
 			log.Println("Error fetching categories for post:", err)

@@ -219,7 +219,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		case "dislikes":
-			//
 			posts, err = database.GetUserReaction(db, userID, filter)
 			if err != nil {
 				log.Println("Failed to fetch posts:", err)
