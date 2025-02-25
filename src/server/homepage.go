@@ -129,6 +129,30 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		switch filter {
 		case "all":
 			posts = allPosts
+		case "following":
+			if !hasSession {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			posts, err = database.GetFollowingPosts(db, userID)
+			if err != nil {
+				log.Println("Failed to fetch following posts:", err)
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
+		case "friends":
+			if !hasSession {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			posts, err = database.GetFriendsPosts(db, userID)
+			if err != nil {
+				log.Println("Failed to fetch friends' posts:", err)
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
 		case "top-rated":
 			posts, err = database.GetFilteredPosts(db, filter)
 			if err != nil {
@@ -146,7 +170,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		default:
-			log.Println("Invalid filter selected", err)
+			log.Println("Invalid filter selected")
 			err := ErrorPageData{Code: "400", ErrorMsg: "BAD REQUEST"}
 			ErrHandler(w, r, &err)
 			return
@@ -327,6 +351,8 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 		data := PageData{
 			HasSession:     hasSession,
+			UserID:         userID,
+			UserName:       userName,
 			Categories:     categories,
 			Users:          users,
 			Posts:          posts,

@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"time"
@@ -179,6 +180,16 @@ func GetUserLikedPosts(db *sql.DB, userID int) ([]Post, error) {
 			log.Println("Error scanning row:", err)
 			return nil, err
 		}
+
+		categories, err := GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			log.Println("Error fetching categories for post:", err)
+			return nil, err
+		}
+		post.Categories = categories
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
 		posts = append(posts, post)
 	}
 
@@ -215,6 +226,16 @@ func GetUserDislikedPosts(db *sql.DB, userID int) ([]Post, error) {
 		if err := rows.Scan(&post.PostID, &post.Image, &post.Content, &post.Title, &post.PostAt, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			log.Println("Error scanning row:", err)
 			return nil, err
+		}
+
+		categories, err := GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			log.Println("Error fetching categories for post:", err)
+			return nil, err
+		}
+		post.Categories = categories
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
 		}
 		posts = append(posts, post)
 	}
@@ -258,10 +279,21 @@ func GetUserCommentedPosts(db *sql.DB, userid int, filter string) ([]Post, error
 		if err := rows.Scan(&post.PostID, &post.Image, &post.Title, &post.Content, &post.Title, &postAt, &post.UserUserID, &post.Username, &post.FirstName, &post.LastName, &post.Avatar, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			return nil, err
 		}
+
 		post.PostAt, err = time.Parse(time.RFC3339, postAt)
 		if err != nil {
 			log.Println("Error parsing post_at:", err)
 			return nil, err
+		}
+
+		categories, err := GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			log.Println("Error fetching categories for post:", err)
+			return nil, err
+		}
+		post.Categories = categories
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
 		}
 		posts = append(posts, post)
 	}
@@ -462,6 +494,10 @@ func GetFilteredPosts(db *sql.DB, filter string) ([]Post, error) {
 		}
 		post.Categories = categories
 
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
+
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -512,7 +548,9 @@ func GetPostsByMultiCategory(db *sql.DB, categoryName string) ([]Post, error) {
 			return nil, err
 		}
 		post.Categories = categories
-
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -563,7 +601,9 @@ func GetPostsByCategory(db *sql.DB, categoryName string) ([]Post, error) {
 			return nil, err
 		}
 		post.Categories = categories
-
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
 		posts = append(posts, post)
 	}
 	if err := rows.Err(); err != nil {
@@ -648,7 +688,7 @@ func GetUserPosts(db *sql.DB, userID int, filter string) ([]Post, error) {
 	}
 
 	rows, err := db.Query(`SELECT 
-		post.postid, post.content, post.title, post.post_at, post.user_userid, 
+		post.postid, post.content, post.title, post.image, post.post_at, post.user_userid, 
 		user.avatar, user.F_name, user.L_name, user.Username,
 				 (SELECT COUNT(*) FROM likes WHERE likes.post_postid = post.postid) AS Likes,
                (SELECT COUNT(*) FROM dislikes WHERE dislikes.post_postid = post.postid) AS Dislikes,
@@ -664,8 +704,18 @@ func GetUserPosts(db *sql.DB, userID int, filter string) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		if err := rows.Scan(&post.PostID, &post.Content, &post.Title, &post.PostAt, &post.UserUserID, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Content, &post.Title, &post.Image, &post.PostAt, &post.UserUserID, &post.Avatar, &post.FirstName, &post.LastName, &post.Username, &post.Likes, &post.Dislikes, &post.Comments); err != nil {
 			return nil, err
+		}
+
+		categories, err := GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			log.Println("Error fetching categories for post:", err)
+			return nil, err
+		}
+		post.Categories = categories
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
 		}
 		posts = append(posts, post)
 	}
@@ -994,4 +1044,123 @@ func GetRoleNameByID(db *sql.DB, roleID int) (string, error) {
 		return "", err
 	}
 	return roleName, nil
+}
+
+func GetFriendsPosts(db *sql.DB, userID int) ([]Post, error) {
+	query := `
+        SELECT DISTINCT p.*, u.Username, u.F_name, u.L_name, u.Avatar,
+            (SELECT COUNT(*) FROM likes WHERE post_postid = p.postid) as likes,
+            (SELECT COUNT(*) FROM dislikes WHERE post_postid = p.postid) as dislikes,
+            (SELECT COUNT(*) FROM comment WHERE post_postid = p.postid) as comments
+        FROM post p
+        JOIN user u ON p.user_userid = u.userid
+        JOIN friends f ON (f.user_userid = ? AND f.friend_userid = p.user_userid)
+            OR (f.friend_userid = ? AND f.user_userid = p.user_userid)
+        ORDER BY p.post_at DESC
+    `
+
+	rows, err := db.Query(query, userID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		err := rows.Scan(
+			&post.PostID,
+			&post.Image,
+			&post.Content,
+			&post.Title,
+			&post.PostAt,
+			&post.UserUserID,
+			&post.Username,
+			&post.FirstName,
+			&post.LastName,
+			&post.Avatar,
+			&post.Likes,
+			&post.Dislikes,
+			&post.Comments,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		// Get categories for this post
+		categories, err := GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			return nil, err
+		}
+		post.Categories = categories
+
+		// Convert image to base64 if present
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func GetFollowingPosts(db *sql.DB, userID int) ([]Post, error) {
+	query := `
+        SELECT DISTINCT p.postid, p.image, p.content, p.title, p.post_at, p.user_userid,
+            u.Username, u.F_name, u.L_name, u.Avatar,
+            (SELECT COUNT(*) FROM likes WHERE post_postid = p.postid) as likes,
+            (SELECT COUNT(*) FROM dislikes WHERE post_postid = p.postid) as dislikes,
+            (SELECT COUNT(*) FROM comment WHERE post_postid = p.postid) as comments
+        FROM post p
+        JOIN user u ON p.user_userid = u.userid
+        JOIN followers f ON f.user_userid = p.user_userid
+        WHERE f.follower_userid = ?
+        ORDER BY p.post_at DESC
+    `
+
+	rows, err := db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		err := rows.Scan(
+			&post.PostID,
+			&post.Image,
+			&post.Content,
+			&post.Title,
+			&post.PostAt,
+			&post.UserUserID,
+			&post.Username,
+			&post.FirstName,
+			&post.LastName,
+			&post.Avatar,
+			&post.Likes,
+			&post.Dislikes,
+			&post.Comments,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		// Get categories for this post
+		categories, err := GetCategoriesForPost(db, post.PostID)
+		if err != nil {
+			return nil, err
+		}
+		post.Categories = categories
+
+		// Convert image to base64 if present
+		if post.Image.Valid {
+			post.ImageBase64 = base64.StdEncoding.EncodeToString([]byte(post.Image.String))
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
 }

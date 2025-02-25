@@ -147,8 +147,10 @@ func DataBase() {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_userid INTEGER NOT NULL,
 			follower_userid INTEGER NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (user_userid) REFERENCES user(userid),
-			FOREIGN KEY (follower_userid) REFERENCES user(userid)
+			FOREIGN KEY (follower_userid) REFERENCES user(userid),
+			UNIQUE(user_userid, follower_userid)
 		);`
 
 	const CreateNotificationsTable = `
@@ -209,6 +211,17 @@ func DataBase() {
 			FOREIGN KEY (user_userid) REFERENCES user(userid)
 		);`
 
+	const CreateFollowersTableNew = `
+		CREATE TABLE IF NOT EXISTS followers (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			follower_id INTEGER NOT NULL,
+			following_id INTEGER NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (follower_id) REFERENCES user(userid),
+			FOREIGN KEY (following_id) REFERENCES user(userid),
+			UNIQUE(follower_id, following_id)
+		);`
+
 	createTableStatements := []string{
 		CreateCategoriesTable,
 		CreateCommentTable,
@@ -228,6 +241,7 @@ func DataBase() {
 		CreateReportsTable,
 		CreateGithubTable,
 		CreateGoogleTable,
+		CreateFollowersTableNew,
 	}
 
 	for _, stmt := range createTableStatements {
