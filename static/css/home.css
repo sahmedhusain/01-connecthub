@@ -44,7 +44,7 @@
 
 .post-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     margin-bottom: 15px;
 }
@@ -67,24 +67,19 @@
 .post-info span {
     color: #6B7280;
     font-size: 0.9em;
+    margin-bottom: 8px;
 }
 
 .post-body {
     margin: 15px 0;
 }
 
-.post-body h2 {
-    font-size: 1.5em;
-    color: #1F2937;
-    margin-bottom: 12px;
-    line-height: 1.4;
-}
-
 .post-body p {
     font-size: 1.1em;
     line-height: 1.6;
     color: #4B5563;
-    margin-bottom: 15px;
+    margin: 8px 0 15px 0;
+    width: 100%;
 }
 
 .post-body img {
@@ -106,10 +101,10 @@
 }
 
 .post-body form {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    align-items: flex-start;
 }
 
 .post-body img {
@@ -126,6 +121,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    justify-content: flex-start;
+    width: 100%;
 }
 
 .post-categories button {
@@ -135,6 +132,8 @@
     font: inherit;
     color: inherit;
     transition: color 0.3s ease;
+    padding: 0;
+    margin: 0;
 }
 
 .category-box {
@@ -148,6 +147,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
     cursor: pointer;
+    display: inline-block;
 }
 
 .category-box:hover {
