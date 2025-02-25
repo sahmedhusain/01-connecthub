@@ -215,9 +215,10 @@
                                 readonly>
 
                             <div class="password-buttons" style="margin-left: 10px;">
-
-                                <button type="button" onclick="window.location.href='/changepassword'">Change
-                                    Password</button>
+                                <form action="/changepassword" method="POST">
+                                    <input type="hidden" name="user_id" value="{{.UserID}}">
+                                    <button type="submit">Change Password</button>
+                                </form>
                             </div>
                         </div>
 

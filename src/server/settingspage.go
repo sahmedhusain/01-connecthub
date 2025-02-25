@@ -77,15 +77,26 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if hasSession {
-		var avatar sql.NullString
-		err = db.QueryRow("SELECT avatar, role_id FROM user WHERE userID = ?", userID).Scan(&avatar, &roleID)
-		if err == sql.ErrNoRows {
-			log.Println("No user found with the given ID:", userID)
-			err := ErrorPageData{Code: "404", ErrorMsg: "USER NOT FOUND"}
+		var user database.User
+		err := db.QueryRow("SELECT F_name, L_name, username, email, avatar FROM user WHERE userid = ?", userID).Scan(&user.FirstName, &user.LastName, &user.Username, &user.Email, &user.Avatar)
+		if err != nil {
+			log.Println(err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			ErrHandler(w, r, &err)
 			return
-		} else if err != nil {
-			log.Println("Failed to fetch user data:", err)
+		}
+		var totalLikes, totalPosts int
+		err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_userID = ?", userID).Scan(&totalLikes)
+		if err != nil {
+			log.Println(err)
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
+
+		err = db.QueryRow("SELECT COUNT(*) FROM post WHERE user_userID = ?", userID).Scan(&totalPosts)
+		if err != nil {
+			log.Println(err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			ErrHandler(w, r, &err)
 			return

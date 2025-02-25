@@ -84,7 +84,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var storedPassword string
-		err = db.QueryRow("SELECT password FROM users WHERE id = ?", userID).Scan(&storedPassword)
+		err = db.QueryRow("SELECT password FROM user WHERE userid = ?", userID).Scan(&storedPassword)
 		if err != nil {
 			log.Println("Error fetching user:", err)
 			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
