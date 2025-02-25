@@ -15,7 +15,6 @@ main img {
     margin-bottom: 0;
     opacity: 0.9;
     transition: opacity 0.3s ease;
-    height: auto;
 }
 
 .error-content h1 {

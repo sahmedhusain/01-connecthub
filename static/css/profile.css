@@ -15,20 +15,6 @@
     --hover-box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
-main {
-    padding: 20px;
-    background-color: var(--background-color);
-    box-shadow: var(--box-shadow);
-    margin: 20px 20px;
-    max-width: 1500px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: box-shadow var(--transition);
-}
-
 .container {
     max-width: 1000px;
     margin: 0 auto;
