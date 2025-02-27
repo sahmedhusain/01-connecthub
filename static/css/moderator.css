@@ -1,128 +1,203 @@
 :root {
-    --primary-color: #007bff;
-    --secondary-colora: #dc3545;
-    --background-color: #fff;
-    --border-color: #ddd;
-    --hover-opacity: 0.8;
-    --font-family: 'Arial', sans-serif;
+    --primary-color: #3B82F6;
+    --secondary-color: #1F2937;
+    --background-color: #F9FAFB;
+    --foreground-color: #FFFFFF;
+    --text-color: #374151;
+    --text-light-color: #6B7280;
+    --border-color: #E5E7EB;
+    --hover-color: #1D4ED8;
+    --danger-color: #EF4444;
+    --danger-hover-color: #DC2626;
+    --font-family: 'Roboto', sans-serif;
     --radius: 8px;
-    --transition: 0.3s ease;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --text-color: #333;
-    --table-bg-color: #f2f2f2;
+    --transition: all 0.3s ease-in-out;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --table-bg-color: #FFFFFF;
+    --table-header-bg: #F3F4F6;
+    --table-row-hover: #F9FAFB;
 }
 
 .container {
-    max-width: 1500px;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
 }
 
 h1,
 h2 {
-    color: var(--text-color);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 30px;
+    color: var(--secondary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    font-size: 2rem;
+    border-bottom: 2px solid var(--border-color);
 }
 
 h2 {
-    font-size: 24px;
+    font-size: 1.5rem;
+    margin-top: 2rem;
 }
 
+/* Dashboard Stats */
 .dashboard-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .dashboard-stats div {
-    background-color: var(--primary-color);
-    color: var(--background-color);
-    padding: 20px;
+    background-color: var(--foreground-color);
+    color: var(--text-color);
+    padding: 1.5rem;
     border-radius: var(--radius);
     text-align: center;
-    flex: 1;
-    margin: 0 10px;
-    transition: background-color var(--transition), transform var(--transition);
-}
-
-.dashboard-stats div:hover {
-    background-color: #0056b3;
-    transform: translateY(-5px);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px var(--shadow-light);
-}
-
-table,
-th,
-td {
+    box-shadow: var(--box-shadow);
+    transition: transform var(--transition);
     border: 1px solid var(--border-color);
 }
 
+.dashboard-stats div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-stats div h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
+}
+
+.dashboard-stats div p {
+    font-size: 1rem;
+    color: var(--text-light-color);
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
 th,
 td {
-    padding: 12px;
+    padding: 1rem;
     text-align: left;
+    border-bottom: 1px solid var(--border-color);
 }
 
 th {
-    background-color: var(--table-bg-color);
-    font-weight: bold;
+    background-color: var(--table-header-bg);
+    font-weight: 600;
+    color: var(--secondary-color);
 }
 
-tr:hover {
-    background-color: #f9f9f9;
+tbody tr:hover {
+    background-color: var(--table-row-hover);
 }
 
+/* Buttons */
 .delete-button,
 .report-button {
-    padding: 10px 20px;
+    padding: 0.75rem 1.25rem;
     cursor: pointer;
     border-radius: var(--radius);
-    margin-right: 5px;
-    transition: opacity var(--transition), transform var(--transition);
+    transition: background-color var(--transition), color var(--transition);
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
 }
 
 .delete-button {
-    background-color: var(--secondary-colora);
-    color: var(--background-color);
+    background-color: var(--danger-color);
+    color: var(--foreground-color);
 }
 
 .report-button {
     background-color: var(--primary-color);
-    color: var(--background-color);
+    color: var(--foreground-color);
 }
 
-.delete-button:hover,
+.delete-button:hover {
+    background-color: var(--danger-hover-color);
+}
+
 .report-button:hover {
-    opacity: var(--hover-opacity);
-    transform: translateY(-2px);
+    background-color: var(--hover-color);
 }
 
+/* Category Form */
 .category-form {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    gap: 10px;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .category-form input {
     flex: 1;
-    padding: 10px;
-    margin-right: 10px;
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    font-size: 16px;
+    font-size: 1rem;
     transition: border-color var(--transition);
 }
 
 .category-form input:focus {
     border-color: var(--primary-color);
     outline: none;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.2);
+}
+
+.category-form button {
+    background-color: var(--primary-color);
+    color: var(--foreground-color);
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color var(--transition);
+}
+
+.category-form button:hover {
+    background-color: var(--hover-color);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    h1,
+    h2 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-stats div {
+        padding: 1rem;
+    }
+
+    .dashboard-stats div h3 {
+        font-size: 1.2rem;
+    }
+
+    .category-form {
+        flex-direction: column;
+    }
+
+    .category-form input,
+    .category-form button {
+        width: 100%;
+    }
 }

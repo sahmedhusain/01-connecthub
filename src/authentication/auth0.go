@@ -20,9 +20,9 @@ import (
 
 var (
 	oauthConfigGithub = &oauth2.Config{
-		ClientID:     "Ov23lijcOVao9JkId97d",
-		ClientSecret: "45bcae291c72da86dbdd8b65129c950f6bbf773a",
-		RedirectURL:  "http://localhost:8080/auth/github/callback",
+		ClientID:     "Ov23liYl2L30q080Nif5",
+		ClientSecret: "b8815439273a6e564a6f0d7f82c775c3d7e2383a",
+		RedirectURL:  "http://localhost:8080/callback",
 		Scopes:       []string{"user"},
 		Endpoint:     github.Endpoint,
 	}
@@ -85,7 +85,7 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	username := strings.Split(primaryEmail, "@")[0]
-	hashed, err := server.HashPassword(token.AccessToken)
+	hashed, err := server.HashPassword("ggg")
 	if err != nil {
 		http.Error(w, "Error hashing password: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -159,7 +159,7 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "GitHub ID is missing or invalid", http.StatusInternalServerError)
 			return
 		}
-		stmtt, err := db.Prepare("INSERT INTO google (gituserid, gitF_name, gitL_name, gitUsername, gitEmail, gitpassword, gitAvatar, user_userid) VALUES (?, ?, ?, ?, ?, ?, ?,?)")
+		stmtt, err := db.Prepare("INSERT INTO github (gituserid, gitF_name, gitL_name, gitUsername, gitEmail, gitpassword, gitAvatar, user_userid) VALUES (?, ?, ?, ?, ?, ?, ?,?)")
 		if err != nil {
 			log.Println("Failed to prepare insert statement:", err)
 			errData := server.ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
@@ -183,7 +183,7 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	sid, _, err := Login(primaryEmail, token.AccessToken, "GitHub", w, r)
+	sid, _, err := Login(primaryEmail, "ggg", "GitHub", w, r)
 	if err != nil {
 		http.Error(w, "Login failed: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -195,8 +195,8 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 
 var (
 	oauthConfigGoogle = &oauth2.Config{
-		ClientID:     "45bcae291c72da86dbdd8b65129c950f6bbf773a270576066421-puugu8n2v7om91no9u1kq116l0uf345e.apps.googleusercontent.com",
-		ClientSecret: "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",
+		ClientID:     "308640975130-ejeugakggjsq2n0gco97minddk4b8elt.apps.googleusercontent.com",
+		ClientSecret: "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",
 		RedirectURL:  "http://localhost:8080/callbackGoogle",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.profile",
@@ -398,7 +398,7 @@ func Login(InputEmail, inputPassword, provider string, w http.ResponseWriter, r 
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("SELECT id, F_name, L_name, username, email, password, current_session ,provider FROM user WHERE email = ? AND provider = ?")
+	statement, err := db.Prepare("SELECT userid, F_name, L_name, username, email, password, current_session ,provider FROM user WHERE email = ? AND provider = ?")
 	if err != nil {
 		return 0, uuid.Nil, err
 	}
