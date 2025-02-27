@@ -1,28 +1,30 @@
 :root {
-    --primary-color: #3B82F6;
-    --secondary-color: #1F2937;
-    --background-color: #FFFFFF;
-    --text-color: #333;
+    --primary-color: #2563EB;
+    --secondary-color: #1E293B;
+    --background-color: #F9FAFB;
+    --foreground-color: #FFFFFF;
+    --text-color: #374151;
     --text-light-color: #6B7280;
     --border-color: #E5E7EB;
+    --hover-background: #F9FAFB;
+    --input-hover-border: #3B82F6;
+    --button-hover-background: #2563EB;
     --hover-color: #1D4ED8;
-    --danger-color: #EF4444;
-    --danger-hover-color: #DC2626;
+    --accent-color: #3B82F6;
     --font-family: 'Roboto', sans-serif;
     --radius: 8px;
-    --transition: all 0.3s ease;
+    --transition: 0.3s ease;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --hover-box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-
-    /* New Design Variables */
-    --profile-header-bg: #F3F4F6;
-    --profile-stats-bg: #E5E7EB;
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0, 0, 0, 0.12);
+    --profile-header-bg: #FFFFFF;
+    --profile-stats-bg: #FFFFFF;
     --profile-section-padding: 2rem;
     --profile-border-radius: 12px;
-    --profile-transition: all 0.2s ease-in-out;
+    --danger-color: #EF4444;
+    --danger-hover-color: #DC2626;
 }
 
-/* Enhanced Styling */
 body {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -30,9 +32,27 @@ body {
     line-height: 1.6;
 }
 
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+a:hover {
+    color: var(--hover-color);
+}
+
+main {
+    padding: 2rem;
+    margin: 2rem;
+    background-color: var(--foreground-color);
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+}
+
 .container {
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 0 auto;
     padding: 0 2rem;
 }
 
@@ -42,13 +62,14 @@ body {
     align-items: center;
     justify-content: flex-start;
     gap: 2rem;
-    padding: 2rem;
+    padding: var(--profile-section-padding);
     background-color: var(--profile-header-bg);
     border-radius: var(--profile-border-radius);
     box-shadow: var(--box-shadow);
-    transition: var(--profile-transition);
+    transition: var(--transition);
     position: relative;
     overflow: hidden;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .profile-header::before {
@@ -64,7 +85,7 @@ body {
 }
 
 .profile-header:hover {
-    box-shadow: var(--hover-box-shadow);
+    box-shadow: 0 6px 15px var(--shadow-medium);
 }
 
 .profile-header img {
@@ -74,12 +95,11 @@ body {
     object-fit: cover;
     border: 5px solid var(--background-color);
     box-shadow: var(--box-shadow);
-    transition: transform 0.3s ease-in-out;
+    transition: transform var(--transition);
 }
 
 .profile-header img:hover {
     transform: scale(1.1);
-    box-shadow: var(--hover-box-shadow);
 }
 
 .profile-info {
@@ -92,11 +112,11 @@ body {
     font-weight: 700;
     color: var(--secondary-color);
     margin-bottom: 0.5rem;
-    transition: color 0.3s ease-in-out;
+    transition: color var(--transition);
 }
 
 .profile-info h1:hover {
-    color: var(--primary-color);
+    color: var(--hover-color);
 }
 
 .profile-info p {
@@ -109,168 +129,189 @@ body {
 .profile-stats {
     display: flex;
     justify-content: space-around;
-    background-color: var(--profile-stats-bg);
-    padding: 2rem;
-    border-radius: var(--profile-border-radius);
-    box-shadow: var(--box-shadow);
-    transition: var(--profile-transition);
+    margin-top: 1rem;
     position: relative;
     z-index: 1;
 }
 
-.profile-stats:hover {
-    box-shadow: var(--hover-box-shadow);
+.profile-stats div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: var(--radius);
+    transition: background-color var(--transition);
 }
 
-.profile-stats div {
-    text-align: center;
+.profile-stats div:hover {
+    background-color: var(--hover-background);
+}
+
+.profile-stats div button {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var (--secondary-color);
+    transition: color var(--transition);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.profile-stats div button:hover {
+    color: var(--primary-color);
 }
 
 .profile-stats div span {
     display: block;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--secondary-color);
-    transition: color 0.3s ease-in-out;
+    font-size: 0.9rem;
+    color: var(--text-light-color);
+    margin-top: 0.5rem;
 }
 
-.profile-stats div span:hover {
-    color: var(--primary-color);
-}
-
-/* Follow Button */
+/* Follow Button (Profile-specific) */
 .follow-button {
     background-color: var(--primary-color);
-    color: var(--background-color);
-    padding: 1.2rem 2.5rem;
+    color: var(--foreground-color);
+    padding: 0.75rem 1.5rem;
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    box-shadow: var(--box-shadow);
-    position: relative;
-    z-index: 1;
+    transition: background-color var(--transition), transform var(--transition);
+    margin-top: 1rem;
 }
 
 .follow-button:hover {
-    background-color: var(--hover-color);
+    background-color: var(--button-hover-background);
     transform: translateY(-3px);
-    box-shadow: var(--hover-box-shadow);
+    box-shadow: 0 4px 10px var(--shadow-medium);
 }
 
 .unfollow-button {
     background-color: var(--danger-color);
-    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    position: relative;
-    z-index: 1;
 }
 
 .unfollow-button:hover {
     background-color: var(--danger-hover-color);
-    transform: translateY(-3px);
-    box-shadow: var(--hover-box-shadow);
 }
 
 /* Posts Container */
 .posts-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
     margin-top: 3rem;
-    position: relative;
-    z-index: 1;
-}
-
-.post {
-    background: var(--background-color);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    box-shadow: var(--box-shadow);
-    border: 1px solid var(--border-color);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    position: relative;
-    z-index: 1;
-}
-
-.post:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--hover-box-shadow);
-}
-
-.post img {
     width: 100%;
-    border-radius: var(--radius);
-    object-fit: cover;
-    max-height: 220px;
-    margin-bottom: 1.2rem;
-    transition: transform 0.3s ease-in-out;
 }
 
-.post img:hover {
-    transform: scale(1.05);
+.posts-container h2 {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    font-weight: bold;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
 }
 
-.post-content p {
-    font-size: 1.1rem;
-    color: var(--text-color);
-    line-height: 1.7;
-}
-
-/* Action Links */
-.action-link {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    font-size: 1.1rem;
-    color: var(--text-light-color);
-    cursor: pointer;
-    transition: color 0.3s ease-in-out;
-}
-
-.action-link:hover {
-    color: var(--primary-color);
-}
-
-/* List Container */
-#list-container {
-    margin-top: 3rem;
-    position: relative;
-    z-index: 1;
-}
-
-#list-container h2 {
-    font-size: 1.7rem;
-    margin-bottom: 1.5rem;
-    color: var (--secondary-color);
-}
-
-#list-container ul {
+.posts-container ul {
     list-style: none;
     padding: 0;
 }
 
-#list-container li {
-    padding: 1.5rem;
+.posts-container ul li {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    padding: 0.75rem 0;
     border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition);
 }
 
-#list-container li:last-child {
+.posts-container ul li:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.posts-container ul li:last-child {
     border-bottom: none;
+}
+
+.posts-container .feed-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.posts-container .post {
+    background-color: var(--foreground-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    position: relative;
+}
+
+.posts-container .post:hover {
+    box-shadow: 0 4px 10px var(--shadow-medium);
+    transform: translateY(-5px);
+}
+
+.post img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+}
+
+.post-content {
+    margin-top: 1rem;
+}
+
+.post-content p {
+    font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.post-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 1.5rem;
+    font-size: 14px;
+    color: var(--text-light-color);
+    align-items: center;
+}
+
+.post-actions button,
+.post-actions a {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color var(--transition);
+}
+
+.post-actions button:hover,
+.post-actions a:hover {
+    color: var(--primary-color);
 }
 
 /* Media Queries */
 @media (max-width: 768px) {
-    .container {
-        padding: 0 1rem;
+    main {
+        padding: 1.5rem;
+        margin: 1.5rem;
     }
 
     .profile-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 1.5rem;
     }
 
     .profile-header img {
@@ -282,156 +323,24 @@ body {
         font-size: 2rem;
     }
 
-    .profile-info p {
-        font-size: 1rem;
-    }
-
     .profile-stats {
         flex-direction: column;
         align-items: center;
-        padding: 1.5rem;
     }
 
     .profile-stats div {
-        width: 100%;
         text-align: center;
     }
 
-    .profile-stats div span {
-        font-size: 1.4rem;
-    }
-
-    .follow-button {
-        font-size: 1rem;
-        padding: 1rem 2rem;
-        margin-top: 1rem;
-    }
-
-    .posts-container {
+    .posts-container .feed-content {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        margin-top: 2rem;
     }
 
-    .post {
+    .posts-container .post {
         padding: 1rem;
     }
 
     .post img {
-        max-height: 180px;
+        max-height: 200px;
     }
-
-    .post-content p {
-        font-size: 1rem;
-    }
-
-    .post-actions {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    #list-container {
-        margin-top: 2rem;
-    }
-
-    #list-container h2 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-    }
-
-    #list-container li {
-        padding: 1rem;
-    }
-}
-
-/* Additional enhancements */
-.profile-header {
-    position: relative;
-    overflow: hidden;
-}
-
-.profile-header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(191, 219, 254, 0.1));
-    z-index: 0;
-    pointer-events: none;
-}
-
-.profile-info {
-    position: relative;
-    z-index: 1;
-}
-
-.profile-stats {
-    position: relative;
-    z-index: 1;
-}
-
-.follow-button,
-.unfollow-button {
-    position: relative;
-    z-index: 1;
-}
-
-.posts-container {
-    position: relative;
-    z-index: 1;
-}
-
-.post {
-    position: relative;
-    z-index: 1;
-}
-
-#list-container {
-    position: relative;
-    z-index: 1;
-}
-
-/* Hover effect for action links */
-.action-link:hover {
-    transform: scale(1.1);
-    color: var(--primary-color);
-}
-
-/* Animation for list items */
-#list-container ul li {
-    transition: background-color 0.3s ease;
-}
-
-#list-container ul li:hover {
-    background-color: rgba(59, 130, 246, 0.05);
-}
-
-/* Bouncing animation for follow/unfollow buttons */
-.follow-button:hover,
-.unfollow-button:hover {
-    animation: bounce 0.5s;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-5px);
-    }
-    60% {
-        transform: translateY(-3px);
-    }
-}
-
-/* Subtle shadow for posts */
-.post {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-}
-
-/* More pronounced hover effect for posts */
-.post:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }

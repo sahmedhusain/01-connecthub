@@ -201,8 +201,8 @@
                     <div class="profile-header">
                         <img src="{{.ProfileAvatar}}" alt="User Avatar">
                         <div class="profile-info">
-                            <h1>{{.ProfileUsername}}</h1>
-                            <p>{{.ProfileFirstName}} {{.ProfileLastName}}</p>
+                            <h1>{{.ProfileFirstName}} {{.ProfileLastName}}</h1>
+                            <p>@{{.ProfileUsername}}</p>
                             <div class="profile-stats">
                                 <div>
                                     <span>{{.ProfilePostsCount}}</span>
@@ -214,7 +214,7 @@
                                         <input type="hidden" name="view" value="followers">
                                         <button type="submit">{{.ProfileFollowersCount}}</button>
                                     </form>
-                                    Followers
+                                    <span>Followers</span>
                                 </div>
                                 <div>
                                     <form method="GET" action="/profile">
@@ -222,7 +222,7 @@
                                         <input type="hidden" name="view" value="following">
                                         <button type="submit">{{.ProfileFollowingCount}}</button>
                                     </form>
-                                    Following
+                                    <span>Following</span>
                                 </div>
                             </div>
                             {{if .IsFollowing}}
