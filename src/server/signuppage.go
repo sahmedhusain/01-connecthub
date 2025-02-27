@@ -2,9 +2,11 @@ package server
 
 import (
 	"database/sql"
+	"forum/src/security"
 	"log"
 	"net/http"
 	"regexp"
+	"time"
 )
 
 func SignupPage(w http.ResponseWriter, r *http.Request) {
@@ -97,8 +99,29 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		password, _ = HashPassword(password)
+
+		// Begin transaction for atomic operations
+		tx, err := db.Begin()
+		if err != nil {
+			log.Println("Failed to begin transaction:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &errData)
+			return
+		}
+
+		// Generate session token
+		sessionToken, err := security.GenerateToken()
+		if err != nil {
+			log.Println("Failed to generate session token:", err)
+			tx.Rollback()
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &errData)
+			return
+		}
+
+		hashedPassword, _ := HashPassword(password)
 		defaultAvatar := "static/assets/default-avatar.png"
+
 		var roleID int
 		if email == "sayedahmed97.sad@gmail.com" {
 			roleID = 1
@@ -107,24 +130,59 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		} else {
 			roleID = 3
 		}
-		stmt, err := db.Prepare("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar, provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)")
-		if err != nil {
-			log.Println("Failed to prepare insert statement:", err)
-			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
-			ErrHandler(w, r, &errData)
-			return
-		}
-		defer stmt.Close()
 
-		_, err = stmt.Exec(F_name, L_name, username, email, password, "", roleID, defaultAvatar, "normal")
+		// Insert user with session token
+		result, err := tx.Exec("INSERT INTO user (F_name, L_name, Username, Email, password, current_session, role_id, Avatar, provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			F_name, L_name, username, email, hashedPassword, sessionToken.String(), roleID, defaultAvatar, "normal")
 		if err != nil {
 			log.Println("Failed to insert user data:", err)
+			tx.Rollback()
 			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
 			ErrHandler(w, r, &errData)
 			return
 		}
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		// Get user ID for session creation
+		lastID, err := result.LastInsertId()
+		if err != nil {
+			log.Println("Failed to get last insert ID:", err)
+			tx.Rollback()
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &errData)
+			return
+		}
+
+		userID := int(lastID)
+
+		// Create session record
+		_, err = tx.Exec("INSERT INTO session (sessionid, userid, endtime) VALUES (?, ?, ?)",
+			sessionToken.String(), userID, time.Now().Add(1*time.Hour))
+		if err != nil {
+			log.Println("Error creating session:", err)
+			tx.Rollback()
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &errData)
+			return
+		}
+
+		// Commit transaction
+		if err = tx.Commit(); err != nil {
+			log.Println("Failed to commit transaction:", err)
+			errData := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &errData)
+			return
+		}
+
+		// Create session cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:     "session_token",
+			Value:    sessionToken.String(),
+			Expires:  time.Now().Add(1 * time.Hour),
+			HttpOnly: true,
+		})
+
+		// Redirect to home page
+		http.Redirect(w, r, "/home?tab=posts&filter=all", http.StatusSeeOther)
 		return
 	}
 

@@ -206,6 +206,16 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			user, err := database.GetUserByID(db, userID)
+			if err != nil {
+				log.Println("Failed to fetch user data")
+				err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+				ErrHandler(w, r, &err)
+				return
+			}
+
+			userAvatar := user.Avatar.String
+
 			data := PageData{
 				HasSession:      hasSession,
 				UserID:          userID,
@@ -225,6 +235,7 @@ func AdminPage(w http.ResponseWriter, r *http.Request) {
 				TotalLikes:      totalLikes,
 				SelectedTab:     "admin",
 				TotalPosts:      totalPosts,
+				Avatar:          userAvatar,
 			}
 
 			err = templates.ExecuteTemplate(w, "admin.html", data)

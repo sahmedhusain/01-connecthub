@@ -201,6 +201,7 @@ func DataBase() {
 	const CreateGoogleTable = `
 		CREATE TABLE IF NOT EXISTS google (
 			googleuserid INTEGER PRIMARY KEY AUTOINCREMENT,
+			google_api_id TEXT,
 			googleF_name TEXT NOT NULL,
 			googleL_name TEXT NOT NULL,
 			googleUsername TEXT NOT NULL,

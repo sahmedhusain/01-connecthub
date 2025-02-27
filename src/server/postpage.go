@@ -162,6 +162,15 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Println("User ID:", userID)
+		user, err := database.GetUserByID(db, userID)
+		if err != nil {
+			log.Println("Failed to fetch user data")
+			err := ErrorPageData{Code: "500", ErrorMsg: "INTERNAL SERVER ERROR"}
+			ErrHandler(w, r, &err)
+			return
+		}
+
+		userAvatar := user.Avatar.String
 
 		data := PageData{
 			RoleName:    roleName,
@@ -172,6 +181,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			UserName:    userName,
 			Categories:  categories,
 			ImageBase64: base64Image,
+			Avatar:      userAvatar,
 		}
 
 		err = templates.ExecuteTemplate(w, "post.html", data)
