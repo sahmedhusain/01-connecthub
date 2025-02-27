@@ -13,57 +13,113 @@
     --transition: all 0.3s ease;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     --hover-box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+
+    /* New Design Variables */
+    --profile-header-bg: #F3F4F6;
+    --profile-stats-bg: #E5E7EB;
+    --profile-section-padding: 2rem;
+    --profile-border-radius: 12px;
+    --profile-transition: all 0.2s ease-in-out;
+}
+
+/* Enhanced Styling */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    line-height: 1.6;
 }
 
 .container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
 }
 
+/* Profile Header */
 .profile-header {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 2rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+    padding: 2rem;
+    background-color: var(--profile-header-bg);
+    border-radius: var(--profile-border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--profile-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(191, 219, 254, 0.1));
+    z-index: 0;
+    pointer-events: none;
+}
+
+.profile-header:hover {
+    box-shadow: var(--hover-box-shadow);
 }
 
 .profile-header img {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
+    border: 5px solid var(--background-color);
     box-shadow: var(--box-shadow);
-    transition: transform var(--transition);
+    transition: transform 0.3s ease-in-out;
 }
 
 .profile-header img:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+    box-shadow: var(--hover-box-shadow);
+}
+
+.profile-info {
+    position: relative;
+    z-index: 1;
 }
 
 .profile-info h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 2.5rem;
+    font-weight: 700;
     color: var(--secondary-color);
-    transition: color var(--transition);
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease-in-out;
 }
 
 .profile-info h1:hover {
-    color: var(--hover-color);
+    color: var(--primary-color);
 }
 
 .profile-info p {
-    margin: 0.5rem 0;
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: var(--text-light-color);
+    margin-bottom: 1rem;
 }
 
+/* Profile Stats */
 .profile-stats {
     display: flex;
-    gap: 2rem;
-    margin-top: 1rem;
+    justify-content: space-around;
+    background-color: var(--profile-stats-bg);
+    padding: 2rem;
+    border-radius: var(--profile-border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--profile-transition);
+    position: relative;
+    z-index: 1;
+}
+
+.profile-stats:hover {
+    box-shadow: var(--hover-box-shadow);
 }
 
 .profile-stats div {
@@ -72,136 +128,310 @@
 
 .profile-stats div span {
     display: block;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.8rem;
+    font-weight: 600;
     color: var(--secondary-color);
-    transition: color var(--transition);
+    transition: color 0.3s ease-in-out;
 }
 
 .profile-stats div span:hover {
-    color: var(--hover-color);
+    color: var(--primary-color);
 }
 
+/* Follow Button */
 .follow-button {
     background-color: var(--primary-color);
     color: var(--background-color);
-    padding: 10px 20px;
+    padding: 1.2rem 2.5rem;
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-top: 1rem;
-    transition: background-color var(--transition);
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-shadow: var(--box-shadow);
+    position: relative;
+    z-index: 1;
 }
 
 .follow-button:hover {
     background-color: var(--hover-color);
+    transform: translateY(-3px);
+    box-shadow: var(--hover-box-shadow);
 }
 
 .unfollow-button {
     background-color: var(--danger-color);
-    transition: background-color var(--transition);
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
 }
 
 .unfollow-button:hover {
     background-color: var(--danger-hover-color);
+    transform: translateY(-3px);
+    box-shadow: var(--hover-box-shadow);
 }
 
+/* Posts Container */
 .posts-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 1;
 }
 
 .post {
     background: var(--background-color);
     border-radius: var(--radius);
-    padding: 1rem;
+    padding: 1.5rem;
     box-shadow: var(--box-shadow);
     border: 1px solid var(--border-color);
-    transition: var(--transition);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
 }
 
 .post:hover {
-    box-shadow: var(--hover-box-shadow);
     transform: translateY(-5px);
+    box-shadow: var(--hover-box-shadow);
 }
 
 .post img {
     width: 100%;
     border-radius: var(--radius);
     object-fit: cover;
-    max-height: 180px;
-    margin-bottom: 1rem;
+    max-height: 220px;
+    margin-bottom: 1.2rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.post img:hover {
+    transform: scale(1.05);
 }
 
 .post-content p {
-    margin: 0;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--text-color);
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
+/* Action Links */
 .action-link {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
+    gap: 0.7rem;
+    font-size: 1.1rem;
     color: var(--text-light-color);
     cursor: pointer;
-    transition: color var(--transition);
+    transition: color 0.3s ease-in-out;
 }
 
 .action-link:hover {
-    color: var(--hover-color);
+    color: var(--primary-color);
 }
 
+/* List Container */
+#list-container {
+    margin-top: 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+#list-container h2 {
+    font-size: 1.7rem;
+    margin-bottom: 1.5rem;
+    color: var (--secondary-color);
+}
+
+#list-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+#list-container li {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#list-container li:last-child {
+    border-bottom: none;
+}
+
+/* Media Queries */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+
     .profile-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem;
     }
 
     .profile-header img {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
     }
 
     .profile-info h1 {
-        font-size: 1.5rem;
+        font-size: 2rem;
     }
 
     .profile-info p {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
     .profile-stats {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        padding: 1.5rem;
     }
 
     .profile-stats div {
         width: 100%;
-        text-align: left;
+        text-align: center;
+    }
+
+    .profile-stats div span {
+        font-size: 1.4rem;
+    }
+
+    .follow-button {
+        font-size: 1rem;
+        padding: 1rem 2rem;
+        margin-top: 1rem;
     }
 
     .posts-container {
-        gap: 1rem;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .post {
+        padding: 1rem;
     }
 
     .post img {
-        height: auto;
+        max-height: 180px;
     }
 
     .post-content p {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
     .post-actions {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    #list-container {
+        margin-top: 2rem;
+    }
+
+    #list-container h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    #list-container li {
+        padding: 1rem;
+    }
+}
+
+/* Additional enhancements */
+.profile-header {
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(191, 219, 254, 0.1));
+    z-index: 0;
+    pointer-events: none;
+}
+
+.profile-info {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-stats {
+    position: relative;
+    z-index: 1;
+}
+
+.follow-button,
+.unfollow-button {
+    position: relative;
+    z-index: 1;
+}
+
+.posts-container {
+    position: relative;
+    z-index: 1;
+}
+
+.post {
+    position: relative;
+    z-index: 1;
+}
+
+#list-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Hover effect for action links */
+.action-link:hover {
+    transform: scale(1.1);
+    color: var(--primary-color);
+}
+
+/* Animation for list items */
+#list-container ul li {
+    transition: background-color 0.3s ease;
+}
+
+#list-container ul li:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Bouncing animation for follow/unfollow buttons */
+.follow-button:hover,
+.unfollow-button:hover {
+    animation: bounce 0.5s;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    60% {
+        transform: translateY(-3px);
+    }
+}
+
+/* Subtle shadow for posts */
+.post {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* More pronounced hover effect for posts */
+.post:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }

@@ -12,6 +12,10 @@
     --radius: 8px;
     --transition: all 0.3s ease-in-out;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --profile-header-bg: #FFFFFF;
+    --profile-stats-bg: #FFFFFF;
+    --profile-section-padding: 2rem;
+    --profile-border-radius: 12px;
 }
 
 a {
@@ -23,12 +27,45 @@ a {
 a:hover {
     color: var(--hover-color);
 }
+
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Profile Header */
 .profile-header {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 2rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+    padding: var(--profile-section-padding);
+    background-color: var(--profile-header-bg);
+    border-radius: var(--profile-border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.profile-header:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(191, 219, 254, 0.1));
+    z-index: 0;
+    pointer-events: none;
 }
 
 .profile-header img {
@@ -36,19 +73,25 @@ a:hover {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
+    border: 5px solid var(--background-color);
     box-shadow: var(--box-shadow);
     transition: transform var(--transition);
 }
 
 .profile-header img:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+}
+
+.profile-info {
+    position: relative;
+    z-index: 1;
 }
 
 .profile-info h1 {
     font-size: 2.5rem;
-    font-weight: bold;
+    font-weight: 700;
     color: var(--secondary-color);
-    margin: 0;
+    margin-bottom: 0.5rem;
     transition: color var(--transition);
 }
 
@@ -57,27 +100,72 @@ a:hover {
 }
 
 .profile-info p {
-    margin: 0.5rem 0 0;
+    font-size: 1.2rem;
     color: var(--text-light-color);
-    font-size: 1rem;
+    margin-bottom: 1rem;
 }
 
+/* Profile Stats */
 .profile-stats {
     display: flex;
-    gap: 2rem;
+    justify-content: space-around;
+    background-color: var(--profile-stats-bg);
+    padding: var(--profile-section-padding);
+    border-radius: var(--profile-border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    position: relative;
+    z-index: 1;
     margin-top: 1rem;
+}
+
+.profile-stats:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .profile-stats div {
     text-align: center;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: var(--radius);
+    transition: background-color 0.3s ease;
 }
 
+.profile-stats div:hover {
+    background-color: var(--hover-background);
+}
+
+.profile-stats div button {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    transition: color var(--transition);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.profile-stats div button:hover {
+    color: var(--hover-color);
+}
+
+.profile-stats div span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-light-color);
+    margin-top: 0.5rem;
+}
+
+/* Posts Container */
 .posts-container {
-    margin-top: 2rem;
+    margin-top: 3rem;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .posts-container h2 {
@@ -89,27 +177,55 @@ a:hover {
     margin-bottom: 2rem;
 }
 
+.posts-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.posts-container ul li {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+.posts-container ul li:last-child {
+    border-bottom: none;
+}
+
+.posts-container ul li:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.posts-container .feed-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
 .posts-container .post {
     background-color: var(--foreground-color);
     border-radius: var(--radius);
     padding: 1.5rem;
-    box-shadow: var(--box-shadow);
-    border: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
-    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    border: none;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
 }
 
 .posts-container .post:hover {
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     transform: translateY(-5px);
-    /* Added hover effect */
 }
 
 .post img {
     width: 100%;
-    height: auto;
+    max-height: 400px;
+    object-fit: cover;
     border-radius: var(--radius);
-    margin-bottom: 1rem;
+    margin: 1rem 0;
 }
 
 .post-header {
@@ -142,16 +258,16 @@ a:hover {
 }
 
 .post-body h2 {
-    font-size: 18px;
+    font-size: 1.2rem;
     font-weight: 600;
-    color: #1F2937;
-    margin: 0 0 15px 0;
+    color: var(--secondary-color);
+    margin: 0 0 0.5rem 0;
 }
 
 .post-body p {
-    font-size: 16px;
-    color: #374151;
-    margin-top: 15px;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-top: 0.5rem;
     overflow-wrap: break-word;
     word-break: break-word;
     margin-bottom: 0;
@@ -167,14 +283,6 @@ a:hover {
     color: inherit;
     cursor: pointer;
     text-decoration: none;
-}
-
-.post-body img {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: var(--radius);
-    margin: 1rem 0;
 }
 
 .post-categories {
@@ -199,7 +307,7 @@ a:hover {
     color: var(--text-light-color);
     padding: 5px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 0.8rem;
     margin-right: 5px;
     margin-bottom: 5px;
     cursor: pointer;
@@ -246,7 +354,8 @@ a:hover {
 
 .post-actions button:hover,
 .post-actions a:hover {
-    color: var(--accent-color);
+    transform: scale(1.1);
+    color: var(--primary-color);
 }
 
 .post-actions time {
@@ -266,6 +375,7 @@ a:hover {
     color: var(--accent-color);
 }
 
+/* Media Queries */
 @media (max-width: 768px) {
     main {
         padding: 1.5rem;
@@ -275,6 +385,7 @@ a:hover {
     .profile-header {
         flex-direction: column;
         align-items: center;
+        text-align: center;
     }
 
     .profile-header img {
@@ -284,7 +395,173 @@ a:hover {
 
     .profile-info h1 {
         font-size: 2rem;
+    }
+
+    .profile-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-stats div {
         text-align: center;
+    }
+
+    .posts-container .feed-content {
+        grid-template-columns: 1fr;
+    }
+
+    .posts-container .post {
+        padding: 1rem;
+    }
+
+    .post img {
+        max-height: 200px;
+    }
+}
+
+.profile-header {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.profile-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(191, 219, 254, 0.1));
+    z-index: 0;
+    pointer-events: none;
+}
+
+.profile-info {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-stats {
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+}
+
+.profile-stats div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: var(--radius);
+    transition: background-color 0.3s ease;
+}
+
+.profile-stats div:hover {
+    background-color: var(--hover-background);
+}
+
+.profile-stats div button {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    transition: color var(--transition);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.profile-stats div button:hover {
+    color: var(--hover-color);
+}
+
+.profile-stats div span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-light-color);
+    margin-top: 0.5rem;
+}
+
+.posts-container {
+    position: relative;
+    z-index: 1;
+}
+
+.posts-container .feed-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.posts-container .post {
+    position: relative;
+    z-index: 1;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.posts-container .post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.post-actions button:hover,
+.post-actions a:hover {
+    transform: scale(1.1);
+    color: var(--primary-color);
+}
+
+.posts-container ul li {
+    transition: background-color 0.3s ease;
+}
+
+.posts-container ul li:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.posts-container .post {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.posts-container .post:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 1.5rem;
+        margin: 1.5rem;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-header img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-info h1 {
+        font-size: 2rem;
+    }
+
+    .profile-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-stats div {
+        text-align: center;
+    }
+
+    .posts-container .feed-content {
+        grid-template-columns: 1fr;
     }
 
     .posts-container .post {

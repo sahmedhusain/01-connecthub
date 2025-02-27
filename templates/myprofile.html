@@ -206,24 +206,30 @@
                             <div class="profile-stats">
                                 <div>
                                     <form method="GET" action="/myprofile">
+                                        <button type="submit">{{.TotalPosts}}</button>
+                                    </form>
+                                    <span>Posts</span>
+                                </div>
+                                <div>
+                                    <form method="GET" action="/myprofile">
                                         <input type="hidden" name="view" value="followers">
                                         <button type="submit">{{.FollowersCount}}</button>
                                     </form>
-                                    Followers
+                                    <span>Followers</span>
                                 </div>
                                 <div>
                                     <form method="GET" action="/myprofile">
                                         <input type="hidden" name="view" value="following">
                                         <button type="submit">{{.FollowingCount}}</button>
                                     </form>
-                                    Following
+                                    <span>Following</span>
                                 </div>
                                 <div>
                                     <form method="GET" action="/myprofile">
                                         <input type="hidden" name="view" value="friends">
                                         <button type="submit">{{.FriendsCount}}</button>
                                     </form>
-                                    Friends
+                                    <span>Friends</span>
                                 </div>
                             </div>
                         </div>

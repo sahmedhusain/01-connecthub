@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
         searchContainer.appendChild(suggestionsDiv);
     }
 
+    suggestionsDiv.style.display = 'none'; // Initially hide the suggestions
+
     let debounceTimeout;
     const DEBOUNCE_DELAY = 300;
 
@@ -58,6 +60,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Search error:', error);
                 });
         }, DEBOUNCE_DELAY);
+    });
+
+    // Add focus event listener to the search input
+    searchInput.addEventListener('focus', function() {
+        if (this.value.trim().length >= 2) {
+            // Trigger the input event to show suggestions if the query is long enough
+            this.dispatchEvent(new Event('input'));
+        } else {
+            suggestionsDiv.style.display = 'none';
+        }
     });
 
     function createSuggestionItem(result) {

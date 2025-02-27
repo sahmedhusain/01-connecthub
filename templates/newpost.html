@@ -207,14 +207,13 @@
                         <textarea id="content" name="content" rows="5" required></textarea>
                         <div id="char-counter">0/500</div>
                         <div id="error-message" style="color: red; display: none;">Character limit exceeded!</div>
-                      <div class="image-upload-container">
+                        <div class="image-upload-container">
                             <label for="image" class="upload-button">
-                                <i class="fa-regular fa-image"></i> Upload Image
+                                <i class="fas fa-upload"></i> Upload Image
                             </label>
-                            <input type="file" name="image" id="image" accept="image/*" onchange="validateImage(this)"
-                            class="upload-input">
-                        <p id="errorMessage" class="error-message"></p>
-                    </div>
+                            <input type="file" id="image" name="image">
+                            <div id="filename" class="image-filename"></div>
+                        </div>
                         <label>Post categories</label>
                         <div class="category-filters">
                             {{range .Categories}}

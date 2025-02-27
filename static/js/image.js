@@ -1,4 +1,3 @@
-
 const maxFileSize = 20 * 1024 * 1024;
 function validateImage(input) {
     const file = input.files[0];
@@ -27,3 +26,11 @@ function validateImage(input) {
     document.getElementById('errorMessage').innerHTML = '';
     return true;
 }
+
+document.getElementById('image').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        document.getElementById('filename').textContent = this.files[0].name;
+    } else {
+        document.getElementById('filename').textContent = '';
+    }
+});
