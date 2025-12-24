@@ -1,4 +1,4 @@
-module forum
+module 01connecthub
 
 go 1.23.2
 

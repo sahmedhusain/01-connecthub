@@ -1,8 +1,8 @@
 package server
 
 import (
+	"01connecthub/database"
 	"database/sql"
-	"forum/database"
 	"log"
 	"net/http"
 )

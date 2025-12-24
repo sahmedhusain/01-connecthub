@@ -1,12 +1,12 @@
 package Handlers
 
 import (
+	"01connecthub/src/security"
+	"01connecthub/src/server"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"forum/src/security"
-	"forum/src/server"
 	html "html/template"
 	"log"
 	"net/http"

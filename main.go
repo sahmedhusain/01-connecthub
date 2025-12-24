@@ -1,10 +1,10 @@
 package main
 
 import (
+	db "01connecthub/database"
+	auth "01connecthub/src/authentication"
+	"01connecthub/src/server"
 	"fmt"
-	db "forum/database"
-	auth "forum/src/authentication"
-	"forum/src/server"
 	"log"
 	"net/http"
 )

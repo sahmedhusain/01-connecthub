@@ -1,8 +1,8 @@
 package server
 
 import (
+	UUID "01connecthub/src/security"
 	"database/sql"
-	UUID "forum/src/security"
 	"log"
 	"net/http"
 	"time"

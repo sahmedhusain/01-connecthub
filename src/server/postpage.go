@@ -1,10 +1,10 @@
 package server
 
 import (
+	"01connecthub/database"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
-	"forum/database"
 	"log"
 	"net/http"
 	"strconv"
