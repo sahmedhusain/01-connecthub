@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2024 Sayed Ahmed Husain, Qasim Al-Jaffer, Mohammed Al-Alawi, Abdulla Al-Asmawi
+Copyright (c) 2024 01 ConnectHub
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
